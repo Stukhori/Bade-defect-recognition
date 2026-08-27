@@ -1,0 +1,106 @@
+{
+  "curation_version": "wtbd-curation-v1",
+  "enums": {
+    "AnnotationSource": [
+      "primary",
+      "secondary",
+      "none"
+    ],
+    "AnnotationStatus": [
+      "primary_confirmed",
+      "secondary_confirmed",
+      "both_agree",
+      "primary_secondary_disagree",
+      "manual_review_required",
+      "exclude"
+    ],
+    "DuplicateStatus": [
+      "unique",
+      "exact_duplicate_canonical",
+      "exact_duplicate_redundant",
+      "near_duplicate_review",
+      "near_duplicate_distinct",
+      "near_duplicate_same_scene"
+    ],
+    "IdentityDecision": [
+      "pending_review",
+      "accept_xml_name",
+      "accept_embedded_filename",
+      "mark_annotation_reused",
+      "exclude_unusable"
+    ],
+    "IdentityStatus": [
+      "consistent",
+      "xml_name_correct",
+      "embedded_filename_correct",
+      "annotation_reused_from_other_image",
+      "ambiguous",
+      "unusable",
+      "pending_review"
+    ],
+    "NearDuplicateDecision": [
+      "pending_review",
+      "distinct_capture",
+      "same_scene",
+      "unrelated_false_positive"
+    ],
+    "ReasonCode": [
+      "none",
+      "identity_pending_review",
+      "manual_identity_exclusion",
+      "annotation_reused",
+      "unusable",
+      "exact_duplicate_redundant",
+      "near_duplicate_same_scene_redundant"
+    ],
+    "ReviewStatus": [
+      "not_required",
+      "pending_review",
+      "completed",
+      "policy_excluded_pending_review"
+    ]
+  },
+  "identity_decision_columns": [
+    "sample_id",
+    "decision",
+    "resolved_image_filename",
+    "annotation_source",
+    "include",
+    "notes",
+    "reviewer"
+  ],
+  "manifest_columns": [
+    "sample_id",
+    "image_filename",
+    "primary_xml_filename",
+    "secondary_xml_filename",
+    "primary_declared_filename",
+    "secondary_declared_filename",
+    "official_split",
+    "resolved_image_filename",
+    "annotation_source",
+    "identity_status",
+    "annotation_status",
+    "duplicate_group_id",
+    "duplicate_status",
+    "curated_split",
+    "include",
+    "reason_code",
+    "review_status",
+    "reviewer",
+    "review_notes",
+    "evidence_artifact",
+    "source_dataset_fingerprint",
+    "curation_version"
+  ],
+  "near_duplicate_decision_columns": [
+    "pair_id",
+    "image_a",
+    "image_b",
+    "decision",
+    "canonical_sample_id",
+    "notes",
+    "reviewer"
+  ],
+  "schema_version": "1.0"
+}

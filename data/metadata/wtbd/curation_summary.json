@@ -1,0 +1,96 @@
+{
+  "blockers": [
+    "262 identity decisions remain pending (all are policy-excluded)",
+    "491 non-exact near-duplicate decisions remain pending, including 166 cross-split pairs"
+  ],
+  "curated_interpretation": {
+    "class_counts": {
+      "corrosion": 188,
+      "crack": 167,
+      "craze": 195,
+      "hide_craze": 284,
+      "surface_injure": 315,
+      "thunderstrike": 66
+    },
+    "completed_near_duplicate_decisions": 0,
+    "confirmed_same_scene_groups_crossing_splits": 0,
+    "exact_duplicate_group_details": [
+      {
+        "canonical_official_split": "train",
+        "canonical_sample_id": "547",
+        "excluded_redundant_samples": [
+          "640"
+        ],
+        "group_id": "exact-001",
+        "members": [
+          "547",
+          "640"
+        ]
+      },
+      {
+        "canonical_official_split": "train",
+        "canonical_sample_id": "565",
+        "excluded_redundant_samples": [
+          "668"
+        ],
+        "group_id": "exact-002",
+        "members": [
+          "565",
+          "668"
+        ]
+      }
+    ],
+    "excluded_exact_duplicates": 2,
+    "excluded_images": 264,
+    "identity_mismatches": {
+      "manually_excluded": 0,
+      "policy_excluded_while_pending": 262,
+      "resolved_automatically": 0,
+      "resolved_manually": 0,
+      "still_pending": 262,
+      "total": 262
+    },
+    "included_exact_duplicate_groups_crossing_splits": 0,
+    "included_images": 801,
+    "included_unresolved_identity_rows": 0,
+    "near_duplicate_decision_counts": {
+      "pending_review": 491
+    },
+    "object_count": 1215,
+    "pending_cross_split_near_duplicate_pairs": 166,
+    "pending_identity_rows": 262,
+    "pending_near_duplicate_pairs": 491,
+    "split_counts": {
+      "test": 122,
+      "train": 564,
+      "validation": 115
+    }
+  },
+  "curation_version": "wtbd-curation-v1",
+  "phase_3_started": false,
+  "published_counts_forced": false,
+  "raw_data_modified": false,
+  "raw_official_release": {
+    "class_counts": {
+      "corrosion": 257,
+      "crack": 224,
+      "craze": 257,
+      "hide_craze": 342,
+      "surface_injure": 412,
+      "thunderstrike": 92
+    },
+    "exact_duplicate_groups": 2,
+    "identity_mismatch_count": 262,
+    "image_count": 1065,
+    "nonexact_near_duplicate_candidates": 491,
+    "object_count": 1584,
+    "split_counts": {
+      "test": 161,
+      "train": 745,
+      "validation": 159
+    }
+  },
+  "schema_version": "1.0",
+  "source_dataset_fingerprint": "568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb",
+  "status": "BLOCKED_PENDING_HUMAN_REVIEW"
+}

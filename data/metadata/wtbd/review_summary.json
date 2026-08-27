@@ -1,0 +1,24 @@
+{
+  "annotator_comparison": {
+    "categories": {
+      "box_disagreement": 15,
+      "class_disagreement": 87,
+      "object_count_disagreement": 41,
+      "strong_agreement": 922
+    },
+    "mismatch_rows_with_exact_primary_reuse_signature": 250,
+    "sample_count": 1065
+  },
+  "automatic_identity_resolutions_applied": 0,
+  "config_hash": "a4c17f8cdb2a",
+  "curation_version": "wtbd-curation-v1",
+  "duplicate_review": {
+    "candidate_rows": 493,
+    "cross_split_nonexact_pending": 166,
+    "nonexact_pending": 491
+  },
+  "identity_mismatch_count": 262,
+  "identity_review_artifact_count": 262,
+  "schema_version": "1.0",
+  "source_dataset_fingerprint": "568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb"
+}

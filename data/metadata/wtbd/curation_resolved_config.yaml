@@ -1,0 +1,59 @@
+audit:
+  almost_full_area_fraction: 0.5
+  annotation_examples_per_class: 6
+  elongated_aspect_ratio_high: 10.0
+  elongated_aspect_ratio_low: 0.1
+  figures_root: figures/phase2
+  near_duplicate_distance: 4
+  near_duplicate_max_pairs: 36
+  near_duplicate_pairs_per_sheet: 6
+  perceptual_hash: dhash64
+  visualization_seed: 20260828
+curation:
+  annotator_comparison_file: data/metadata/wtbd/second_annotator_comparison.csv
+  annotator_strong_iou: 0.8
+  exact_duplicate_canonical_policy: lowest_natural_sample_id
+  exact_duplicate_redundant_policy: exclude
+  exclude_pending_identity: true
+  expected_raw_fingerprint: 568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb
+  identity_diagnostics_file: data/metadata/wtbd/identity_diagnostics.csv
+  identity_review_root: figures/phase2/identity_review
+  identity_samples_per_sheet: 6
+  image_similarity_correlation: 0.98
+  image_similarity_thumbnail: 64
+  manifest_file: data/metadata/wtbd/curation_manifest.csv
+  manual_review_file: data/metadata/wtbd/manual_review_decisions.csv
+  near_duplicate_index_file: data/metadata/wtbd/near_duplicate_review_index.csv
+  near_duplicate_review_file: data/metadata/wtbd/near_duplicate_review_decisions.csv
+  schema_file: data/metadata/wtbd/curation_schema.json
+  schema_version: '1.0'
+  summary_file: data/metadata/wtbd/curation_summary.json
+  version: wtbd-curation-v1
+dataset:
+  annotation_directory: Annotations
+  image_directory: JPEGImages
+  metadata_root: data/metadata/wtbd
+  name: wtbd
+  raw_root: data/raw/wtbd
+  release_root: data/raw/wtbd/WT blade defect dataset
+  second_annotation_directory: annotation_second_person
+  split_file: train_val_test_split.txt
+  split_id: official-train-val-test
+  version: figshare-v1
+evaluation:
+  primary_metric: macro_f1
+experiment:
+  name: wtbd_curation
+  output_root: experiments
+  seed: 20260828
+method:
+  family: dataset_curation
+  name: forensic_reconciliation_v1
+project:
+  name: windblade
+  phase: 2
+runtime:
+  device: cpu
+training:
+  epochs: 0
+  train_fraction: 1.0
