@@ -766,6 +766,7 @@ def _apply_near_decisions(
     _validate_decision_columns(decisions, NEAR_DECISION_COLUMNS, "near-duplicate review file")
     candidate_by_pair = {row["pair_id"]: row for row in candidates}
     union = _UnionFind()
+    preferred_canonicals: list[tuple[str, str, str]] = []
     completed = 0
     seen: set[str] = set()
     for decision_row in decisions:
@@ -783,13 +784,29 @@ def _apply_near_decisions(
         completed += 1
         if decision is NearDuplicateDecision.SAME_SCENE:
             candidate = candidate_by_pair[pair_id]
-            union.union(Path(candidate["image_a"]).stem, Path(candidate["image_b"]).stem)
+            first_id = Path(candidate["image_a"]).stem
+            second_id = Path(candidate["image_b"]).stem
+            requested_canonical = decision_row["canonical_sample_id"].strip()
+            if requested_canonical and requested_canonical not in {first_id, second_id}:
+                raise CurationError(
+                    f"near-duplicate decision {pair_id} canonical sample must be one of its pair"
+                )
+            union.union(first_id, second_id)
+            if requested_canonical:
+                preferred_canonicals.append((first_id, second_id, requested_canonical))
     groups: dict[str, list[str]] = defaultdict(list)
     for sample_id in union.parent:
         groups[union.find(sample_id)].append(sample_id)
     by_id = {row["sample_id"]: row for row in rows}
     for index, group in enumerate(sorted(groups.values(), key=lambda g: natural_id_key(min(g, key=natural_id_key))), start=1):
-        canonical = min(group, key=natural_id_key)
+        requested = {
+            preferred
+            for first, second, preferred in preferred_canonicals
+            if union.find(first) == union.find(group[0]) or union.find(second) == union.find(group[0])
+        }
+        if len(requested) > 1:
+            raise CurationError(f"conflicting canonical samples for reviewed near-duplicate group: {sorted(requested)}")
+        canonical = next(iter(requested)) if requested else min(group, key=natural_id_key)
         group_id = f"near-reviewed-{index:03d}"
         for sample_id in group:
             row = by_id[sample_id]
@@ -995,6 +1012,19 @@ def build_curation(
     class_counts = Counter(computed_statistics["class_counts"])
     class_rows = [{"class": label, "instance_count": class_counts[label]} for label in CANONICAL_CLASSES]
     write_deterministic_csv(metadata_root / "curated_class_counts.csv", class_rows, ["class", "instance_count"])
+    split_class_counts = Counter(
+        (by_id[row["source_image_id"]]["curated_split"], row["canonical_label_if_unambiguous"])
+        for row in curated_instances
+    )
+    write_deterministic_csv(
+        metadata_root / "curated_split_class_counts.csv",
+        [
+            {"split": split, "class": label, "instance_count": split_class_counts[(split, label)]}
+            for split in ("train", "validation", "test")
+            for label in CANONICAL_CLASSES
+        ],
+        ["split", "class", "instance_count"],
+    )
     split_counts = Counter(computed_statistics["split_counts"])
     pending_identity = sum(
         1 for row in rows if row["identity_status"] == IdentityStatus.PENDING_REVIEW.value
@@ -1018,6 +1048,36 @@ def build_curation(
             f"{pending_near} non-exact near-duplicate decisions remain pending, including {cross_pending_near} cross-split pairs"
         )
     status = "PASS" if not blockers else "BLOCKED_PENDING_HUMAN_REVIEW"
+    mismatch_rows = [row for row in rows if Path(str(row["primary_declared_filename"])).stem != row["sample_id"]]
+    manually_resolved_identity = sum(
+        1
+        for row in mismatch_rows
+        if row["review_status"] == ReviewStatus.COMPLETED.value
+        and row["identity_status"]
+        in {IdentityStatus.XML_NAME_CORRECT.value, IdentityStatus.EMBEDDED_FILENAME_CORRECT.value}
+    )
+    manually_excluded_identity = sum(
+        1
+        for row in mismatch_rows
+        if row["review_status"] == ReviewStatus.COMPLETED.value and not row["include"]
+    )
+    exact_group_details: list[dict[str, Any]] = []
+    for group_id in sorted({value[0] for value in exact_map.values()}):
+        members = sorted(
+            (sample_id for sample_id, value in exact_map.items() if value[0] == group_id),
+            key=natural_id_key,
+        )
+        canonical = next(sample_id for sample_id in members if exact_map[sample_id][1])
+        exact_group_details.append(
+            {
+                "group_id": group_id,
+                "members": members,
+                "canonical_sample_id": canonical,
+                "canonical_official_split": by_id[canonical]["official_split"],
+                "excluded_redundant_samples": [sample_id for sample_id in members if sample_id != canonical],
+            }
+        )
+    near_decision_counts = Counter(row["decision"] for row in near_decisions)
     raw_summary = read_json(audit_metadata / "audit_summary.json")
     summary = {
         "schema_version": "1.0",
@@ -1049,6 +1109,16 @@ def build_curation(
             "included_unresolved_identity_rows": 0,
             "included_exact_duplicate_groups_crossing_splits": 0,
             "confirmed_same_scene_groups_crossing_splits": 0,
+            "identity_mismatches": {
+                "total": len(mismatch_rows),
+                "resolved_automatically": 0,
+                "resolved_manually": manually_resolved_identity,
+                "manually_excluded": manually_excluded_identity,
+                "policy_excluded_while_pending": pending_identity,
+                "still_pending": pending_identity,
+            },
+            "exact_duplicate_group_details": exact_group_details,
+            "near_duplicate_decision_counts": dict(sorted(near_decision_counts.items())),
         },
         "blockers": blockers,
         "raw_data_modified": False,

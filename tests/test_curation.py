@@ -169,6 +169,26 @@ def test_same_scene_decision_excludes_redundant_sample() -> None:
     assert by_id["743"]["reason_code"] == ReasonCode.NEAR_SAME_SCENE_REDUNDANT.value
 
 
+def test_same_scene_decision_honors_recorded_canonical() -> None:
+    rows = [manifest_row("10", "train"), manifest_row("743", "test")]
+    candidates = [{"pair_id": "pair-0001", "image_a": "10.jpg", "image_b": "743.jpg"}]
+    decisions = [
+        {
+            "pair_id": "pair-0001",
+            "image_a": "10.jpg",
+            "image_b": "743.jpg",
+            "decision": NearDuplicateDecision.SAME_SCENE.value,
+            "canonical_sample_id": "743",
+            "notes": "confirmed",
+            "reviewer": "reviewer-1",
+        }
+    ]
+    resolved, _ = _apply_near_decisions(rows, candidates, decisions)
+    by_id = {row["sample_id"]: row for row in resolved}
+    assert by_id["10"]["include"] is False
+    assert by_id["743"]["include"] is True
+
+
 def test_curated_statistics_are_deterministic_and_exclude_rows() -> None:
     included = manifest_row("1", "train")
     excluded = manifest_row("2", "test")
