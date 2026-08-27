@@ -1,0 +1,44 @@
+extends: base.yaml
+
+experiment:
+  name: wtbd_dataset_audit
+  seed: 20260828
+  output_root: experiments
+
+dataset:
+  name: wtbd
+  version: figshare-v1
+  split_id: official-train-val-test
+  raw_root: data/raw/wtbd
+  release_root: data/raw/wtbd/WT blade defect dataset
+  image_directory: JPEGImages
+  annotation_directory: Annotations
+  second_annotation_directory: annotation_second_person
+  split_file: train_val_test_split.txt
+  metadata_root: data/metadata/wtbd
+
+method:
+  family: dataset_audit
+  name: forensic_v1
+
+training:
+  train_fraction: 1.0
+  epochs: 0
+
+evaluation:
+  primary_metric: macro_f1
+
+runtime:
+  device: cpu
+
+audit:
+  perceptual_hash: dhash64
+  near_duplicate_distance: 4
+  visualization_seed: 20260828
+  annotation_examples_per_class: 6
+  near_duplicate_pairs_per_sheet: 6
+  near_duplicate_max_pairs: 36
+  elongated_aspect_ratio_low: 0.1
+  elongated_aspect_ratio_high: 10.0
+  almost_full_area_fraction: 0.5
+  figures_root: figures/phase2
