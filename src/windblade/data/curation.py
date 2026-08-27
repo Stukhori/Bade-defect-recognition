@@ -611,7 +611,7 @@ def build_review_evidence(
         "source_dataset_fingerprint": fingerprint,
         "identity_mismatch_count": len(diagnostics),
         "automatic_identity_resolutions_applied": 0,
-        "identity_review_artifact_count": len(review_index),
+        "identity_review_artifact_count": len(diagnostics),
         "annotator_comparison": {
             "sample_count": len(annotator_rows),
             "categories": dict(sorted(aggregate.items())),

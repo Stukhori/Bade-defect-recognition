@@ -153,6 +153,20 @@ The included `preprocessing_demo.py` reads common image extensions with OpenCV, 
 - 38 within-image annotation pairs overlap (IoU > 0).
 - 84 source images contain multiple canonical defect classes.
 
-## 16. Phase 2 exit-gate status
+## 16. Curation/reconciliation layer
+
+The immutable raw audit is followed by the versioned `wtbd-curation-v1` reconciliation layer documented in `docs/phase2_curation.md`. It never edits an image, XML, or official split file.
+
+- Curation status: **BLOCKED_PENDING_HUMAN_REVIEW**.
+- Identity mismatches: 262; automatically resolved: 0; manually resolved: 0; policy-excluded while pending: 262.
+- Provisional curated images/objects: 801 / 1215.
+- Excluded images: 264, including 2 redundant exact copies.
+- Exact duplicate groups crossing curated splits: 0.
+- Pending non-exact near-duplicate pairs: 491, including 166 cross-split candidates.
+
+Every unresolved row is listed in `data/metadata/wtbd/curation_blockers.csv`. Recommendations are evidence only and are never silently applied as decisions.
+
+
+## 17. Phase 2 exit-gate status
 
 **INCOMPLETE**. All counts and conclusions in this document were generated from the machine-readable audit, not manually transcribed. No model was trained, no model weights were downloaded, no final classification crops were created, and no Phase 3 preprocessing choice was frozen.

@@ -320,6 +320,7 @@ def _render_audit_document(
     raw_root_entries: Sequence[str],
     metadata_root: Path,
     figures_root: Path,
+    curation_summary: Mapping[str, Any] | None = None,
 ) -> str:
     image_stats = summary["images"]
     annotation_stats = summary["annotations"]
@@ -354,6 +355,27 @@ def _render_audit_document(
     warning_lines = [f"- {item}" for item in summary["audit"]["warnings"]] or ["- None."]
     global_area = bbox["statistics"]["all"]["bbox_area_fraction"]
     global_aspect = bbox["statistics"]["all"]["bbox_aspect_ratio"]
+    if curation_summary is None:
+        curation_section = """## 16. Curation/reconciliation layer
+
+No curation summary was present when this raw audit was rendered. The raw findings remain unresolved until the separate, non-destructive reconciliation workflow is run.
+"""
+    else:
+        curated = curation_summary["curated_interpretation"]
+        identity = curated["identity_mismatches"]
+        curation_section = f"""## 16. Curation/reconciliation layer
+
+The immutable raw audit is followed by the versioned `wtbd-curation-v1` reconciliation layer documented in `docs/phase2_curation.md`. It never edits an image, XML, or official split file.
+
+- Curation status: **{curation_summary['status']}**.
+- Identity mismatches: {identity['total']}; automatically resolved: {identity['resolved_automatically']}; manually resolved: {identity['resolved_manually']}; policy-excluded while pending: {identity['policy_excluded_while_pending']}.
+- Provisional curated images/objects: {curated['included_images']} / {curated['object_count']}.
+- Excluded images: {curated['excluded_images']}, including {curated['excluded_exact_duplicates']} redundant exact copies.
+- Exact duplicate groups crossing curated splits: {curated['included_exact_duplicate_groups_crossing_splits']}.
+- Pending non-exact near-duplicate pairs: {curated['pending_near_duplicate_pairs']}, including {curated['pending_cross_split_near_duplicate_pairs']} cross-split candidates.
+
+Every unresolved row is listed in `data/metadata/wtbd/curation_blockers.csv`. Recommendations are evidence only and are never silently applied as decisions.
+"""
 
     return f"""# Phase 2 — WTBD Dataset Audit
 
@@ -478,7 +500,9 @@ The included `preprocessing_demo.py` reads common image extensions with OpenCV, 
 
 {chr(10).join(warning_lines)}
 
-## 16. Phase 2 exit-gate status
+{curation_section}
+
+## 17. Phase 2 exit-gate status
 
 **{summary['audit']['status'].upper()}**. All counts and conclusions in this document were generated from the machine-readable audit, not manually transcribed. No model was trained, no model weights were downloaded, no final classification crops were created, and no Phase 3 preprocessing choice was frozen.
 """
@@ -1146,6 +1170,8 @@ def run_wtbd_audit(config: ResolvedConfig, repository_root: str | Path) -> Datas
         f"{path.name}/" if path.is_dir() else path.name
         for path in sorted(release_root.iterdir(), key=lambda item: item.name.casefold())
     ]
+    curation_summary_path = metadata_root / "curation_summary.json"
+    curation_summary = read_json(curation_summary_path) if curation_summary_path.is_file() else None
     document = _render_audit_document(
         summary=summary,
         source=source,
@@ -1154,6 +1180,7 @@ def run_wtbd_audit(config: ResolvedConfig, repository_root: str | Path) -> Datas
         raw_root_entries=raw_root_entries,
         metadata_root=metadata_root,
         figures_root=figures_root,
+        curation_summary=curation_summary,
     )
     documentation_path.write_text(document, encoding="utf-8", newline="\n")
     return DatasetAuditResult(
