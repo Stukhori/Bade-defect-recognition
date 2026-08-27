@@ -16,8 +16,118 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
+from windblade.data.voc import VocAnnotation
+
 
 BOX_COLORS = ["#ff3b30", "#00a6ff", "#34c759", "#ff9500", "#af52de", "#ff2d55"]
+
+
+def _annotation_panel(
+    image_path: Path,
+    annotation: VocAnnotation,
+    size: tuple[int, int],
+    title: str,
+) -> Image.Image:
+    """Render one labelled review panel without altering its source image."""
+
+    with Image.open(image_path) as source:
+        image = source.convert("RGB")
+    draw = ImageDraw.Draw(image)
+    for index, item in enumerate(annotation.objects):
+        draw.rectangle(
+            (item.bbox.xmin, item.bbox.ymin, item.bbox.xmax, item.bbox.ymax),
+            outline=BOX_COLORS[index % len(BOX_COLORS)],
+            width=6,
+        )
+    fitted = _fit_image(image, (size[0], size[1] - 24))
+    panel = Image.new("RGB", size, "white")
+    ImageDraw.Draw(panel).text((4, 5), title, fill="black", font=ImageFont.load_default())
+    _place_centered(panel, fitted, (0, 24, size[0], size[1]))
+    return panel
+
+
+def create_identity_review_sheets(
+    diagnostics: Sequence[Mapping[str, Any]],
+    primary_annotations: Mapping[str, VocAnnotation],
+    secondary_annotations: Mapping[str, VocAnnotation],
+    image_paths: Mapping[str, Path],
+    output_directory: str | Path,
+    samples_per_sheet: int,
+) -> list[dict[str, Any]]:
+    """Create deterministic four-view evidence sheets for every identity mismatch."""
+
+    if samples_per_sheet <= 0:
+        raise ValueError("samples_per_sheet must be positive")
+    destination = Path(output_directory)
+    destination.mkdir(parents=True, exist_ok=True)
+    panel_width, panel_height = 300, 220
+    tile_width, tile_height = panel_width * 2, panel_height * 2 + 92
+    columns = 2
+    rows_per_sheet = math.ceil(samples_per_sheet / columns)
+    font = ImageFont.load_default()
+    index_rows: list[dict[str, Any]] = []
+
+    ordered = sorted(
+        diagnostics,
+        key=lambda row: (
+            (0, int(str(row["sample_id"])))
+            if str(row["sample_id"]).isdigit()
+            else (1, str(row["sample_id"]))
+        ),
+    )
+    for start in range(0, len(ordered), samples_per_sheet):
+        batch = ordered[start : start + samples_per_sheet]
+        sheet_number = start // samples_per_sheet + 1
+        filename = f"identity_review_{sheet_number:03d}.jpg"
+        sheet = Image.new("RGB", (columns * tile_width, rows_per_sheet * tile_height), "#e8e8e8")
+        sheet_draw = ImageDraw.Draw(sheet)
+        for offset, diagnostic in enumerate(batch):
+            sample_id = str(diagnostic["sample_id"])
+            declared_id = Path(str(diagnostic["embedded_filename_image"])).stem
+            tile_column = offset % columns
+            tile_row = offset // columns
+            left = tile_column * tile_width
+            top = tile_row * tile_height
+            primary = primary_annotations[sample_id]
+            secondary = secondary_annotations[sample_id]
+            panels = [
+                _annotation_panel(image_paths[sample_id], primary, (panel_width, panel_height), "XML image + primary boxes"),
+                _annotation_panel(image_paths[declared_id], primary, (panel_width, panel_height), "embedded image + primary boxes"),
+                _annotation_panel(image_paths[sample_id], secondary, (panel_width, panel_height), "XML image + secondary boxes"),
+                _annotation_panel(image_paths[declared_id], secondary, (panel_width, panel_height), "embedded image + secondary boxes"),
+            ]
+            for panel_index, panel in enumerate(panels):
+                x = left + (panel_index % 2) * panel_width
+                y = top + 70 + (panel_index // 2) * panel_height
+                sheet.paste(panel, (x, y))
+            heading = f"sample {sample_id}: {sample_id}.jpg vs {diagnostic['embedded_filename_image']}"
+            classes = f"classes={diagnostic['primary_classes']}"[:94]
+            coordinates = f"primary boxes={diagnostic['primary_boxes']}"[:94]
+            correlation = diagnostic["thumbnail_intensity_correlation"]
+            correlation_text = "n/a" if correlation is None else f"{float(correlation):.4f}"
+            evidence = (
+                f"recommend={diagnostic['recommended_identity_status']} "
+                f"confidence={diagnostic['recommendation_confidence']} corr={correlation_text}"
+            )
+            sheet_draw.text((left + 5, top + 7), heading, fill="black", font=font)
+            sheet_draw.text((left + 5, top + 21), classes, fill="black", font=font)
+            sheet_draw.text((left + 5, top + 35), coordinates, fill="black", font=font)
+            sheet_draw.text((left + 5, top + 49), evidence, fill="black", font=font)
+            index_rows.append(
+                {
+                    "sample_id": sample_id,
+                    "sheet": filename,
+                    "tile_row": tile_row + 1,
+                    "tile_column": tile_column + 1,
+                    "xml_named_image": f"{sample_id}.jpg",
+                    "embedded_filename_image": diagnostic["embedded_filename_image"],
+                    "recommended_identity_status": diagnostic["recommended_identity_status"],
+                    "recommendation_confidence": diagnostic["recommendation_confidence"],
+                    "review_required": True,
+                }
+            )
+        sheet.save(destination / filename, format="JPEG", quality=88, optimize=False, progressive=False)
+    return index_rows
 
 
 def _seed_for_label(seed: int, label: str) -> int:

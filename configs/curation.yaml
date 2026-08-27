@@ -1,0 +1,32 @@
+extends: dataset_audit.yaml
+
+project:
+  phase: 2
+
+experiment:
+  name: wtbd_curation
+
+method:
+  family: dataset_curation
+  name: forensic_reconciliation_v1
+
+curation:
+  version: wtbd-curation-v1
+  schema_version: "1.0"
+  expected_raw_fingerprint: 568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb
+  manual_review_file: data/metadata/wtbd/manual_review_decisions.csv
+  near_duplicate_review_file: data/metadata/wtbd/near_duplicate_review_decisions.csv
+  identity_diagnostics_file: data/metadata/wtbd/identity_diagnostics.csv
+  annotator_comparison_file: data/metadata/wtbd/second_annotator_comparison.csv
+  near_duplicate_index_file: data/metadata/wtbd/near_duplicate_review_index.csv
+  manifest_file: data/metadata/wtbd/curation_manifest.csv
+  summary_file: data/metadata/wtbd/curation_summary.json
+  schema_file: data/metadata/wtbd/curation_schema.json
+  identity_review_root: figures/phase2/identity_review
+  exclude_pending_identity: true
+  exact_duplicate_canonical_policy: lowest_natural_sample_id
+  exact_duplicate_redundant_policy: exclude
+  annotator_strong_iou: 0.80
+  image_similarity_thumbnail: 64
+  image_similarity_correlation: 0.98
+  identity_samples_per_sheet: 6
