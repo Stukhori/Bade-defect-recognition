@@ -1,0 +1,9 @@
+filename,present,file_size_bytes,sha256,purpose
+calculate_kappa.py,True,5021,357aee1b460afbe2351acd05171f16f58c8f6d1e0aec34946100373db4ba11ea,two-annotator IoU matching and Cohen's kappa calculation; not executed
+generate_split.py,True,1536,54377f8ae1dd74d21384bd57c58724973137c8041ec509651bd79d0ea292688e,"seed-42 source-image split generator; inspected, not executed"
+preprocessing_demo.py,True,1473,3b2f7c8125567ea03bf4f9e853050bb3ff247212250422c90a4b365f296013be,1024x1024 OpenCV INTER_AREA resize demonstration; not adopted
+tsne_analysis.py,True,5154,abc066ca7f32044dd05a811c37184fab66c043a7a1f064ebb494ea8e8150e750,upstream HOG/LBP t-SNE feature visualization; not executed
+train_val_test_split.txt,True,15467,87ab0b1a268b1dd915502db1e2bfc424cde5f9243aa57a3855345123315dd571,official source-image split CSV
+class_definitions.txt,True,66,a5810b1d86da16bd14f1da69e6fc29aac80bd7920bab6ac6f487b1228af6435d,six raw class names
+requirements.txt,True,126,4e1ac3eba87dfa2d13f100588edf61f67d63a800a73c6e492a40b2852662b793,upstream script dependency list; not installed
+Fig6_Feature_Visualization.png,True,1817542,64eba41c0cc8d4f52e82623b22af4e38f1bf6f13364d22beeaeaeaa2ebdceced,upstream supplied feature visualization; preserved

@@ -1,0 +1,30 @@
+{
+  "acquisition_date_utc": "2026-08-27T16:12:59Z",
+  "acquisition_method": "automatic official download",
+  "archive_byte_size": 78958553,
+  "archive_relative_path": "data/raw/wtbd/WT blade defect dataset.zip",
+  "archive_sha256": "466452f2a0cfc9ef6ba63ea2a3bbc7ea4262057dd07e4fc9e00eedf5bba305b4",
+  "article_doi": "10.1038/s41597-026-06762-x",
+  "article_title": "Multiclass Dataset for Intelligent Detection of Wind Turbine Blade Defects Using Drone Imagery",
+  "authors": [
+    "Lipeng Ji",
+    "Junjie Cheng",
+    "Shilong Wu"
+  ],
+  "dataset_doi": "10.6084/m9.figshare.30210175",
+  "dataset_name": "WTBD — Wind Turbine Blade Defect dataset",
+  "dataset_version": 1,
+  "extracted_top_level_entries": [
+    "WT blade defect dataset"
+  ],
+  "extraction_location": "data/raw/wtbd",
+  "license": "CC BY 4.0",
+  "official_api_url": "https://api.figshare.com/v2/articles/30210175",
+  "official_file_id": 61029058,
+  "official_supplied_md5": "14ad7e2cf7161b9100d1d70fb398b0cf",
+  "original_download_filename": "WT blade defect dataset.zip",
+  "repository": "Springer Nature Figshare",
+  "schema_version": "1.0",
+  "source_url": "https://springernature.figshare.com/articles/dataset/Multiclass_Dataset_for_Intelligent_Detection_of_Wind_Turbine_Blade_Defects_Using_Drone_Imagery/30210175",
+  "versioned_dataset_doi": "10.6084/m9.figshare.30210175.v1"
+}

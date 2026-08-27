@@ -1,0 +1,14 @@
+severity,message
+critical_error,262 XML filename fields disagree with XML IDs.
+critical_error,"Primary instance count is 1584, expected 1568."
+critical_error,At least one canonical class count differs from the published expectation.
+critical_error,1 exact file/pixel duplicate pairs cross official splits.
+warning,"Observed resolution distribution differs from 1065×1024x1024: {'1024x1024': 1064, '788x788': 1}"
+warning,Found 2 exact-file and 2 exact-pixel duplicate groups; none were removed.
+warning,Found 491 non-exact dHash candidates at distance <= 4 requiring human review.
+warning,166 non-exact near-duplicate candidates cross official splits.
+warning,220 valid boxes occupy less than 1% of the source image.
+warning,Diagnostic elongation flags: 26 boxes have aspect ratio < 0.1 and 15 exceed 10.0.
+warning,12 boxes exceed the diagnostic area-fraction threshold 0.5.
+warning,38 within-image annotation pairs overlap (IoU > 0).
+warning,84 source images contain multiple canonical defect classes.

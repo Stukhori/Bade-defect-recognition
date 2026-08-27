@@ -1,0 +1,1749 @@
+{
+  "annotations": {
+    "coordinate_convention": "PASCAL VOC inclusive (+1 width/height/area)",
+    "duplicate_annotation_ids": {},
+    "duplicate_image_ids": {},
+    "instance_count": 1584,
+    "invalid_bbox_count": 0,
+    "invalid_bboxes": [],
+    "parse_error_count": 0,
+    "parse_errors": {},
+    "second_annotator_xml_count": 1065,
+    "unmatched_images": [],
+    "unmatched_xml": [],
+    "xml_count": 1065,
+    "xml_filename_mismatches": [
+      {
+        "declared_filename": "10.jpg",
+        "xml": "743.xml"
+      },
+      {
+        "declared_filename": "100.jpg",
+        "xml": "744.xml"
+      },
+      {
+        "declared_filename": "101.jpg",
+        "xml": "745.xml"
+      },
+      {
+        "declared_filename": "105.jpg",
+        "xml": "746.xml"
+      },
+      {
+        "declared_filename": "106.jpg",
+        "xml": "747.xml"
+      },
+      {
+        "declared_filename": "108.jpg",
+        "xml": "748.xml"
+      },
+      {
+        "declared_filename": "11.jpg",
+        "xml": "749.xml"
+      },
+      {
+        "declared_filename": "110.jpg",
+        "xml": "750.xml"
+      },
+      {
+        "declared_filename": "111.jpg",
+        "xml": "751.xml"
+      },
+      {
+        "declared_filename": "115.jpg",
+        "xml": "752.xml"
+      },
+      {
+        "declared_filename": "116.jpg",
+        "xml": "753.xml"
+      },
+      {
+        "declared_filename": "120.jpg",
+        "xml": "755.xml"
+      },
+      {
+        "declared_filename": "123.jpg",
+        "xml": "758.xml"
+      },
+      {
+        "declared_filename": "126.jpg",
+        "xml": "759.xml"
+      },
+      {
+        "declared_filename": "13.jpg",
+        "xml": "761.xml"
+      },
+      {
+        "declared_filename": "130.jpg",
+        "xml": "762.xml"
+      },
+      {
+        "declared_filename": "137.jpg",
+        "xml": "763.xml"
+      },
+      {
+        "declared_filename": "14.jpg",
+        "xml": "764.xml"
+      },
+      {
+        "declared_filename": "144.jpg",
+        "xml": "766.xml"
+      },
+      {
+        "declared_filename": "145.jpg",
+        "xml": "767.xml"
+      },
+      {
+        "declared_filename": "146.jpg",
+        "xml": "768.xml"
+      },
+      {
+        "declared_filename": "147.jpg",
+        "xml": "769.xml"
+      },
+      {
+        "declared_filename": "149.jpg",
+        "xml": "770.xml"
+      },
+      {
+        "declared_filename": "15.jpg",
+        "xml": "771.xml"
+      },
+      {
+        "declared_filename": "150.jpg",
+        "xml": "772.xml"
+      },
+      {
+        "declared_filename": "152.jpg",
+        "xml": "773.xml"
+      },
+      {
+        "declared_filename": "157.jpg",
+        "xml": "774.xml"
+      },
+      {
+        "declared_filename": "158.jpg",
+        "xml": "775.xml"
+      },
+      {
+        "declared_filename": "159.jpg",
+        "xml": "776.xml"
+      },
+      {
+        "declared_filename": "160.jpg",
+        "xml": "777.xml"
+      },
+      {
+        "declared_filename": "161.jpg",
+        "xml": "778.xml"
+      },
+      {
+        "declared_filename": "166.jpg",
+        "xml": "779.xml"
+      },
+      {
+        "declared_filename": "168.jpg",
+        "xml": "780.xml"
+      },
+      {
+        "declared_filename": "17.jpg",
+        "xml": "781.xml"
+      },
+      {
+        "declared_filename": "170.jpg",
+        "xml": "782.xml"
+      },
+      {
+        "declared_filename": "172.jpg",
+        "xml": "783.xml"
+      },
+      {
+        "declared_filename": "173.jpg",
+        "xml": "784.xml"
+      },
+      {
+        "declared_filename": "175.jpg",
+        "xml": "785.xml"
+      },
+      {
+        "declared_filename": "177.jpg",
+        "xml": "786.xml"
+      },
+      {
+        "declared_filename": "180.jpg",
+        "xml": "788.xml"
+      },
+      {
+        "declared_filename": "182.jpg",
+        "xml": "789.xml"
+      },
+      {
+        "declared_filename": "183.jpg",
+        "xml": "790.xml"
+      },
+      {
+        "declared_filename": "186.jpg",
+        "xml": "791.xml"
+      },
+      {
+        "declared_filename": "187.jpg",
+        "xml": "792.xml"
+      },
+      {
+        "declared_filename": "189.jpg",
+        "xml": "793.xml"
+      },
+      {
+        "declared_filename": "191.jpg",
+        "xml": "794.xml"
+      },
+      {
+        "declared_filename": "195.jpg",
+        "xml": "795.xml"
+      },
+      {
+        "declared_filename": "196.jpg",
+        "xml": "796.xml"
+      },
+      {
+        "declared_filename": "199.jpg",
+        "xml": "798.xml"
+      },
+      {
+        "declared_filename": "2.jpg",
+        "xml": "799.xml"
+      },
+      {
+        "declared_filename": "20.jpg",
+        "xml": "800.xml"
+      },
+      {
+        "declared_filename": "205.jpg",
+        "xml": "801.xml"
+      },
+      {
+        "declared_filename": "208.jpg",
+        "xml": "802.xml"
+      },
+      {
+        "declared_filename": "21.jpg",
+        "xml": "803.xml"
+      },
+      {
+        "declared_filename": "210.jpg",
+        "xml": "804.xml"
+      },
+      {
+        "declared_filename": "211.jpg",
+        "xml": "805.xml"
+      },
+      {
+        "declared_filename": "213.jpg",
+        "xml": "806.xml"
+      },
+      {
+        "declared_filename": "215.jpg",
+        "xml": "807.xml"
+      },
+      {
+        "declared_filename": "218.jpg",
+        "xml": "808.xml"
+      },
+      {
+        "declared_filename": "220.jpg",
+        "xml": "810.xml"
+      },
+      {
+        "declared_filename": "221.jpg",
+        "xml": "811.xml"
+      },
+      {
+        "declared_filename": "224.jpg",
+        "xml": "812.xml"
+      },
+      {
+        "declared_filename": "226.jpg",
+        "xml": "813.xml"
+      },
+      {
+        "declared_filename": "227.jpg",
+        "xml": "814.xml"
+      },
+      {
+        "declared_filename": "230.jpg",
+        "xml": "815.xml"
+      },
+      {
+        "declared_filename": "231.jpg",
+        "xml": "816.xml"
+      },
+      {
+        "declared_filename": "232.jpg",
+        "xml": "817.xml"
+      },
+      {
+        "declared_filename": "235.jpg",
+        "xml": "819.xml"
+      },
+      {
+        "declared_filename": "237.jpg",
+        "xml": "820.xml"
+      },
+      {
+        "declared_filename": "238.jpg",
+        "xml": "821.xml"
+      },
+      {
+        "declared_filename": "239.jpg",
+        "xml": "822.xml"
+      },
+      {
+        "declared_filename": "241.jpg",
+        "xml": "823.xml"
+      },
+      {
+        "declared_filename": "244.jpg",
+        "xml": "825.xml"
+      },
+      {
+        "declared_filename": "251.jpg",
+        "xml": "826.xml"
+      },
+      {
+        "declared_filename": "258.jpg",
+        "xml": "828.xml"
+      },
+      {
+        "declared_filename": "259.jpg",
+        "xml": "829.xml"
+      },
+      {
+        "declared_filename": "262.jpg",
+        "xml": "830.xml"
+      },
+      {
+        "declared_filename": "263.jpg",
+        "xml": "831.xml"
+      },
+      {
+        "declared_filename": "264.jpg",
+        "xml": "832.xml"
+      },
+      {
+        "declared_filename": "265.jpg",
+        "xml": "833.xml"
+      },
+      {
+        "declared_filename": "278.jpg",
+        "xml": "836.xml"
+      },
+      {
+        "declared_filename": "28.jpg",
+        "xml": "837.xml"
+      },
+      {
+        "declared_filename": "284.jpg",
+        "xml": "838.xml"
+      },
+      {
+        "declared_filename": "286.jpg",
+        "xml": "840.xml"
+      },
+      {
+        "declared_filename": "287.jpg",
+        "xml": "841.xml"
+      },
+      {
+        "declared_filename": "288.jpg",
+        "xml": "842.xml"
+      },
+      {
+        "declared_filename": "290.jpg",
+        "xml": "843.xml"
+      },
+      {
+        "declared_filename": "297.jpg",
+        "xml": "844.xml"
+      },
+      {
+        "declared_filename": "298.jpg",
+        "xml": "845.xml"
+      },
+      {
+        "declared_filename": "301.jpg",
+        "xml": "846.xml"
+      },
+      {
+        "declared_filename": "303.jpg",
+        "xml": "847.xml"
+      },
+      {
+        "declared_filename": "304.jpg",
+        "xml": "848.xml"
+      },
+      {
+        "declared_filename": "305.jpg",
+        "xml": "849.xml"
+      },
+      {
+        "declared_filename": "307.jpg",
+        "xml": "850.xml"
+      },
+      {
+        "declared_filename": "313.jpg",
+        "xml": "852.xml"
+      },
+      {
+        "declared_filename": "314.jpg",
+        "xml": "853.xml"
+      },
+      {
+        "declared_filename": "316.jpg",
+        "xml": "854.xml"
+      },
+      {
+        "declared_filename": "318.jpg",
+        "xml": "855.xml"
+      },
+      {
+        "declared_filename": "319.jpg",
+        "xml": "856.xml"
+      },
+      {
+        "declared_filename": "32.jpg",
+        "xml": "857.xml"
+      },
+      {
+        "declared_filename": "322.jpg",
+        "xml": "858.xml"
+      },
+      {
+        "declared_filename": "325.jpg",
+        "xml": "859.xml"
+      },
+      {
+        "declared_filename": "330.jpg",
+        "xml": "861.xml"
+      },
+      {
+        "declared_filename": "332.jpg",
+        "xml": "862.xml"
+      },
+      {
+        "declared_filename": "339.jpg",
+        "xml": "865.xml"
+      },
+      {
+        "declared_filename": "340.jpg",
+        "xml": "866.xml"
+      },
+      {
+        "declared_filename": "342.jpg",
+        "xml": "867.xml"
+      },
+      {
+        "declared_filename": "343.jpg",
+        "xml": "868.xml"
+      },
+      {
+        "declared_filename": "348.jpg",
+        "xml": "869.xml"
+      },
+      {
+        "declared_filename": "35.jpg",
+        "xml": "870.xml"
+      },
+      {
+        "declared_filename": "352.jpg",
+        "xml": "872.xml"
+      },
+      {
+        "declared_filename": "353.jpg",
+        "xml": "873.xml"
+      },
+      {
+        "declared_filename": "360.jpg",
+        "xml": "876.xml"
+      },
+      {
+        "declared_filename": "363.jpg",
+        "xml": "877.xml"
+      },
+      {
+        "declared_filename": "369.jpg",
+        "xml": "879.xml"
+      },
+      {
+        "declared_filename": "370.jpg",
+        "xml": "881.xml"
+      },
+      {
+        "declared_filename": "373.jpg",
+        "xml": "882.xml"
+      },
+      {
+        "declared_filename": "379.jpg",
+        "xml": "884.xml"
+      },
+      {
+        "declared_filename": "384.jpg",
+        "xml": "887.xml"
+      },
+      {
+        "declared_filename": "387.jpg",
+        "xml": "888.xml"
+      },
+      {
+        "declared_filename": "388.jpg",
+        "xml": "889.xml"
+      },
+      {
+        "declared_filename": "389.jpg",
+        "xml": "890.xml"
+      },
+      {
+        "declared_filename": "39.jpg",
+        "xml": "891.xml"
+      },
+      {
+        "declared_filename": "391.jpg",
+        "xml": "892.xml"
+      },
+      {
+        "declared_filename": "40.jpg",
+        "xml": "896.xml"
+      },
+      {
+        "declared_filename": "400.jpg",
+        "xml": "897.xml"
+      },
+      {
+        "declared_filename": "405.jpg",
+        "xml": "899.xml"
+      },
+      {
+        "declared_filename": "406.jpg",
+        "xml": "900.xml"
+      },
+      {
+        "declared_filename": "407.jpg",
+        "xml": "901.xml"
+      },
+      {
+        "declared_filename": "411.jpg",
+        "xml": "902.xml"
+      },
+      {
+        "declared_filename": "418.jpg",
+        "xml": "903.xml"
+      },
+      {
+        "declared_filename": "426.jpg",
+        "xml": "904.xml"
+      },
+      {
+        "declared_filename": "427.jpg",
+        "xml": "905.xml"
+      },
+      {
+        "declared_filename": "431.jpg",
+        "xml": "906.xml"
+      },
+      {
+        "declared_filename": "432.jpg",
+        "xml": "907.xml"
+      },
+      {
+        "declared_filename": "435.jpg",
+        "xml": "908.xml"
+      },
+      {
+        "declared_filename": "436.jpg",
+        "xml": "909.xml"
+      },
+      {
+        "declared_filename": "439.jpg",
+        "xml": "910.xml"
+      },
+      {
+        "declared_filename": "440.jpg",
+        "xml": "911.xml"
+      },
+      {
+        "declared_filename": "444.jpg",
+        "xml": "912.xml"
+      },
+      {
+        "declared_filename": "447.jpg",
+        "xml": "913.xml"
+      },
+      {
+        "declared_filename": "45.jpg",
+        "xml": "914.xml"
+      },
+      {
+        "declared_filename": "451.jpg",
+        "xml": "915.xml"
+      },
+      {
+        "declared_filename": "452.jpg",
+        "xml": "916.xml"
+      },
+      {
+        "declared_filename": "456.jpg",
+        "xml": "917.xml"
+      },
+      {
+        "declared_filename": "457.jpg",
+        "xml": "918.xml"
+      },
+      {
+        "declared_filename": "459.jpg",
+        "xml": "919.xml"
+      },
+      {
+        "declared_filename": "460.jpg",
+        "xml": "921.xml"
+      },
+      {
+        "declared_filename": "461.jpg",
+        "xml": "922.xml"
+      },
+      {
+        "declared_filename": "466.jpg",
+        "xml": "924.xml"
+      },
+      {
+        "declared_filename": "476.jpg",
+        "xml": "925.xml"
+      },
+      {
+        "declared_filename": "477.jpg",
+        "xml": "926.xml"
+      },
+      {
+        "declared_filename": "479.jpg",
+        "xml": "927.xml"
+      },
+      {
+        "declared_filename": "482.jpg",
+        "xml": "928.xml"
+      },
+      {
+        "declared_filename": "485.jpg",
+        "xml": "929.xml"
+      },
+      {
+        "declared_filename": "49.jpg",
+        "xml": "930.xml"
+      },
+      {
+        "declared_filename": "490.jpg",
+        "xml": "931.xml"
+      },
+      {
+        "declared_filename": "492.jpg",
+        "xml": "933.xml"
+      },
+      {
+        "declared_filename": "499.jpg",
+        "xml": "934.xml"
+      },
+      {
+        "declared_filename": "5.jpg",
+        "xml": "935.xml"
+      },
+      {
+        "declared_filename": "504.jpg",
+        "xml": "936.xml"
+      },
+      {
+        "declared_filename": "505.jpg",
+        "xml": "937.xml"
+      },
+      {
+        "declared_filename": "509.jpg",
+        "xml": "938.xml"
+      },
+      {
+        "declared_filename": "513.jpg",
+        "xml": "939.xml"
+      },
+      {
+        "declared_filename": "514.jpg",
+        "xml": "940.xml"
+      },
+      {
+        "declared_filename": "515.jpg",
+        "xml": "941.xml"
+      },
+      {
+        "declared_filename": "516.jpg",
+        "xml": "942.xml"
+      },
+      {
+        "declared_filename": "52.jpg",
+        "xml": "943.xml"
+      },
+      {
+        "declared_filename": "522.jpg",
+        "xml": "944.xml"
+      },
+      {
+        "declared_filename": "528.jpg",
+        "xml": "946.xml"
+      },
+      {
+        "declared_filename": "529.jpg",
+        "xml": "947.xml"
+      },
+      {
+        "declared_filename": "531.jpg",
+        "xml": "948.xml"
+      },
+      {
+        "declared_filename": "532.jpg",
+        "xml": "949.xml"
+      },
+      {
+        "declared_filename": "535.jpg",
+        "xml": "950.xml"
+      },
+      {
+        "declared_filename": "540.jpg",
+        "xml": "951.xml"
+      },
+      {
+        "declared_filename": "543.jpg",
+        "xml": "952.xml"
+      },
+      {
+        "declared_filename": "544.jpg",
+        "xml": "953.xml"
+      },
+      {
+        "declared_filename": "547.jpg",
+        "xml": "954.xml"
+      },
+      {
+        "declared_filename": "554.jpg",
+        "xml": "957.xml"
+      },
+      {
+        "declared_filename": "557.jpg",
+        "xml": "958.xml"
+      },
+      {
+        "declared_filename": "561.jpg",
+        "xml": "959.xml"
+      },
+      {
+        "declared_filename": "562.jpg",
+        "xml": "960.xml"
+      },
+      {
+        "declared_filename": "565.jpg",
+        "xml": "961.xml"
+      },
+      {
+        "declared_filename": "566.jpg",
+        "xml": "962.xml"
+      },
+      {
+        "declared_filename": "570.jpg",
+        "xml": "964.xml"
+      },
+      {
+        "declared_filename": "576.jpg",
+        "xml": "966.xml"
+      },
+      {
+        "declared_filename": "577.jpg",
+        "xml": "967.xml"
+      },
+      {
+        "declared_filename": "580.jpg",
+        "xml": "970.xml"
+      },
+      {
+        "declared_filename": "581.jpg",
+        "xml": "971.xml"
+      },
+      {
+        "declared_filename": "588.jpg",
+        "xml": "972.xml"
+      },
+      {
+        "declared_filename": "589.jpg",
+        "xml": "973.xml"
+      },
+      {
+        "declared_filename": "595.jpg",
+        "xml": "975.xml"
+      },
+      {
+        "declared_filename": "596.jpg",
+        "xml": "976.xml"
+      },
+      {
+        "declared_filename": "598.jpg",
+        "xml": "977.xml"
+      },
+      {
+        "declared_filename": "599.jpg",
+        "xml": "978.xml"
+      },
+      {
+        "declared_filename": "6.jpg",
+        "xml": "979.xml"
+      },
+      {
+        "declared_filename": "609.jpg",
+        "xml": "981.xml"
+      },
+      {
+        "declared_filename": "612.jpg",
+        "xml": "982.xml"
+      },
+      {
+        "declared_filename": "613.jpg",
+        "xml": "983.xml"
+      },
+      {
+        "declared_filename": "618.jpg",
+        "xml": "985.xml"
+      },
+      {
+        "declared_filename": "62.jpg",
+        "xml": "987.xml"
+      },
+      {
+        "declared_filename": "620.jpg",
+        "xml": "988.xml"
+      },
+      {
+        "declared_filename": "621.jpg",
+        "xml": "989.xml"
+      },
+      {
+        "declared_filename": "624.jpg",
+        "xml": "990.xml"
+      },
+      {
+        "declared_filename": "628.jpg",
+        "xml": "991.xml"
+      },
+      {
+        "declared_filename": "630.jpg",
+        "xml": "993.xml"
+      },
+      {
+        "declared_filename": "632.jpg",
+        "xml": "994.xml"
+      },
+      {
+        "declared_filename": "636.jpg",
+        "xml": "995.xml"
+      },
+      {
+        "declared_filename": "637.jpg",
+        "xml": "996.xml"
+      },
+      {
+        "declared_filename": "640.jpg",
+        "xml": "999.xml"
+      },
+      {
+        "declared_filename": "642.jpg",
+        "xml": "1000.xml"
+      },
+      {
+        "declared_filename": "645.jpg",
+        "xml": "1001.xml"
+      },
+      {
+        "declared_filename": "651.jpg",
+        "xml": "1003.xml"
+      },
+      {
+        "declared_filename": "656.jpg",
+        "xml": "1005.xml"
+      },
+      {
+        "declared_filename": "659.jpg",
+        "xml": "1006.xml"
+      },
+      {
+        "declared_filename": "664.jpg",
+        "xml": "1009.xml"
+      },
+      {
+        "declared_filename": "668.jpg",
+        "xml": "1011.xml"
+      },
+      {
+        "declared_filename": "67.jpg",
+        "xml": "1012.xml"
+      },
+      {
+        "declared_filename": "674.jpg",
+        "xml": "1013.xml"
+      },
+      {
+        "declared_filename": "676.jpg",
+        "xml": "1014.xml"
+      },
+      {
+        "declared_filename": "679.jpg",
+        "xml": "1015.xml"
+      },
+      {
+        "declared_filename": "680.jpg",
+        "xml": "1016.xml"
+      },
+      {
+        "declared_filename": "683.jpg",
+        "xml": "1018.xml"
+      },
+      {
+        "declared_filename": "687.jpg",
+        "xml": "1020.xml"
+      },
+      {
+        "declared_filename": "688.jpg",
+        "xml": "1021.xml"
+      },
+      {
+        "declared_filename": "689.jpg",
+        "xml": "1022.xml"
+      },
+      {
+        "declared_filename": "690.jpg",
+        "xml": "1023.xml"
+      },
+      {
+        "declared_filename": "691.jpg",
+        "xml": "1024.xml"
+      },
+      {
+        "declared_filename": "693.jpg",
+        "xml": "1025.xml"
+      },
+      {
+        "declared_filename": "696.jpg",
+        "xml": "1026.xml"
+      },
+      {
+        "declared_filename": "698.jpg",
+        "xml": "1027.xml"
+      },
+      {
+        "declared_filename": "699.jpg",
+        "xml": "1028.xml"
+      },
+      {
+        "declared_filename": "700.jpg",
+        "xml": "1029.xml"
+      },
+      {
+        "declared_filename": "701.jpg",
+        "xml": "1030.xml"
+      },
+      {
+        "declared_filename": "704.jpg",
+        "xml": "1031.xml"
+      },
+      {
+        "declared_filename": "706.jpg",
+        "xml": "1032.xml"
+      },
+      {
+        "declared_filename": "708.jpg",
+        "xml": "1033.xml"
+      },
+      {
+        "declared_filename": "709.jpg",
+        "xml": "1034.xml"
+      },
+      {
+        "declared_filename": "71.jpg",
+        "xml": "1035.xml"
+      },
+      {
+        "declared_filename": "710.jpg",
+        "xml": "1036.xml"
+      },
+      {
+        "declared_filename": "712.jpg",
+        "xml": "1037.xml"
+      },
+      {
+        "declared_filename": "713.jpg",
+        "xml": "1038.xml"
+      },
+      {
+        "declared_filename": "715.jpg",
+        "xml": "1039.xml"
+      },
+      {
+        "declared_filename": "716.jpg",
+        "xml": "1040.xml"
+      },
+      {
+        "declared_filename": "717.jpg",
+        "xml": "1041.xml"
+      },
+      {
+        "declared_filename": "72.jpg",
+        "xml": "1042.xml"
+      },
+      {
+        "declared_filename": "722.jpg",
+        "xml": "1043.xml"
+      },
+      {
+        "declared_filename": "723.jpg",
+        "xml": "1044.xml"
+      },
+      {
+        "declared_filename": "727.jpg",
+        "xml": "1045.xml"
+      },
+      {
+        "declared_filename": "731.jpg",
+        "xml": "1047.xml"
+      },
+      {
+        "declared_filename": "733.jpg",
+        "xml": "1049.xml"
+      },
+      {
+        "declared_filename": "735.jpg",
+        "xml": "1050.xml"
+      },
+      {
+        "declared_filename": "74.jpg",
+        "xml": "1051.xml"
+      },
+      {
+        "declared_filename": "75.jpg",
+        "xml": "1052.xml"
+      },
+      {
+        "declared_filename": "76.jpg",
+        "xml": "1053.xml"
+      },
+      {
+        "declared_filename": "78.jpg",
+        "xml": "1054.xml"
+      },
+      {
+        "declared_filename": "8.jpg",
+        "xml": "1055.xml"
+      },
+      {
+        "declared_filename": "84.jpg",
+        "xml": "1056.xml"
+      },
+      {
+        "declared_filename": "85.jpg",
+        "xml": "1057.xml"
+      },
+      {
+        "declared_filename": "89.jpg",
+        "xml": "1058.xml"
+      },
+      {
+        "declared_filename": "9.jpg",
+        "xml": "1059.xml"
+      },
+      {
+        "declared_filename": "94.jpg",
+        "xml": "1062.xml"
+      }
+    ]
+  },
+  "audit": {
+    "critical_errors": [
+      "262 XML filename fields disagree with XML IDs.",
+      "Primary instance count is 1584, expected 1568.",
+      "At least one canonical class count differs from the published expectation.",
+      "1 exact file/pixel duplicate pairs cross official splits."
+    ],
+    "status": "incomplete",
+    "warnings": [
+      "Observed resolution distribution differs from 1065×1024x1024: {'1024x1024': 1064, '788x788': 1}",
+      "Found 2 exact-file and 2 exact-pixel duplicate groups; none were removed.",
+      "Found 491 non-exact dHash candidates at distance <= 4 requiring human review.",
+      "166 non-exact near-duplicate candidates cross official splits.",
+      "220 valid boxes occupy less than 1% of the source image.",
+      "Diagnostic elongation flags: 26 boxes have aspect ratio < 0.1 and 15 exceed 10.0.",
+      "12 boxes exceed the diagnostic area-fraction threshold 0.5.",
+      "38 within-image annotation pairs overlap (IoU > 0).",
+      "84 source images contain multiple canonical defect classes."
+    ]
+  },
+  "bbox": {
+    "diagnostic_thresholds": {
+      "almost_full_area_fraction": 0.5,
+      "elongated_aspect_ratio_high": 10.0,
+      "elongated_aspect_ratio_low": 0.1
+    },
+    "overlap": {
+      "iou_ge_0_25": 0,
+      "iou_ge_0_50": 0,
+      "iou_ge_0_75": 0,
+      "iou_gt_0": 38,
+      "total_pairs": 751
+    },
+    "statistics": {
+      "all": {
+        "bbox_area_fraction": {
+          "count": 1584,
+          "max": 0.6468000411987305,
+          "median": 0.0541534423828125,
+          "min": 0.0006084442138671875,
+          "p05": 0.004823064804077149,
+          "p25": 0.01998138427734375,
+          "p75": 0.11325764656066895,
+          "p95": 0.285675048828125
+        },
+        "bbox_area_pixels": {
+          "count": 1584,
+          "max": 678219.0,
+          "median": 56784.0,
+          "min": 638.0,
+          "p05": 5057.35,
+          "p25": 20952.0,
+          "p75": 118759.25,
+          "p95": 299552.0
+        },
+        "bbox_aspect_ratio": {
+          "count": 1584,
+          "max": 22.85,
+          "median": 0.9417005518443218,
+          "min": 0.04282868525896414,
+          "p05": 0.1463478868058988,
+          "p25": 0.4333053325187642,
+          "p75": 1.7456043956043956,
+          "p95": 5.228762541806019
+        },
+        "bbox_height": {
+          "count": 1584,
+          "max": 1023.0,
+          "median": 254.0,
+          "min": 23.0,
+          "p05": 51.0,
+          "p25": 126.0,
+          "p75": 429.0,
+          "p95": 858.8499999999999
+        },
+        "bbox_width": {
+          "count": 1584,
+          "max": 1013.0,
+          "median": 220.5,
+          "min": 20.0,
+          "p05": 45.0,
+          "p25": 120.0,
+          "p75": 373.25,
+          "p95": 751.0
+        }
+      },
+      "corrosion": {
+        "bbox_area_fraction": {
+          "count": 257,
+          "max": 0.6468000411987305,
+          "median": 0.0799112319946289,
+          "min": 0.004650115966796875,
+          "p05": 0.016061973571777344,
+          "p25": 0.04009437561035156,
+          "p75": 0.1728343963623047,
+          "p95": 0.4032617568969725
+        },
+        "bbox_area_pixels": {
+          "count": 257,
+          "max": 678219.0,
+          "median": 83793.0,
+          "min": 4876.0,
+          "p05": 16842.2,
+          "p25": 42042.0,
+          "p75": 181230.0,
+          "p95": 422850.59999999986
+        },
+        "bbox_aspect_ratio": {
+          "count": 257,
+          "max": 10.866666666666667,
+          "median": 0.6788008565310493,
+          "min": 0.07407407407407407,
+          "p05": 0.1383719615602035,
+          "p25": 0.265625,
+          "p75": 2.525,
+          "p95": 7.042857142857143
+        },
+        "bbox_height": {
+          "count": 257,
+          "max": 1023.0,
+          "median": 422.0,
+          "min": 44.0,
+          "p05": 80.8,
+          "p25": 153.0,
+          "p75": 567.0,
+          "p95": 1006.0
+        },
+        "bbox_width": {
+          "count": 257,
+          "max": 1013.0,
+          "median": 271.0,
+          "min": 37.0,
+          "p05": 66.8,
+          "p25": 150.0,
+          "p75": 429.0,
+          "p95": 1001.0
+        }
+      },
+      "crack": {
+        "bbox_area_fraction": {
+          "count": 224,
+          "max": 0.3990745544433594,
+          "median": 0.04732704162597656,
+          "min": 0.0030946731567382812,
+          "p05": 0.007912731170654297,
+          "p25": 0.023217201232910156,
+          "p75": 0.09746551513671875,
+          "p95": 0.18361186981201164
+        },
+        "bbox_area_pixels": {
+          "count": 224,
+          "max": 418460.0,
+          "median": 49626.0,
+          "min": 3245.0,
+          "p05": 8297.1,
+          "p25": 24345.0,
+          "p75": 102200.0,
+          "p95": 192530.9999999999
+        },
+        "bbox_aspect_ratio": {
+          "count": 224,
+          "max": 5.793103448275862,
+          "median": 0.521870286576169,
+          "min": 0.12658227848101267,
+          "p05": 0.17165834165834168,
+          "p25": 0.27564102564102566,
+          "p75": 0.9788347675061182,
+          "p95": 1.8160416666666666
+        },
+        "bbox_height": {
+          "count": 224,
+          "max": 980.0,
+          "median": 298.0,
+          "min": 55.0,
+          "p05": 88.80000000000001,
+          "p25": 209.5,
+          "p75": 504.0,
+          "p95": 775.25
+        },
+        "bbox_width": {
+          "count": 224,
+          "max": 672.0,
+          "median": 167.0,
+          "min": 39.0,
+          "p05": 49.0,
+          "p25": 107.75,
+          "p75": 241.25,
+          "p95": 374.8999999999999
+        }
+      },
+      "craze": {
+        "bbox_area_fraction": {
+          "count": 257,
+          "max": 0.5090570449829102,
+          "median": 0.1047821044921875,
+          "min": 0.00913238525390625,
+          "p05": 0.021350288391113283,
+          "p25": 0.04650115966796875,
+          "p75": 0.17749404907226562,
+          "p95": 0.37191085815429675
+        },
+        "bbox_area_pixels": {
+          "count": 257,
+          "max": 533785.0,
+          "median": 109872.0,
+          "min": 9576.0,
+          "p05": 22387.4,
+          "p25": 48760.0,
+          "p75": 186116.0,
+          "p95": 389976.7999999999
+        },
+        "bbox_aspect_ratio": {
+          "count": 257,
+          "max": 6.542857142857143,
+          "median": 1.0444444444444445,
+          "min": 0.08472906403940887,
+          "p05": 0.2531852205765249,
+          "p25": 0.709154113557358,
+          "p75": 1.788501026694045,
+          "p95": 3.733632770391661
+        },
+        "bbox_height": {
+          "count": 257,
+          "max": 1015.0,
+          "median": 323.0,
+          "min": 82.0,
+          "p05": 101.8,
+          "p25": 200.0,
+          "p75": 432.0,
+          "p95": 831.0
+        },
+        "bbox_width": {
+          "count": 257,
+          "max": 1013.0,
+          "median": 335.0,
+          "min": 65.0,
+          "p05": 109.0,
+          "p25": 212.0,
+          "p75": 462.0,
+          "p95": 804.9999999999997
+        }
+      },
+      "hide_craze": {
+        "bbox_area_fraction": {
+          "count": 342,
+          "max": 0.6176815032958984,
+          "median": 0.02960681915283203,
+          "min": 0.0013599395751953125,
+          "p05": 0.005116415023803711,
+          "p25": 0.012029170989990234,
+          "p75": 0.08782744407653809,
+          "p95": 0.24921798706054688
+        },
+        "bbox_area_pixels": {
+          "count": 342,
+          "max": 647686.0,
+          "median": 31045.0,
+          "min": 1426.0,
+          "p05": 5364.95,
+          "p25": 12613.5,
+          "p75": 92093.75,
+          "p95": 261324.0
+        },
+        "bbox_aspect_ratio": {
+          "count": 342,
+          "max": 22.85,
+          "median": 1.1415102211097206,
+          "min": 0.04282868525896414,
+          "p05": 0.09910377358490567,
+          "p25": 0.3930885529157667,
+          "p75": 3.1984160358844966,
+          "p95": 8.066128277153558
+        },
+        "bbox_height": {
+          "count": 342,
+          "max": 1012.0,
+          "median": 197.0,
+          "min": 23.0,
+          "p05": 40.0,
+          "p25": 96.0,
+          "p75": 343.0,
+          "p95": 649.0
+        },
+        "bbox_width": {
+          "count": 342,
+          "max": 968.0,
+          "median": 230.0,
+          "min": 21.0,
+          "p05": 32.0,
+          "p25": 93.0,
+          "p75": 416.0,
+          "p95": 778.6999999999997
+        }
+      },
+      "surface_injure": {
+        "bbox_area_fraction": {
+          "count": 412,
+          "max": 0.4299345016479492,
+          "median": 0.033219337463378906,
+          "min": 0.0006084442138671875,
+          "p05": 0.0019509315490722657,
+          "p25": 0.010183095932006836,
+          "p75": 0.07763886451721191,
+          "p95": 0.1713966369628906
+        },
+        "bbox_area_pixels": {
+          "count": 412,
+          "max": 450819.0,
+          "median": 34833.0,
+          "min": 638.0,
+          "p05": 2045.7,
+          "p25": 10677.75,
+          "p75": 81410.25,
+          "p95": 179722.39999999997
+        },
+        "bbox_aspect_ratio": {
+          "count": 412,
+          "max": 9.04040404040404,
+          "median": 1.0042372881355932,
+          "min": 0.08307692307692308,
+          "p05": 0.2084233261339093,
+          "p25": 0.6565373134328358,
+          "p75": 1.5073636441476155,
+          "p95": 3.8173624288425034
+        },
+        "bbox_height": {
+          "count": 412,
+          "max": 979.0,
+          "median": 177.0,
+          "min": 29.0,
+          "p05": 45.0,
+          "p25": 96.0,
+          "p75": 325.0,
+          "p95": 532.9
+        },
+        "bbox_width": {
+          "count": 412,
+          "max": 895.0,
+          "median": 170.0,
+          "min": 20.0,
+          "p05": 41.2,
+          "p25": 95.0,
+          "p75": 327.0,
+          "p95": 633.3499999999999
+        }
+      },
+      "thunderstrike": {
+        "bbox_area_fraction": {
+          "count": 92,
+          "max": 0.540736198425293,
+          "median": 0.059235572814941406,
+          "min": 0.003398895263671875,
+          "p05": 0.0052359580993652345,
+          "p25": 0.017263412475585938,
+          "p75": 0.126509428024292,
+          "p95": 0.34579071998596206
+        },
+        "bbox_area_pixels": {
+          "count": 92,
+          "max": 567003.0,
+          "median": 62113.0,
+          "min": 3564.0,
+          "p05": 5490.3,
+          "p25": 18102.0,
+          "p75": 132654.75,
+          "p95": 362587.85000000015
+        },
+        "bbox_aspect_ratio": {
+          "count": 92,
+          "max": 4.660377358490566,
+          "median": 1.1443406022845275,
+          "min": 0.3888888888888889,
+          "p05": 0.4364519264757865,
+          "p25": 0.5856164383561644,
+          "p75": 1.8878626779599927,
+          "p95": 3.1635101010101017
+        },
+        "bbox_height": {
+          "count": 92,
+          "max": 993.0,
+          "median": 254.0,
+          "min": 43.0,
+          "p05": 49.5,
+          "p25": 108.5,
+          "p75": 379.75,
+          "p95": 779.4000000000001
+        },
+        "bbox_width": {
+          "count": 92,
+          "max": 777.0,
+          "median": 291.5,
+          "min": 54.0,
+          "p05": 86.6,
+          "p25": 147.0,
+          "p75": 374.75,
+          "p95": 563.3000000000001
+        }
+      }
+    },
+    "very_small_counts": {
+      "all": {
+        "area_fraction_gt_almost_full": 12,
+        "area_fraction_lt_0_001": 5,
+        "area_fraction_lt_0_005": 82,
+        "area_fraction_lt_0_01": 220,
+        "aspect_ratio_gt_diagnostic_high": 15,
+        "aspect_ratio_lt_diagnostic_low": 26,
+        "class": "all",
+        "height_lt_16": 0,
+        "height_lt_32": 10,
+        "valid_instance_count": 1584,
+        "width_lt_16": 0,
+        "width_lt_32": 24
+      },
+      "corrosion": {
+        "area_fraction_gt_almost_full": 4,
+        "area_fraction_lt_0_001": 0,
+        "area_fraction_lt_0_005": 2,
+        "area_fraction_lt_0_01": 6,
+        "aspect_ratio_gt_diagnostic_high": 4,
+        "aspect_ratio_lt_diagnostic_low": 4,
+        "class": "corrosion",
+        "height_lt_16": 0,
+        "height_lt_32": 0,
+        "valid_instance_count": 257,
+        "width_lt_16": 0,
+        "width_lt_32": 0
+      },
+      "crack": {
+        "area_fraction_gt_almost_full": 0,
+        "area_fraction_lt_0_001": 0,
+        "area_fraction_lt_0_005": 3,
+        "area_fraction_lt_0_01": 23,
+        "aspect_ratio_gt_diagnostic_high": 0,
+        "aspect_ratio_lt_diagnostic_low": 0,
+        "class": "crack",
+        "height_lt_16": 0,
+        "height_lt_32": 0,
+        "valid_instance_count": 224,
+        "width_lt_16": 0,
+        "width_lt_32": 0
+      },
+      "craze": {
+        "area_fraction_gt_almost_full": 3,
+        "area_fraction_lt_0_001": 0,
+        "area_fraction_lt_0_005": 0,
+        "area_fraction_lt_0_01": 1,
+        "aspect_ratio_gt_diagnostic_high": 0,
+        "aspect_ratio_lt_diagnostic_low": 2,
+        "class": "craze",
+        "height_lt_16": 0,
+        "height_lt_32": 0,
+        "valid_instance_count": 257,
+        "width_lt_16": 0,
+        "width_lt_32": 0
+      },
+      "hide_craze": {
+        "area_fraction_gt_almost_full": 4,
+        "area_fraction_lt_0_001": 0,
+        "area_fraction_lt_0_005": 14,
+        "area_fraction_lt_0_01": 74,
+        "aspect_ratio_gt_diagnostic_high": 11,
+        "aspect_ratio_lt_diagnostic_low": 18,
+        "class": "hide_craze",
+        "height_lt_16": 0,
+        "height_lt_32": 9,
+        "valid_instance_count": 342,
+        "width_lt_16": 0,
+        "width_lt_32": 17
+      },
+      "surface_injure": {
+        "area_fraction_gt_almost_full": 0,
+        "area_fraction_lt_0_001": 5,
+        "area_fraction_lt_0_005": 59,
+        "area_fraction_lt_0_01": 101,
+        "aspect_ratio_gt_diagnostic_high": 0,
+        "aspect_ratio_lt_diagnostic_low": 2,
+        "class": "surface_injure",
+        "height_lt_16": 0,
+        "height_lt_32": 1,
+        "valid_instance_count": 412,
+        "width_lt_16": 0,
+        "width_lt_32": 7
+      },
+      "thunderstrike": {
+        "area_fraction_gt_almost_full": 1,
+        "area_fraction_lt_0_001": 0,
+        "area_fraction_lt_0_005": 4,
+        "area_fraction_lt_0_01": 15,
+        "aspect_ratio_gt_diagnostic_high": 0,
+        "aspect_ratio_lt_diagnostic_low": 0,
+        "class": "thunderstrike",
+        "height_lt_16": 0,
+        "height_lt_32": 0,
+        "valid_instance_count": 92,
+        "width_lt_16": 0,
+        "width_lt_32": 0
+      }
+    }
+  },
+  "classes": {
+    "canonical_counts": {
+      "corrosion": 257,
+      "crack": 224,
+      "craze": 257,
+      "hide_craze": 342,
+      "surface_injure": 412,
+      "thunderstrike": 92
+    },
+    "expected_counts_match": false,
+    "published_counts": {
+      "corrosion": 254,
+      "crack": 224,
+      "craze": 259,
+      "hide_craze": 345,
+      "surface_injure": 394,
+      "thunderstrike": 92
+    },
+    "raw_labels": {
+      "corrosion": 257,
+      "crack": 224,
+      "craze": 257,
+      "hide_craze": 342,
+      "surface_injure": 412,
+      "thunderstrike": 92
+    }
+  },
+  "config_hash": "0af136a84255",
+  "dataset": "WTBD",
+  "dataset_doi": "10.6084/m9.figshare.30210175",
+  "dataset_fingerprint": "568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb",
+  "duplicates": {
+    "cross_split_exact_duplicates": 1,
+    "cross_split_near_duplicate_candidates": 166,
+    "exact_file_group_details": [
+      {
+        "image_ids": [
+          "547",
+          "640"
+        ],
+        "labels": {
+          "547": [
+            "surface_injure"
+          ],
+          "640": [
+            "surface_injure"
+          ]
+        },
+        "splits": {
+          "547": "train",
+          "640": "validation"
+        }
+      },
+      {
+        "image_ids": [
+          "565",
+          "668"
+        ],
+        "labels": {
+          "565": [
+            "craze"
+          ],
+          "668": [
+            "craze"
+          ]
+        },
+        "splits": {
+          "565": "train",
+          "668": "train"
+        }
+      }
+    ],
+    "exact_file_groups": 2,
+    "exact_pixel_group_details": [
+      {
+        "image_ids": [
+          "547",
+          "640"
+        ],
+        "labels": {
+          "547": [
+            "surface_injure"
+          ],
+          "640": [
+            "surface_injure"
+          ]
+        },
+        "splits": {
+          "547": "train",
+          "640": "validation"
+        }
+      },
+      {
+        "image_ids": [
+          "565",
+          "668"
+        ],
+        "labels": {
+          "565": [
+            "craze"
+          ],
+          "668": [
+            "craze"
+          ]
+        },
+        "splits": {
+          "565": "train",
+          "668": "train"
+        }
+      }
+    ],
+    "exact_pixel_groups": 2,
+    "near_duplicate_candidates": 491,
+    "near_duplicate_distance_threshold": 4
+  },
+  "images": {
+    "count": 1065,
+    "readable": 1065,
+    "resolution_counts": {
+      "1024x1024": 1064,
+      "788x788": 1
+    },
+    "unreadable": 0,
+    "xml_dimension_mismatch_count": 0,
+    "zero_byte": 0
+  },
+  "objects_per_image": {
+    "exactly_1": 696,
+    "exactly_2": 268,
+    "exactly_3": 75,
+    "four_or_more": 26,
+    "maximum": 7,
+    "mean": 1.4873239436619718,
+    "median": 1,
+    "minimum": 1,
+    "multiple_class_images": 84,
+    "multiple_same_class_images": 319
+  },
+  "schema_version": "1.0",
+  "split": {
+    "details": {
+      "counts": {
+        "test": 161,
+        "train": 745,
+        "validation": 159
+      },
+      "duplicate_ids": [],
+      "omitted_ids": [],
+      "overlap_ids": [],
+      "unknown_ids": []
+    },
+    "duplicate_id_count": 0,
+    "format": "CSV with header ImageID,Subset; raw subsets train,val,test",
+    "omitted_count": 0,
+    "overlap_count": 0,
+    "sha256": "87ab0b1a268b1dd915502db1e2bfc424cde5f9243aa57a3855345123315dd571",
+    "source": "WT blade defect dataset/train_val_test_split.txt",
+    "test_images": 161,
+    "train_images": 745,
+    "unknown_count": 0,
+    "validation_images": 159
+  },
+  "upstream": {
+    "preprocessing_reference": {
+      "adopted_by_project": false,
+      "interpolation": "cv2.INTER_AREA",
+      "normalization": null,
+      "target_size": [
+        1024,
+        1024
+      ]
+    },
+    "second_annotation_directory": "annotation_second_person",
+    "split_generator": {
+      "executed_by_project": false,
+      "nominal_proportions": [
+        0.7,
+        0.15,
+        0.15
+      ],
+      "seed": 42
+    }
+  }
+}

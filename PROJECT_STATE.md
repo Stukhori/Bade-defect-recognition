@@ -2,13 +2,84 @@
 
 ## Current phase
 
-- **Phase:** Phase 1 — Repository and Reproducibility Infrastructure
-- **Status:** COMPLETE and frozen
-- **Completion date:** 2026-08-27
-- **Previous phase:** Phase 0 — complete and frozen on 2026-08-27
-- **Next phase:** Phase 2 — WTBD Dataset Acquisition and Audit
+- **Phase:** Phase 2 — WTBD Dataset Acquisition and Forensic Audit
+- **Status:** BLOCKED — official-release discrepancies require human review
+- **Start date:** 2026-08-28
+- **Previous phases:** Phase 0 and Phase 1 — complete and frozen
+- **Next phase:** Phase 3 — Frozen Split Representation and Crop/Preprocessing Design
 
-Phase 1 passed its exit gate. Phase 0 research decisions remain frozen, and Phase 2 has not started.
+Phase 2 is incomplete and stopped at its forensic-review gate. Phase 0 research decisions and Phase 1 infrastructure remain frozen. Phase 3 has not started and is not authorized while these blockers remain unresolved.
+
+## Phase 2 — WTBD Dataset Acquisition and Forensic Audit
+
+Phase 2 treats the official WTBD release as immutable source evidence. It may acquire and audit the dataset, but it does not create final classification crops, choose preprocessing or scientific hyperparameters, download model weights, or train models.
+
+### Phase 2 status
+
+**BLOCKED pending human review of the official release.** The pre-acquisition gate passed under Python 3.11.15: all required Phase 0/1 artifacts were present, Phase 0 documents were unchanged, and the Phase 1 suite reported 21 passed and 0 failed. The final expanded suite reports **42 passed and 0 failed**.
+
+### Acquisition and immutable provenance
+
+- Official source: Springer Nature Figshare, dataset DOI `10.6084/m9.figshare.30210175`, version 1, CC BY 4.0.
+- Method: automatic official download.
+- Archive: `WT blade defect dataset.zip`, 78,958,553 bytes.
+- Official MD5: `14ad7e2cf7161b9100d1d70fb398b0cf`.
+- Archive SHA-256: `466452f2a0cfc9ef6ba63ea2a3bbc7ea4262057dd07e4fc9e00eedf5bba305b4`.
+- Raw dataset fingerprint: `568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb` (reproduced on two full audit runs).
+- Raw contents remain unmodified and excluded from Git.
+
+### Verified release properties
+
+- 1,065/1,065 JPEG images decode successfully; 1,064 are 1024×1024 and `714.jpg` is 788×788, matching its XML dimensions.
+- 1,065 primary XML files and 1,065 separate second-annotator XML files are present.
+- Image/XML pairing by file ID is complete; no unmatched or duplicate IDs were found.
+- All primary XML files parse and all 1,584 parsed bounding boxes pass geometric validation under inclusive VOC coordinates.
+- Exact raw labels are the expected six strings, but their observed counts differ from the published counts.
+- Official split CSV is disjoint and exhaustive: 745 train, 159 validation, 161 test; zero overlap, omitted, unknown, or duplicate IDs.
+
+### Critical official-release discrepancies
+
+1. **XML identity ambiguity:** 262 primary XML `<filename>` values disagree with their XML/image file IDs. These occur across XML IDs 743–1062 in discontinuous ranges. For example, `743.xml` declares `10.jpg` and partly reuses coordinates seen in `10.xml`. No association was guessed or repaired.
+2. **Object-count mismatch:** primary XML contains 1,584 objects, not the published 1,568.
+3. **Class-count mismatch:** actual counts are craze 257 (expected 259), corrosion 257 (254), surface_injure 412 (394), thunderstrike 92 (92), crack 224 (224), and hide_craze 342 (345).
+4. **Cross-split exact duplicate:** `547.jpg` (train) and `640.jpg` (validation) are identical both as files and decoded pixels. A second exact pair, `565.jpg`/`668.jpg`, remains within train.
+
+These findings are preserved as evidence. No label, filename field, split, annotation, or image was altered; no replacement split was generated.
+
+### Scientific warnings requiring review but not automatic repair
+
+- 491 non-exact dHash candidates at distance ≤4; 166 cross official splits. These remain candidates, not declared duplicates.
+- 220 boxes occupy less than 1% of source-image area; 5 occupy less than 0.1%.
+- Bounding-box area fraction ranges from approximately 0.000608 to 0.646800; aspect ratio ranges from approximately 0.042829 to 22.85.
+- Diagnostic flags identify 26 boxes with aspect ratio <0.1, 15 with aspect ratio >10, and 12 occupying more than 50% of their source image; these are not exclusion rules.
+- 38 of 751 within-image object pairs overlap at IoU >0; none reach IoU 0.25.
+- 84 source images contain multiple canonical classes; 319 contain repeated instances of a class.
+- Objects per image: mean 1.487324, median 1, minimum 1, maximum 7; 696 images have one object, 268 have two, 75 have three, and 26 have four or more.
+
+### Phase 2 evidence
+
+- Machine-readable summary: `data/metadata/wtbd/audit_summary.json`.
+- Full audit: `docs/phase2_dataset_audit.md`.
+- Per-class annotation review: `figures/phase2/annotation_examples/`.
+- Candidate near-duplicate review: `figures/phase2/near_duplicates/`.
+- Split, bbox, co-occurrence, checksum, duplicate, and upstream inventories: `data/metadata/wtbd/`.
+
+### Phase 2 exit-gate record
+
+- [x] Phase 0 and Phase 1 remain frozen and tests pass.
+- [x] Official provenance, license, archive checksum, and raw fingerprint are recorded.
+- [x] Every image decodes and image/XML file-ID pairing is complete.
+- [x] All primary XML parses and all boxes pass geometric validation.
+- [x] Official split syntax, coverage, disjointness, and class statistics are audited.
+- [x] Exact and perceptual duplicate screening is complete.
+- [x] Contact sheets, plots, CSV records, JSON summary, and audit documentation are generated.
+- [ ] Published 1,568-instance count is reproduced.
+- [ ] Published per-class counts are reproduced.
+- [ ] XML `<filename>` identity ambiguity is resolved by an authoritative source.
+- [ ] Cross-split exact duplicate is reviewed under an approved split protocol.
+- [ ] Phase 2 is complete.
+
+No model was implemented or trained, no model weights were downloaded, no final classification crops were generated, and no crop margin or preprocessing choice was frozen.
 
 ## Phase 1 — Repository and Reproducibility Infrastructure
 
@@ -147,4 +218,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phase 0 and Phase 1 decisions and documents remain frozen unless the user explicitly requests a documented revision. Do not begin Phase 2, download data, preprocess real images, train models, or conduct external research without explicit authorization.
+Completed Phase 0 and Phase 1 decisions and documents remain frozen unless the user explicitly requests a documented revision. Phase 2 is review-blocked by official-release discrepancies. Do not begin Phase 3, generate a replacement split, repair raw annotations, create final crops, train models, or freeze preprocessing without explicit authorization and resolution of the Phase 2 blockers.

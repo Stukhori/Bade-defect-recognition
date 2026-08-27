@@ -1,0 +1,7 @@
+class,actual_count,published_expected_count,difference,matches_expected
+craze,257,259,-2,False
+corrosion,257,254,3,False
+surface_injure,412,394,18,False
+thunderstrike,92,92,0,True
+crack,224,224,0,True
+hide_craze,342,345,-3,False

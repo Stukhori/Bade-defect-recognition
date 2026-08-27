@@ -1,0 +1,39 @@
+audit:
+  almost_full_area_fraction: 0.5
+  annotation_examples_per_class: 6
+  elongated_aspect_ratio_high: 10.0
+  elongated_aspect_ratio_low: 0.1
+  figures_root: figures/phase2
+  near_duplicate_distance: 4
+  near_duplicate_max_pairs: 36
+  near_duplicate_pairs_per_sheet: 6
+  perceptual_hash: dhash64
+  visualization_seed: 20260828
+dataset:
+  annotation_directory: Annotations
+  image_directory: JPEGImages
+  metadata_root: data/metadata/wtbd
+  name: wtbd
+  raw_root: data/raw/wtbd
+  release_root: data/raw/wtbd/WT blade defect dataset
+  second_annotation_directory: annotation_second_person
+  split_file: train_val_test_split.txt
+  split_id: official-train-val-test
+  version: figshare-v1
+evaluation:
+  primary_metric: macro_f1
+experiment:
+  name: wtbd_dataset_audit
+  output_root: experiments
+  seed: 20260828
+method:
+  family: dataset_audit
+  name: forensic_v1
+project:
+  name: windblade
+  phase: 1
+runtime:
+  device: cpu
+training:
+  epochs: 0
+  train_fraction: 1.0

@@ -1,0 +1,8 @@
+class,valid_instance_count,width_lt_16,height_lt_16,width_lt_32,height_lt_32,area_fraction_lt_0_001,area_fraction_lt_0_005,area_fraction_lt_0_01,aspect_ratio_lt_diagnostic_low,aspect_ratio_gt_diagnostic_high,area_fraction_gt_almost_full
+all,1584,0,0,24,10,5,82,220,26,15,12
+craze,257,0,0,0,0,0,0,1,2,0,3
+corrosion,257,0,0,0,0,0,2,6,4,4,4
+surface_injure,412,0,0,7,1,5,59,101,2,0,0
+thunderstrike,92,0,0,0,0,0,4,15,0,0,1
+crack,224,0,0,0,0,0,3,23,0,0,0
+hide_craze,342,0,0,17,9,0,14,74,18,11,4
