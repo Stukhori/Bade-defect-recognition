@@ -1,0 +1,41 @@
+# Python environments and caches
+.venv/
+.uv-cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Editors and operating-system noise
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+
+# Dataset payloads and derived image caches; directory policy remains tracked
+data/raw/**
+!data/raw/.gitkeep
+data/interim/**
+!data/interim/.gitkeep
+data/processed/**
+!data/processed/.gitkeep
+
+# Large model artifacts
+*.ckpt
+*.onnx
+*.pt
+*.pth
+
+# Automatically generated per-run artifacts. Curated small summaries belong in
+# experiments/summaries/ and remain versionable.
+experiments/results/**
+!experiments/results/.gitkeep
+
+# Logs outside ignored run directories
+*.log

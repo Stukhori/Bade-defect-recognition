@@ -1,0 +1,27 @@
+project:
+  name: windblade
+  phase: 1
+
+experiment:
+  name: base
+  seed: 42
+  output_root: experiments
+
+dataset:
+  name: synthetic
+  version: smoke-v1
+  split_id: synthetic-fixed
+
+method:
+  family: smoke
+  name: deterministic_dummy
+
+training:
+  train_fraction: 1.0
+  epochs: 0
+
+evaluation:
+  primary_metric: macro_f1
+
+runtime:
+  device: cpu

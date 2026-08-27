@@ -2,12 +2,36 @@
 
 ## Current phase
 
-- **Phase:** Phase 0 — Research Contract and Experimental Specification
-- **Status:** Complete and frozen
-- **Freeze date:** 2026-08-27
-- **Next phase:** Phase 1 — repository and reproducibility infrastructure
+- **Phase:** Phase 1 — Repository and Reproducibility Infrastructure
+- **Status:** IN PROGRESS
+- **Previous phase:** Phase 0 — complete and frozen on 2026-08-27
+- **Next phase:** Phase 2 — WTBD Dataset Acquisition and Audit
 
-Phase 1 has not started. Progression requires an explicit user instruction.
+Phase 1 is explicitly authorized. Phase 0 research decisions remain frozen, and Phase 2 has not started.
+
+## Phase 1 — Repository and Reproducibility Infrastructure
+
+Phase 1 establishes engineering infrastructure using synthetic data only. It does not acquire datasets, implement scientific methods, train models, or produce scientific results.
+
+### Frozen Phase 1 decisions
+
+- Python 3.11 reference environment.
+- `src/windblade` package layout.
+- YAML source configuration and per-run resolved YAML snapshots.
+- Deterministic 12-character SHA-256 configuration fingerprints.
+- Timestamped, sanitized experiment identifiers.
+- Global Python, NumPy, and optional PyTorch seed utility.
+- Technical environment and Git provenance in every manifest.
+- Deterministic machine-readable JSON result records.
+- One isolated run directory containing resolved configuration, manifest, results, and log.
+- Standard-library console and file logging.
+- Failed-run evidence preservation with non-swallowed exceptions.
+- Pytest infrastructure using temporary output directories.
+- Immutable `data/raw/` policy.
+
+### Phase 1 status
+
+Implementation and validation are in progress. Completion requires the full Phase 1 exit gate to pass.
 
 ## Phase 0 artifacts
 
@@ -93,4 +117,4 @@ These items are reserved for later phases. They are not omissions from the froze
 
 ## Phase boundary
 
-Completed Phase 0 decisions and documents are frozen unless the user explicitly requests a documented revision. Do not begin Phase 1 or any implementation, downloading, preprocessing, model training, or external research from this state without explicit authorization.
+Completed Phase 0 decisions and documents remain frozen unless the user explicitly requests a documented revision. Phase 1 is infrastructure-only. Do not begin Phase 2, download data, preprocess real images, train models, or conduct external research without explicit authorization.
