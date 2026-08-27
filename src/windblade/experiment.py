@@ -127,13 +127,20 @@ class ExperimentRun:
         self._write_manifest()
         self.logger.info("Global seed initialized: %s", self.manifest["seed"])
 
-    def write_results(self, payload: Mapping[str, Any]) -> dict[str, Any]:
+    def write_results(
+        self,
+        payload: Mapping[str, Any],
+        *,
+        synthetic_only: bool,
+    ) -> dict[str, Any]:
+        if not isinstance(synthetic_only, bool):
+            raise TypeError("synthetic_only must be a boolean")
         record = {
             "schema_version": RESULT_SCHEMA_VERSION,
             "experiment_id": self.experiment_id,
             "config_hash": self.config.config_hash,
             "seed": self.manifest["seed"],
-            "synthetic_only": True,
+            "synthetic_only": synthetic_only,
             "payload": dict(payload),
         }
         write_json(self.results_path, record)

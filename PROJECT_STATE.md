@@ -3,11 +3,12 @@
 ## Current phase
 
 - **Phase:** Phase 1 — Repository and Reproducibility Infrastructure
-- **Status:** IN PROGRESS
+- **Status:** COMPLETE and frozen
+- **Completion date:** 2026-08-27
 - **Previous phase:** Phase 0 — complete and frozen on 2026-08-27
 - **Next phase:** Phase 2 — WTBD Dataset Acquisition and Audit
 
-Phase 1 is explicitly authorized. Phase 0 research decisions remain frozen, and Phase 2 has not started.
+Phase 1 passed its exit gate. Phase 0 research decisions remain frozen, and Phase 2 has not started.
 
 ## Phase 1 — Repository and Reproducibility Infrastructure
 
@@ -31,7 +32,36 @@ Phase 1 establishes engineering infrastructure using synthetic data only. It doe
 
 ### Phase 1 status
 
-Implementation and validation are in progress. Completion requires the full Phase 1 exit gate to pass.
+Complete. Validation used Python 3.11.15 and pytest 9.1.1:
+
+- Full suite: **21 passed, 0 failed**.
+- Two independent seed-42 CLI runs produced different timestamped experiment IDs, the identical config hash `cc5ceef2d6b6`, and identical deterministic synthetic payloads.
+- A seed-43 CLI run produced config hash `6a8b48d3045f` and a different seeded synthetic payload.
+- All three run directories contained exactly `resolved_config.yaml`, `manifest.json`, `results.json`, and `run.log`.
+- All three inspected manifests reported `completed`, Python 3.11.15, CPU execution, PyTorch unavailable, Git commit `7ee35b99b58fc22a04c87e789dbe18762a72554c`, and a clean worktree.
+- The only files under `data/` are policy documentation and tracked directory placeholders.
+
+### Phase 1 exit-gate record
+
+- [x] Phase 0 research documentation remains unchanged.
+- [x] The `windblade` package imports under Python 3.11.
+- [x] YAML configuration loading and validation work.
+- [x] Configuration hashing is deterministic and order-independent.
+- [x] Python and NumPy global seeding work; optional PyTorch handling is non-fatal.
+- [x] Environment and Git provenance capture work without optional ML dependencies.
+- [x] Timestamped, sanitized experiment IDs are generated.
+- [x] Every experiment receives an isolated run directory.
+- [x] Resolved configuration snapshots are preserved.
+- [x] Manifest JSON, results JSON, and run logs are generated.
+- [x] Failed-run status, failure details, configuration, and logs are preserved and tested; exceptions propagate.
+- [x] Synthetic smoke execution succeeds on CPU in seconds.
+- [x] Same-seed smoke payload determinism is independently validated.
+- [x] A different seed changes both the resolved hash and seeded payload.
+- [x] Full pytest suite passes: 21 passed, 0 failed.
+- [x] Raw-data immutability and version-control policies are documented.
+- [x] No WTBD or other real dataset was downloaded.
+- [x] No real ML model was trained or implemented.
+- [x] No scientific performance number or figure was produced.
 
 ## Phase 0 artifacts
 
@@ -64,17 +94,17 @@ Implementation and validation are in progress. Completion requires the full Phas
 - Unsupported priority, architecture-novelty, state-of-the-art, causal, safety, economic, and deployment claims are prohibited as detailed in the research contract.
 - Blade30, DTU Drone Inspection Images, WTBs2025, lightweight YOLO detection, and Grad-CAM are outside the core Phase 0 scope.
 
-## Intentionally unresolved implementation questions
+## Phase 0 handoff questions and resolution
 
-These items are reserved for later phases. They are not omissions from the frozen research design and must not be chosen by inspecting test or robustness results.
+These were recorded at the end of Phase 0. Phase 1 infrastructure questions are now resolved; scientific and dataset-specific items remain intentionally deferred and must not be chosen by inspecting test or robustness results.
 
-### Phase 1 — repository and reproducibility infrastructure
+### Resolved in Phase 1
 
-- Supported runtime, package, and dependency versions.
-- Environment and lockfile strategy.
-- Repository layout beyond the Phase 0 documents.
-- Configuration schema, command interface, artifact directory conventions, and machine-readable output format.
-- Logging, provenance, hardware metadata, deterministic-execution controls, and validation/CI checks.
+- [x] Supported Python runtime and minimal dependency versions.
+- [x] Environment and lockfile strategy.
+- [x] Repository layout beyond the Phase 0 documents.
+- [x] Configuration schema, smoke command, artifact directory conventions, and machine-readable JSON output.
+- [x] Logging, Git/environment provenance, deterministic controls, and validation tests.
 
 ### Dataset and preprocessing phase, before model experiments
 
@@ -97,7 +127,7 @@ These items are reserved for later phases. They are not omissions from the froze
 - Inference-latency hardware/software conditions, batch size, warm-up, repetition, and summary procedure.
 - Model/checkpoint size and trainable-parameter accounting conventions.
 
-## Exit-gate record
+## Phase 0 exit-gate record
 
 - [x] Research question is unambiguous and uses “classifying.”
 - [x] Task is explicitly six-class defect classification.
@@ -117,4 +147,4 @@ These items are reserved for later phases. They are not omissions from the froze
 
 ## Phase boundary
 
-Completed Phase 0 decisions and documents remain frozen unless the user explicitly requests a documented revision. Phase 1 is infrastructure-only. Do not begin Phase 2, download data, preprocess real images, train models, or conduct external research without explicit authorization.
+Completed Phase 0 and Phase 1 decisions and documents remain frozen unless the user explicitly requests a documented revision. Do not begin Phase 2, download data, preprocess real images, train models, or conduct external research without explicit authorization.

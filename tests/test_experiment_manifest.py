@@ -26,7 +26,7 @@ def test_completed_manifest_contains_mandatory_fields_and_utc(tmp_path: Path) ->
     config = temporary_config(tmp_path)
     with ExperimentRun.create(config, repository_root=REPOSITORY_ROOT) as run:
         run.record_reproducibility(set_global_seed(42))
-        run.write_results({"dummy": 1})
+        run.write_results({"dummy": 1}, synthetic_only=True)
 
     manifest = json.loads(run.manifest_path.read_text(encoding="utf-8"))
     mandatory = {

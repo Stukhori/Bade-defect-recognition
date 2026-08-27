@@ -86,7 +86,7 @@ def run_smoke_experiment(
         run.logger.info("Synthetic deterministic computation started")
         payload = deterministic_synthetic_payload()
         run.logger.info("Synthetic deterministic computation completed")
-        run.write_results(payload)
+        run.write_results(payload, synthetic_only=True)
 
     completed = read_json(run.manifest_path)
     if completed["status"] != "completed":
