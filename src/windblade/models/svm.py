@@ -45,6 +45,7 @@ def build_svm_pipeline(C: float, gamma: str) -> Pipeline:
                     gamma=gamma,
                     kernel="rbf",
                     class_weight="balanced",
+                    probability=False,
                 ),
             ),
         ]
