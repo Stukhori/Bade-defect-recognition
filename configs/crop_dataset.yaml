@@ -1,0 +1,59 @@
+extends: curation.yaml
+
+project:
+  phase: 3
+
+experiment:
+  name: wtbd_crop_dataset
+  seed: 20260828
+
+method:
+  family: deterministic_preprocessing
+  name: wtbd_crops_v1
+
+crop_dataset:
+  version: wtbd_crops_v1
+  curated_version: wtbd-curation-v1
+  expected_raw_fingerprint: 568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb
+  expected_source_images: 720
+  expected_instances: 1065
+  output_root: data/processed/wtbd_crops_v1
+  split_root: data/splits/wtbd_crops_v1
+  instance_split_file: data/splits/wtbd_crops_v1_split.csv
+  label_map_file: data/metadata/wtbd/classification_label_map.json
+  statistics_file: data/metadata/wtbd/phase3_crop_statistics.csv
+  split_counts_file: data/metadata/wtbd/phase3_split_instance_counts.csv
+  subset_summary_file: data/metadata/wtbd/training_subset_summary.json
+  figures_root: figures/phase3/crop_qc
+
+crop:
+  context_multiplier: 1.5
+  minimum_side_pixels: 64
+  square: true
+  boundary_policy: shift_inside
+  padding: none
+
+output:
+  width: 224
+  height: 224
+  color_mode: RGB
+  format: PNG
+  resampling: bilinear
+
+training_subsets:
+  seeds:
+    - 17
+    - 29
+    - 43
+  fractions:
+    "0.25": 128
+    "0.50": 255
+    "0.75": 383
+    "1.00": 510
+  unit: source_image
+  nested: true
+
+qc:
+  seed: 20260828
+  random_examples_per_class: 6
+  diagnostic_examples_per_sheet: 12

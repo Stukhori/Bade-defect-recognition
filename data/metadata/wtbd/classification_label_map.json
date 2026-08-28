@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "labels": [
+    {"class_id": 0, "canonical_label": "craze"},
+    {"class_id": 1, "canonical_label": "corrosion"},
+    {"class_id": 2, "canonical_label": "surface_injure"},
+    {"class_id": 3, "canonical_label": "thunderstrike"},
+    {"class_id": 4, "canonical_label": "crack"},
+    {"class_id": 5, "canonical_label": "hide_craze"}
+  ]
+}
