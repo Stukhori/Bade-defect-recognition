@@ -42,9 +42,11 @@ data/processed/wtbd_crops_v1/images/**
 # experiments/summaries/ and remain versionable.
 experiments/results/**
 !experiments/results/.gitkeep
+experiments/cache/**
 
 # Logs outside ignored run directories
 *.log
+*.joblib
 
 # Local review-transfer bundles (versioned contents live under data/metadata)
 phase2_human_review_artifacts_*.zip

@@ -1,0 +1,81 @@
+extends: crop_dataset.yaml
+
+project:
+  phase: 4
+
+experiment:
+  name: phase4_traditional_baselines
+  seed: 20260828
+
+method:
+  family: traditional_computer_vision
+  name: hog_lbp_rbf_svm_v1
+
+dataset:
+  processed_version: wtbd_crops_v1
+  processed_fingerprint: 4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991
+
+classes:
+  order:
+    - craze
+    - corrosion
+    - surface_injure
+    - thunderstrike
+    - crack
+    - hide_craze
+
+hog:
+  grayscale: true
+  orientations: 9
+  pixels_per_cell: [16, 16]
+  cells_per_block: [2, 2]
+  block_norm: L2-Hys
+  transform_sqrt: true
+  feature_vector: true
+  expected_dimensions: 6084
+
+lbp:
+  grayscale: true
+  grid: [7, 7]
+  scales:
+    - radius: 1
+      points: 8
+      method: uniform
+      bins: 10
+    - radius: 2
+      points: 16
+      method: uniform
+      bins: 18
+  expected_dimensions: 1372
+
+svm:
+  kernel: rbf
+  class_weight: balanced
+  probability: false
+  C: [0.1, 1, 10, 100]
+  gamma: [scale, auto]
+
+selection:
+  metric: macro_f1
+  split: validation
+  numeric_tolerance: 1.0e-12
+  tie_breaking:
+    - higher_macro_f1
+    - higher_balanced_accuracy
+    - higher_macro_recall
+    - lower_C
+    - prefer_gamma_scale
+
+timing:
+  warmup_runs: 1
+  inference_repeats: 7
+  feature_repeats: 3
+
+traditional:
+  result_id: phase4_traditional_v1
+  output_root: experiments/results/phase4_traditional_v1
+  summary_root: experiments/summaries/phase4_traditional_v1
+  cache_root: experiments/cache/traditional_features
+  figures_root: figures/phase4
+  frozen_hog_config: configs/frozen/traditional_hog_svm.yaml
+  frozen_lbp_config: configs/frozen/traditional_lbp_svm.yaml
