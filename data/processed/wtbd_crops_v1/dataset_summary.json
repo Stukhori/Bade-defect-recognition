@@ -1,0 +1,133 @@
+{
+  "affected_counts": {
+    "boundary_shifted": 568,
+    "max_side_clipped": 167,
+    "minimum_side_applied": 4
+  },
+  "class_counts": {
+    "corrosion": 178,
+    "crack": 131,
+    "craze": 169,
+    "hide_craze": 263,
+    "surface_injure": 264,
+    "thunderstrike": 60
+  },
+  "crop_policy": {
+    "boundary_policy": "shift_inside",
+    "context_multiplier": 1.5,
+    "crop_coordinates": "zero_based_half_open",
+    "input_bbox_coordinates": "one_based_inclusive_voc",
+    "minimum_side_pixels": 64,
+    "output": "224x224 RGB PNG",
+    "padding": "none",
+    "resampling": "bilinear"
+  },
+  "dataset_version": "wtbd_crops_v1",
+  "global_statistics": {
+    "bbox_area": {
+      "count": 1065,
+      "max": "678219",
+      "median": "55550",
+      "metric": "bbox_area",
+      "min": "800",
+      "p05": "4890.6",
+      "p25": "20400",
+      "p75": "121660",
+      "p95": "320978",
+      "scope": "all"
+    },
+    "bbox_area_source_fraction": {
+      "count": 1065,
+      "max": "0.646800041199",
+      "median": "0.0529766082764",
+      "metric": "bbox_area_source_fraction",
+      "min": "0.000762939453125",
+      "p05": "0.00466403961182",
+      "p25": "0.0194549560547",
+      "p75": "0.116024017334",
+      "p95": "0.306108474731",
+      "scope": "all"
+    },
+    "bbox_height": {
+      "count": 1065,
+      "max": "1023",
+      "median": "249",
+      "metric": "bbox_height",
+      "min": "23",
+      "p05": "50",
+      "p25": "126",
+      "p75": "431",
+      "p95": "878.8",
+      "scope": "all"
+    },
+    "bbox_width": {
+      "count": 1065,
+      "max": "1013",
+      "median": "220",
+      "metric": "bbox_width",
+      "min": "20",
+      "p05": "43.4",
+      "p25": "117",
+      "p75": "376",
+      "p95": "754",
+      "scope": "all"
+    },
+    "crop_side": {
+      "count": 1065,
+      "max": "1024",
+      "median": "537",
+      "metric": "crop_side",
+      "min": "64",
+      "p05": "138",
+      "p25": "330",
+      "p75": "801",
+      "p95": "1024",
+      "scope": "all"
+    },
+    "defect_occupancy": {
+      "count": 1065,
+      "max": "0.646800041199",
+      "median": "0.23950918473",
+      "metric": "defect_occupancy",
+      "min": "0.0284505959246",
+      "p05": "0.0598171295517",
+      "p25": "0.128937103379",
+      "p75": "0.355987055016",
+      "p95": "0.42691682911",
+      "scope": "all"
+    },
+    "resize_scale_factor": {
+      "count": 1065,
+      "max": "3.5",
+      "median": "0.417132216015",
+      "metric": "resize_scale_factor",
+      "min": "0.21875",
+      "p05": "0.21875",
+      "p25": "0.279650436954",
+      "p75": "0.678787878788",
+      "p95": "1.6231884058",
+      "scope": "all"
+    }
+  },
+  "instance_count": 1065,
+  "instance_counts_by_split": {
+    "test": 162,
+    "train": 757,
+    "validation": 146
+  },
+  "phase2_curation_manifest_sha256": "9e5ce3b44457e52f686fb16f62df18a10a576262c9f0f89b96ccdd75d89c0767",
+  "phase2_curation_version": "wtbd-curation-v1",
+  "phase2_gate_revalidated": true,
+  "phase3_config_sha256": "e91f2026c3e6ac8dc75adf138014cf07a4e9d8907c638ae21fe52c799460b9b8",
+  "phase4_started": false,
+  "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+  "schema_version": "1.0",
+  "source_image_count": 720,
+  "source_image_counts_by_split": {
+    "test": 109,
+    "train": 510,
+    "validation": 101
+  },
+  "status": "PASS",
+  "upstream_raw_fingerprint": "568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb"
+}

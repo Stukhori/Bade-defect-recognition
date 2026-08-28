@@ -1,0 +1,603 @@
+{
+  "algorithm": "nested_greedy_normalized_class_count_deviation_v1",
+  "all_subsets_contain_all_classes": true,
+  "dataset_version": "wtbd_crops_v1",
+  "full_training_class_counts": {
+    "corrosion": 126,
+    "crack": 93,
+    "craze": 123,
+    "hide_craze": 188,
+    "surface_injure": 185,
+    "thunderstrike": 42
+  },
+  "full_training_instances": 757,
+  "full_training_source_images": 510,
+  "nesting_validated": true,
+  "schema_version": "1.0",
+  "seeds": {
+    "17": {
+      "0.25": {
+        "actual_source_image_count": 128,
+        "distribution_deviation_l1": 0.07008659914868634,
+        "instance_count": 252,
+        "instance_fraction_of_full_training": 0.332892998678996,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_17/train_025.csv",
+        "max_absolute_share_deviation": 0.017524270826780736,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 40,
+            "share_deviation": -0.0077163406093392894,
+            "subset_share": 0.15873015873015872
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 28,
+            "share_deviation": -0.01174225744899457,
+            "subset_share": 0.1111111111111111
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 39,
+            "share_deviation": -0.007721582688557577,
+            "subset_share": 0.15476190476190477
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 67,
+            "share_deviation": 0.017524270826780736,
+            "subset_share": 0.26587301587301587
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 66,
+            "share_deviation": 0.01751902874756245,
+            "subset_share": 0.2619047619047619
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 12,
+            "share_deviation": -0.00786311882745172,
+            "subset_share": 0.047619047619047616
+          }
+        },
+        "sha256": "b231a06c1e90ce97090359e861df054c98e1084c46288571424851b37ab606dd",
+        "target_source_image_count": 128
+      },
+      "0.50": {
+        "actual_source_image_count": 255,
+        "distribution_deviation_l1": 0.03725831632040348,
+        "instance_count": 440,
+        "instance_fraction_of_full_training": 0.5812417437252312,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_17/train_050.csv",
+        "max_absolute_share_deviation": 0.010742164044673957,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 72,
+            "share_deviation": -0.0028101357031343754,
+            "subset_share": 0.16363636363636364
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 51,
+            "share_deviation": -0.006944277651014769,
+            "subset_share": 0.1159090909090909
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 70,
+            "share_deviation": -0.0033925783595532555,
+            "subset_share": 0.1590909090909091
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 114,
+            "share_deviation": 0.010742164044673957,
+            "subset_share": 0.2590909090909091
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 111,
+            "share_deviation": 0.00788699411552779,
+            "subset_share": 0.25227272727272726
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 22,
+            "share_deviation": -0.005482166446499334,
+            "subset_share": 0.05
+          }
+        },
+        "sha256": "ec9f49a5532a62afac49942d45fe02c214442d944a173a4954152d2bdb9c3a7f",
+        "target_source_image_count": 255
+      },
+      "0.75": {
+        "actual_source_image_count": 383,
+        "distribution_deviation_l1": 0.01782051727734127,
+        "instance_count": 608,
+        "instance_fraction_of_full_training": 0.8031704095112285,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_17/train_075.csv",
+        "max_absolute_share_deviation": 0.004940728637975372,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 100,
+            "share_deviation": -0.0019728151289716833,
+            "subset_share": 0.16447368421052633
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 73,
+            "share_deviation": -0.0027875790864214656,
+            "subset_share": 0.12006578947368421
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 98,
+            "share_deviation": -0.001299276924146553,
+            "subset_share": 0.1611842105263158
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 154,
+            "share_deviation": 0.004940728637975372,
+            "subset_share": 0.2532894736842105
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 151,
+            "share_deviation": 0.003969530000695276,
+            "subset_share": 0.24835526315789475
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 32,
+            "share_deviation": -0.002850587499130919,
+            "subset_share": 0.05263157894736842
+          }
+        },
+        "sha256": "bd8d15b8214c52378f83cdf666cd46fc0411272fcc1967654d3c0280a47cb496",
+        "target_source_image_count": 383
+      },
+      "1.00": {
+        "actual_source_image_count": 510,
+        "distribution_deviation_l1": 0.0,
+        "instance_count": 757,
+        "instance_fraction_of_full_training": 1.0,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_17/train_100.csv",
+        "max_absolute_share_deviation": 0.0,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 126,
+            "share_deviation": 0.0,
+            "subset_share": 0.166446499339498
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 93,
+            "share_deviation": 0.0,
+            "subset_share": 0.12285336856010567
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 123,
+            "share_deviation": 0.0,
+            "subset_share": 0.16248348745046234
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 188,
+            "share_deviation": 0.0,
+            "subset_share": 0.24834874504623514
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 185,
+            "share_deviation": 0.0,
+            "subset_share": 0.24438573315719947
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 42,
+            "share_deviation": 0.0,
+            "subset_share": 0.05548216644649934
+          }
+        },
+        "sha256": "32819d7250690290f9f7ea19325b053affbbf30bcaca21a3ea0fe5c4f2584b95",
+        "target_source_image_count": 510
+      }
+    },
+    "29": {
+      "0.25": {
+        "actual_source_image_count": 128,
+        "distribution_deviation_l1": 0.07008659914868634,
+        "instance_count": 252,
+        "instance_fraction_of_full_training": 0.332892998678996,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_29/train_025.csv",
+        "max_absolute_share_deviation": 0.017524270826780736,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 40,
+            "share_deviation": -0.0077163406093392894,
+            "subset_share": 0.15873015873015872
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 28,
+            "share_deviation": -0.01174225744899457,
+            "subset_share": 0.1111111111111111
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 39,
+            "share_deviation": -0.007721582688557577,
+            "subset_share": 0.15476190476190477
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 67,
+            "share_deviation": 0.017524270826780736,
+            "subset_share": 0.26587301587301587
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 66,
+            "share_deviation": 0.01751902874756245,
+            "subset_share": 0.2619047619047619
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 12,
+            "share_deviation": -0.00786311882745172,
+            "subset_share": 0.047619047619047616
+          }
+        },
+        "sha256": "a2b427a6a682de42ef29280042c0ffbe862f80963b13dbb15aa5bfabf77db10c",
+        "target_source_image_count": 128
+      },
+      "0.50": {
+        "actual_source_image_count": 255,
+        "distribution_deviation_l1": 0.03725831632040348,
+        "instance_count": 440,
+        "instance_fraction_of_full_training": 0.5812417437252312,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_29/train_050.csv",
+        "max_absolute_share_deviation": 0.010742164044673957,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 72,
+            "share_deviation": -0.0028101357031343754,
+            "subset_share": 0.16363636363636364
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 51,
+            "share_deviation": -0.006944277651014769,
+            "subset_share": 0.1159090909090909
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 70,
+            "share_deviation": -0.0033925783595532555,
+            "subset_share": 0.1590909090909091
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 114,
+            "share_deviation": 0.010742164044673957,
+            "subset_share": 0.2590909090909091
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 111,
+            "share_deviation": 0.00788699411552779,
+            "subset_share": 0.25227272727272726
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 22,
+            "share_deviation": -0.005482166446499334,
+            "subset_share": 0.05
+          }
+        },
+        "sha256": "b6f5222161c60af4373413caf49409b12f0e29720b6dd035ee2e4aad2e620f8c",
+        "target_source_image_count": 255
+      },
+      "0.75": {
+        "actual_source_image_count": 383,
+        "distribution_deviation_l1": 0.01782051727734127,
+        "instance_count": 608,
+        "instance_fraction_of_full_training": 0.8031704095112285,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_29/train_075.csv",
+        "max_absolute_share_deviation": 0.004940728637975372,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 100,
+            "share_deviation": -0.0019728151289716833,
+            "subset_share": 0.16447368421052633
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 73,
+            "share_deviation": -0.0027875790864214656,
+            "subset_share": 0.12006578947368421
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 98,
+            "share_deviation": -0.001299276924146553,
+            "subset_share": 0.1611842105263158
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 154,
+            "share_deviation": 0.004940728637975372,
+            "subset_share": 0.2532894736842105
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 151,
+            "share_deviation": 0.003969530000695276,
+            "subset_share": 0.24835526315789475
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 32,
+            "share_deviation": -0.002850587499130919,
+            "subset_share": 0.05263157894736842
+          }
+        },
+        "sha256": "3f2a2f67ca829e008d12e95f3526d8595aff0a61e2ae99a9acb2150a215fc21d",
+        "target_source_image_count": 383
+      },
+      "1.00": {
+        "actual_source_image_count": 510,
+        "distribution_deviation_l1": 0.0,
+        "instance_count": 757,
+        "instance_fraction_of_full_training": 1.0,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_29/train_100.csv",
+        "max_absolute_share_deviation": 0.0,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 126,
+            "share_deviation": 0.0,
+            "subset_share": 0.166446499339498
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 93,
+            "share_deviation": 0.0,
+            "subset_share": 0.12285336856010567
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 123,
+            "share_deviation": 0.0,
+            "subset_share": 0.16248348745046234
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 188,
+            "share_deviation": 0.0,
+            "subset_share": 0.24834874504623514
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 185,
+            "share_deviation": 0.0,
+            "subset_share": 0.24438573315719947
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 42,
+            "share_deviation": 0.0,
+            "subset_share": 0.05548216644649934
+          }
+        },
+        "sha256": "32819d7250690290f9f7ea19325b053affbbf30bcaca21a3ea0fe5c4f2584b95",
+        "target_source_image_count": 510
+      }
+    },
+    "43": {
+      "0.25": {
+        "actual_source_image_count": 128,
+        "distribution_deviation_l1": 0.07008659914868634,
+        "instance_count": 252,
+        "instance_fraction_of_full_training": 0.332892998678996,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_43/train_025.csv",
+        "max_absolute_share_deviation": 0.017524270826780736,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 40,
+            "share_deviation": -0.0077163406093392894,
+            "subset_share": 0.15873015873015872
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 28,
+            "share_deviation": -0.01174225744899457,
+            "subset_share": 0.1111111111111111
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 39,
+            "share_deviation": -0.007721582688557577,
+            "subset_share": 0.15476190476190477
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 67,
+            "share_deviation": 0.017524270826780736,
+            "subset_share": 0.26587301587301587
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 66,
+            "share_deviation": 0.01751902874756245,
+            "subset_share": 0.2619047619047619
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 12,
+            "share_deviation": -0.00786311882745172,
+            "subset_share": 0.047619047619047616
+          }
+        },
+        "sha256": "3b43aaefb03318b3b5349ffd81626b0f15dd1fc3eb7e3d40523a0e1cf6580f33",
+        "target_source_image_count": 128
+      },
+      "0.50": {
+        "actual_source_image_count": 255,
+        "distribution_deviation_l1": 0.03725831632040348,
+        "instance_count": 440,
+        "instance_fraction_of_full_training": 0.5812417437252312,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_43/train_050.csv",
+        "max_absolute_share_deviation": 0.010742164044673957,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 72,
+            "share_deviation": -0.0028101357031343754,
+            "subset_share": 0.16363636363636364
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 51,
+            "share_deviation": -0.006944277651014769,
+            "subset_share": 0.1159090909090909
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 70,
+            "share_deviation": -0.0033925783595532555,
+            "subset_share": 0.1590909090909091
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 114,
+            "share_deviation": 0.010742164044673957,
+            "subset_share": 0.2590909090909091
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 111,
+            "share_deviation": 0.00788699411552779,
+            "subset_share": 0.25227272727272726
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 22,
+            "share_deviation": -0.005482166446499334,
+            "subset_share": 0.05
+          }
+        },
+        "sha256": "5a66073adc48f8aa57c7c7711a86676540adfa5a6ee5e59d981d5cc874632a19",
+        "target_source_image_count": 255
+      },
+      "0.75": {
+        "actual_source_image_count": 383,
+        "distribution_deviation_l1": 0.01782051727734127,
+        "instance_count": 608,
+        "instance_fraction_of_full_training": 0.8031704095112285,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_43/train_075.csv",
+        "max_absolute_share_deviation": 0.004940728637975372,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 100,
+            "share_deviation": -0.0019728151289716833,
+            "subset_share": 0.16447368421052633
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 73,
+            "share_deviation": -0.0027875790864214656,
+            "subset_share": 0.12006578947368421
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 98,
+            "share_deviation": -0.001299276924146553,
+            "subset_share": 0.1611842105263158
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 154,
+            "share_deviation": 0.004940728637975372,
+            "subset_share": 0.2532894736842105
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 151,
+            "share_deviation": 0.003969530000695276,
+            "subset_share": 0.24835526315789475
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 32,
+            "share_deviation": -0.002850587499130919,
+            "subset_share": 0.05263157894736842
+          }
+        },
+        "sha256": "6ee68e91f499b1e011ebbe17a97cf3f1bc8e314ba28de0331156ad7f17560005",
+        "target_source_image_count": 383
+      },
+      "1.00": {
+        "actual_source_image_count": 510,
+        "distribution_deviation_l1": 0.0,
+        "instance_count": 757,
+        "instance_fraction_of_full_training": 1.0,
+        "manifest_relative_path": "data/splits/wtbd_crops_v1/seed_43/train_100.csv",
+        "max_absolute_share_deviation": 0.0,
+        "per_class": {
+          "corrosion": {
+            "full_training_share": 0.166446499339498,
+            "instance_count": 126,
+            "share_deviation": 0.0,
+            "subset_share": 0.166446499339498
+          },
+          "crack": {
+            "full_training_share": 0.12285336856010567,
+            "instance_count": 93,
+            "share_deviation": 0.0,
+            "subset_share": 0.12285336856010567
+          },
+          "craze": {
+            "full_training_share": 0.16248348745046234,
+            "instance_count": 123,
+            "share_deviation": 0.0,
+            "subset_share": 0.16248348745046234
+          },
+          "hide_craze": {
+            "full_training_share": 0.24834874504623514,
+            "instance_count": 188,
+            "share_deviation": 0.0,
+            "subset_share": 0.24834874504623514
+          },
+          "surface_injure": {
+            "full_training_share": 0.24438573315719947,
+            "instance_count": 185,
+            "share_deviation": 0.0,
+            "subset_share": 0.24438573315719947
+          },
+          "thunderstrike": {
+            "full_training_share": 0.05548216644649934,
+            "instance_count": 42,
+            "share_deviation": 0.0,
+            "subset_share": 0.05548216644649934
+          }
+        },
+        "sha256": "32819d7250690290f9f7ea19325b053affbbf30bcaca21a3ea0fe5c4f2584b95",
+        "target_source_image_count": 510
+      }
+    }
+  },
+  "selection_unit": "source_image",
+  "uses_validation_or_test": false
+}
