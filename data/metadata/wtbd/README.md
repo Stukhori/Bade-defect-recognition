@@ -17,8 +17,9 @@ This tracked directory contains small, deterministic metadata derived from the i
 - `identity_diagnostics.csv`, `second_annotator_comparison.csv`, and `review_summary.json` contain identity and annotator evidence.
 - `manual_review_decisions.csv` and `near_duplicate_review_decisions.csv` are the only human-decision inputs; pending rows are never silently approved.
 - `near_duplicate_review_index.csv` prioritizes exact and non-exact candidates without declaring dHash matches to be leakage.
-- `curation_blockers.csv` lists every identity or pair row still requiring review.
-- `curation_summary.json` and the `curated_*` CSV files keep provisional curated statistics separate from the raw audit.
+- `curation_blockers.csv` is the machine-readable exit-gate blocker table; after reviewed curation it contains only its header.
+- `curation_summary.json` and the `curated_*` CSV files keep final reviewed curated statistics separate from the raw audit.
+- `human_review/` preserves the reviewed decision sources, connected-component cross-check, expected-count assertions, notes, checksums, and import boundary.
 
 Regenerate these records with:
 
@@ -28,4 +29,4 @@ uv run python scripts/review_wtbd.py --config configs/curation.yaml
 uv run python scripts/curate_wtbd.py --config configs/curation.yaml
 ```
 
-The official raw release is CC BY 4.0 and remains excluded from Git. Current curation status is `BLOCKED_PENDING_HUMAN_REVIEW`; the provisional curated metadata is not authorized for Phase 3.
+The official raw release is CC BY 4.0 and remains excluded from Git. Phase 2 curation status is `PASS`; the reviewed manifest is the authoritative benchmark input for a separately authorized Phase 3.

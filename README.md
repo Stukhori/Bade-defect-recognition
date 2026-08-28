@@ -1,6 +1,6 @@
 # Robust Wind Turbine Blade Defect Recognition
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phase 2 acquired and forensically audited the official WTBD release and now provides a non-destructive reconciliation layer. Its exit gate remains `BLOCKED_PENDING_HUMAN_REVIEW`; no model results exist. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phase 2 acquired, audited, human-reviewed, and non-destructively curated the official WTBD release. Its exit gate passes; no model results exist. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -47,8 +47,8 @@ uv run python scripts/curate_wtbd.py --config configs/curation.yaml
 uv run python scripts/curate_wtbd.py --config configs/curation.yaml --validate-only
 ```
 
-Use `--strict` to return a nonzero status while human-review blockers remain. Decisions belong in the versioned identity and near-duplicate decision CSVs; rerunning review preserves those files. See [`docs/phase2_curation.md`](docs/phase2_curation.md).
+`--strict` now succeeds only when the reviewed manifest passes every Phase 2 gate. Decisions and imported review provenance are versioned; rerunning review preserves the decision files. See [`docs/phase2_curation.md`](docs/phase2_curation.md).
 
 ## Phase boundaries
 
-Phases 0 and 1 remain frozen. Phase 2 is incomplete pending 262 identity decisions and 491 non-exact near-duplicate decisions. Exact-copy leakage is controlled in the provisional manifest. Phase 3 preprocessing, feature extraction, model fitting, and robustness evaluation have not started.
+Phases 0 and 1 remain frozen, and Phase 2 is complete. The reviewed benchmark contains 720 images and 1,065 objects with no unresolved retained cross-split candidate. Phase 3 preprocessing, feature extraction, model fitting, and robustness evaluation have not started.

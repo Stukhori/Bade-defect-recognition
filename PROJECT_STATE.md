@@ -3,12 +3,12 @@
 ## Current phase
 
 - **Phase:** Phase 2 — WTBD Dataset Acquisition and Forensic Audit
-- **Status:** BLOCKED_PENDING_HUMAN_REVIEW — non-destructive curation is implemented; review decisions remain
+- **Status:** COMPLETE — reviewed curation passes the Phase 2 exit gate
 - **Start date:** 2026-08-28
 - **Previous phases:** Phase 0 and Phase 1 — complete and frozen
 - **Next phase:** Phase 3 — Frozen Split Representation and Crop/Preprocessing Design
 
-Phase 2 is incomplete and stopped at its forensic-review gate. Phase 0 research decisions and Phase 1 infrastructure remain frozen. Phase 3 has not started and is not authorized while these blockers remain unresolved.
+Phase 2 is complete. Phase 0 research decisions and Phase 1 infrastructure remain frozen. Phase 3 has not started; beginning it requires a separate explicit authorization.
 
 ## Phase 2 — WTBD Dataset Acquisition and Forensic Audit
 
@@ -16,7 +16,7 @@ Phase 2 treats the official WTBD release as immutable source evidence. It may ac
 
 ### Phase 2 status
 
-**BLOCKED_PENDING_HUMAN_REVIEW.** The raw forensic audit reproduces, and a versioned curation/reconciliation layer now prevents unresolved identity rows and redundant exact copies from entering its provisional split. The current expanded suite reports **53 passed and 0 failed**. Phase 2 cannot close until the recorded identity and non-exact duplicate review queues are adjudicated.
+**COMPLETE.** The raw forensic audit still records the official-release discrepancies, while the reviewed `wtbd-curation-v1` interpretation passes its separate leakage-control gate. The expanded suite reports **59 passed and 0 failed**. Strict manifest validation reports `PASS` with no blockers.
 
 ### Acquisition and immutable provenance
 
@@ -44,11 +44,11 @@ Phase 2 treats the official WTBD release as immutable source evidence. It may ac
 3. **Class-count mismatch:** actual counts are craze 257 (expected 259), corrosion 257 (254), surface_injure 412 (394), thunderstrike 92 (92), crack 224 (224), and hide_craze 342 (345).
 4. **Cross-split exact duplicate:** `547.jpg` (train) and `640.jpg` (validation) are identical both as files and decoded pixels. A second exact pair, `565.jpg`/`668.jpg`, remains within train.
 
-These findings are preserved as raw evidence. No label, filename field, official split, annotation, or image was altered. The separate provisional curated split is derived only from the versioned manifest.
+These findings are preserved as raw evidence. No label, filename field, official split, annotation, or image was altered. The separate curated benchmark is derived only from the versioned manifest and does not claim to reconstruct the authors' intended 1,568-object dataset.
 
-### Scientific warnings requiring review but not automatic repair
+### Raw scientific warnings and review candidates
 
-- 491 non-exact dHash candidates at distance ≤4; 166 cross official splits. These remain candidates, not declared duplicates.
+- 491 non-exact dHash candidates at distance ≤4; 166 cross official splits. dHash remains a screening heuristic rather than automatic proof of duplication.
 - 220 boxes occupy less than 1% of source-image area; 5 occupy less than 0.1%.
 - Bounding-box area fraction ranges from approximately 0.000608 to 0.646800; aspect ratio ranges from approximately 0.042829 to 22.85.
 - Diagnostic flags identify 26 boxes with aspect ratio <0.1, 15 with aspect ratio >10, and 12 occupying more than 50% of their source image; these are not exclusion rules.
@@ -59,23 +59,25 @@ These findings are preserved as raw evidence. No label, filename field, official
 ### Curation/reconciliation state
 
 - Curation version: `wtbd-curation-v1`; schema and allowed enums are recorded in `curation_schema.json`.
-- Identity diagnostics: 262 rows; 119 high-confidence `xml_name_correct` recommendations and 143 `ambiguous` recommendations; zero recommendations automatically applied.
-- Exact primary annotation signatures match the embedded-filename sample for 250 of the 262 mismatch rows; this remains supporting evidence, not an automatic provenance decision.
-- All 262 unresolved identity rows are explicitly policy-excluded; none is included in a curated split.
+- Human-review archive SHA-256: `587d847afcf014d9276ce78eabce1d79a30349a3c853e453a40d35999b1df1e8`; imported file hashes and the embedded-instruction exclusion are recorded in `human_review/import_manifest.json`.
+- All 262 stale/mismatched identity rows were reviewed as reused/derived source-scene variants and excluded. Zero identity decisions remain pending and no unresolved identity is included.
 - Second-annotator comparison: 922 strong agreement, 15 box disagreement, 87 class disagreement, and 41 object-count disagreement cases. Second annotations remain evidence only.
 - Exact groups: retain `547` in train and exclude `640`; retain `565` in train and exclude `668`. No included exact group crosses curated splits.
-- Non-exact near-duplicate review: 491 pending pairs, including 166 cross-split candidates. None is automatically classified as leakage.
-- Provisional curated interpretation: 801 images, 1,215 objects; train 564, validation 115, test 122.
-- Provisional class counts: craze 195, corrosion 188, surface_injure 315, thunderstrike 66, crack 167, hide_craze 284.
-- Exact unresolved row IDs are listed in `data/metadata/wtbd/curation_blockers.csv`; human inputs are `manual_review_decisions.csv` and `near_duplicate_review_decisions.csv`.
+- Human pair decisions: 122 `same_scene`, eight `unrelated_false_positive`, and 361 intentionally pending candidates.
+- The 122 same-scene edges form 50 reviewed components with 131 members. The lowest-ID canonical is retained in each component and 81 redundant members are excluded.
+- Pending candidates are non-blocking warnings: 283 involve excluded images, 78 retain both images within one split, and zero retain both images across splits.
+- Final curated benchmark: 720 images and 1,065 objects; train 510, validation 101, test 109.
+- Final class counts: craze 169, corrosion 178, surface_injure 264, thunderstrike 60, crack 131, hide_craze 263. All six classes occur in every split.
+- `data/metadata/wtbd/curation_blockers.csv` contains only its header; there are no remaining Phase 2 blockers.
 
 ### Phase 2 evidence
 
 - Machine-readable summary: `data/metadata/wtbd/audit_summary.json`.
 - Full audit: `docs/phase2_dataset_audit.md`.
-- Curation policy and review status: `docs/phase2_curation.md`.
+- Curation policy, human-review import, final counts, and completed gate: `docs/phase2_curation.md`.
 - Curated manifest and summary: `data/metadata/wtbd/curation_manifest.csv` and `curation_summary.json`.
-- Exact blocker list: `data/metadata/wtbd/curation_blockers.csv`.
+- Empty final blocker table: `data/metadata/wtbd/curation_blockers.csv`.
+- Imported review provenance and component/cross-split cross-checks: `data/metadata/wtbd/human_review/`.
 - Identity evidence sheets and index: `figures/phase2/identity_review/`.
 - Per-class annotation review: `figures/phase2/annotation_examples/`.
 - Candidate near-duplicate review: `figures/phase2/near_duplicates/`.
@@ -92,12 +94,16 @@ These findings are preserved as raw evidence. No label, filename field, official
 - [x] Contact sheets, plots, CSV records, JSON summary, and audit documentation are generated.
 - [x] Published/raw count discrepancies are preserved without forcing agreement.
 - [x] A versioned manifest, schemas, decision inputs, diagnostics, and raw/curated statistics are generated.
-- [x] All unresolved identity rows are explicitly excluded from the provisional curated split.
+- [x] All 262 identity decisions are imported and their reviewed reused/derived variants are excluded.
 - [x] Cross-split exact-copy leakage is removed by a deterministic canonical/exclusion policy.
 - [x] Raw fingerprint remains stable after curation generation.
-- [ ] Human decisions are recorded for all 262 identity rows.
-- [ ] Human decisions are recorded for 491 non-exact near-duplicate pairs, including 166 cross-split candidates.
-- [ ] Phase 2 is complete.
+- [x] The reviewed same-scene graph reproduces 50 supplied components and excludes 81 redundant members.
+- [x] No confirmed same-scene component has more than one included image.
+- [x] No pending cross-split candidate retains both images; the eight retained cross-split candidates are reviewed false positives.
+- [x] Pending within-split and excluded-image candidates remain documented as non-blocking warnings.
+- [x] All six classes remain represented in train, validation, and test.
+- [x] Curated metadata regenerates deterministically and strict validation passes.
+- [x] Phase 2 is complete.
 
 No model was implemented or trained, no model weights were downloaded, no final classification crops were generated, and no crop margin or preprocessing choice was frozen.
 
@@ -238,4 +244,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phase 0 and Phase 1 decisions and documents remain frozen unless the user explicitly requests a documented revision. Phase 2 is `BLOCKED_PENDING_HUMAN_REVIEW`; its provisional manifest is not authorized for experimentation. Do not begin Phase 3, repair raw annotations, create final crops, train models, or freeze preprocessing without explicit authorization and resolution of the exact rows in `curation_blockers.csv`.
+Completed Phase 0 and Phase 1 decisions and documents remain frozen unless the user explicitly requests a documented revision. Phase 2 is complete and its reviewed manifest is the authoritative WTBD benchmark input for the next phase. Phase 3 has not started: do not create final crops, implement or train models, download pretrained weights, or freeze preprocessing without separate explicit authorization.

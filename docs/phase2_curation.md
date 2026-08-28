@@ -2,116 +2,129 @@
 
 ## Status
 
-**BLOCKED_PENDING_HUMAN_REVIEW.** This layer controls the known raw-release ambiguities without editing the official WTBD files. It is reproducible from the immutable raw release, the Phase 2 audit artifacts, `configs/curation.yaml`, and the two review-decision CSV files. Phase 3 has not started.
+**COMPLETE.** The reviewed `wtbd-curation-v1` benchmark passes the Phase 2 exit gate. Phases 0 and 1 remain frozen, and Phase 3 has not started.
 
-## Immutable source boundary
+This curation is a separate, reproducible interpretation of the official release. It does not modify raw files and does not claim to reconstruct the dataset authors' intended 1,568-instance dataset.
 
-The official WTBD archive, extracted JPEGs, primary/secondary XML files, and official split file remain unchanged under `data/raw/wtbd/` and outside Git. The reconciliation commands verify the complete raw fingerprint before and after their work:
+## Immutable source and raw discrepancies
+
+The official archive, JPEGs, XML files, and split file remain unchanged under `data/raw/wtbd/`. The complete fingerprint was verified before import, during regeneration, and after curation:
 
 `568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb`
 
-All interpretations are stored in versioned metadata. Output-path guards reject attempts to place curation artifacts inside the raw root.
+The raw official release remains forensically discrepant:
 
-## Identity reconciliation
+- the publication reports 1,568 defect objects, while the primary XML files contain 1,584;
+- the observed raw class counts differ from the publication;
+- 262 XML files contain stale/mismatched embedded image identities;
+- two exact duplicate groups are present;
+- the official split contains non-exact same-scene leakage.
 
-`scripts/review_wtbd.py` compares every primary XML with its same-ID second-annotator XML and, for all 262 filename mismatches, also compares the image named by the XML file with the image named inside the XML. Diagnostics record filenames, dimensions, classes, coordinates, object counts, same-class box IoUs, exact annotation signatures, thumbnail intensity correlation, and explicit evidence flags.
+Raw audit tables remain separate from curated tables. No raw count was forced to match the publication.
 
-The four-view sheets under `figures/phase2/identity_review/` show, for each mismatch:
+## Human-review import
 
-1. XML-named image with primary boxes;
-2. embedded-filename image with primary boxes;
-3. XML-named image with second-annotator boxes;
-4. embedded-filename image with second-annotator boxes.
+The reviewed archive `phase2_reviewed_decisions_2026-08-28.zip` had SHA-256:
 
-The automated evidence recommends `xml_name_correct` with high confidence for 119 rows and labels 143 rows `ambiguous`. It also finds that 250 mismatch annotations have an exact primary-annotation signature match to the XML associated with the embedded filename. These are diagnostics, not proof of provenance: **zero automated recommendations are applied as decisions**.
+`587d847afcf014d9276ce78eabce1d79a30349a3c853e453a40d35999b1df1e8`
 
-Until reviewed, all 262 identity-mismatch rows have `identity_status=pending_review`, are explicitly excluded by policy, and cannot enter a curated split. Their exact IDs and evidence links are in `curation_blockers.csv`, `identity_diagnostics.csv`, and the identity-review index.
+Its six review-data files and their checksums are preserved under `data/metadata/wtbd/human_review/`. The archive's extra embedded prompt was not treated as project authority and was not imported. `import_manifest.json` records this boundary.
 
-## Second-annotator evidence
+### Identity decisions
 
-The second annotator is never substituted automatically for the primary annotation. Across all 1,065 same-ID XML pairs, the comparison categories are:
+All 262 identity-mismatch rows received completed human decisions:
 
-| Category | Samples |
+- decision: `mark_annotation_reused`;
+- include: `False`;
+- resulting identity status: `annotation_reused_from_other_image`;
+- resulting reason: `annotation_reused`.
+
+They were reviewed as reused/derived variants of earlier source scenes and excluded to preserve source-scene independence. This is not a claim that their box geometry is invalid. No identity decision remains pending, and no unresolved identity row is included.
+
+The supporting evidence remains in `identity_diagnostics.csv`, `second_annotator_comparison.csv`, and `figures/phase2/identity_review/`. Automated recommendations were never substituted for human decisions.
+
+## Exact duplicates
+
+Exact groups use whole-file and decoded-pixel hashes. The lowest natural sample ID is canonical and retains its official split.
+
+| Group | Canonical retained | Split | Redundant excluded |
+|---|---:|---|---:|
+| `exact-001` | 547 | train | 640 |
+| `exact-002` | 565 | train | 668 |
+
+No exact group is represented in more than one curated split. The official split file was not edited and redundant files were not moved.
+
+## Reviewed non-exact duplicates
+
+The 491 non-exact dHash candidates received:
+
+| Decision | Pairs |
 |---|---:|
-| strong agreement | 922 |
-| box disagreement | 15 |
-| class disagreement | 87 |
-| object-count disagreement | 41 |
+| `same_scene` | 122 |
+| `unrelated_false_positive` | 8 |
+| `pending_review` | 361 |
 
-The complete per-sample evidence is in `second_annotator_comparison.csv`. A human decision may select primary or secondary annotations only by recording the choice and reviewer identity.
+dHash remains a screening heuristic, not proof of duplication. Completed `same_scene` edges form an undirected graph with 50 connected source-scene components and 131 members. For each component, the lowest natural sample ID is the deterministic canonical; 81 non-canonical members are excluded with status `near_duplicate_same_scene` and reason `near_duplicate_same_scene_redundant`. Component IDs `scene-001` through `scene-050` are stored in the manifest and exactly reproduce `reviewed_same_scene_components.csv`.
 
-## Human-review workflow
+The 71 reviewed non-exact cross-split pairs that survived identity/exact curation comprise 63 `same_scene` and eight `unrelated_false_positive` decisions. After component deduplication, only the eight reviewed false positives remain represented across splits.
 
-Identity decisions are entered in `data/metadata/wtbd/manual_review_decisions.csv`. Allowed decisions and statuses are generated in `curation_schema.json`. A completed decision requires a reviewer, a compatible resolved filename, a declared annotation source, and an explicit include value. Pending decisions are never interpreted as approval.
+The 361 intentionally pending candidates are non-blocking under the revised evidence-based rule:
 
-Non-exact pair decisions are entered separately in `near_duplicate_review_decisions.csv`. Allowed outcomes are `distinct_capture`, `same_scene`, and `unrelated_false_positive`; pending remains the default. A `same_scene` decision may name a canonical sample. The pipeline excludes every non-canonical member of the resulting group and validates that the group cannot cross curated splits.
+| Pending category | Pairs | Blocks Phase 2? |
+|---|---:|:---:|
+| involves at least one excluded image | 283 | No |
+| both retained within one split | 78 | No |
+| both retained across different splits | 0 | Yes, if present |
 
-Run the workflow with:
+No pending row was silently reclassified.
+
+## Final curated benchmark
+
+| Measure | Raw official release | Curated benchmark |
+|---|---:|---:|
+| images | 1,065 | 720 |
+| objects | 1,584 | 1,065 |
+| excluded images | 0 | 345 |
+
+The 345 exclusions consist of 262 reviewed identity variants, two redundant exact copies, and 81 redundant reviewed same-scene component members.
+
+### Image split
+
+| Split | Images | Percentage |
+|---|---:|---:|
+| train | 510 | 70.83% |
+| validation | 101 | 14.03% |
+| test | 109 | 15.14% |
+
+### Object counts
+
+| Class | Total | Train | Validation | Test |
+|---|---:|---:|---:|---:|
+| craze | 169 | 123 | 19 | 27 |
+| corrosion | 178 | 126 | 22 | 30 |
+| surface_injure | 264 | 185 | 46 | 33 |
+| thunderstrike | 60 | 42 | 9 | 9 |
+| crack | 131 | 93 | 24 | 14 |
+| hide_craze | 263 | 188 | 26 | 49 |
+| **Total** | **1,065** | **757** | **146** | **162** |
+
+All six classes remain represented in train, validation, and test.
+
+## Reproduction and validation
 
 ```bash
-uv run python scripts/review_wtbd.py --config configs/curation.yaml
+uv run python scripts/review_wtbd.py --config configs/curation.yaml --no-images
 uv run python scripts/curate_wtbd.py --config configs/curation.yaml
-uv run python scripts/curate_wtbd.py --config configs/curation.yaml --validate-only
+uv run python scripts/curate_wtbd.py --config configs/curation.yaml --validate-only --strict
+uv run python -m pytest
 ```
 
-Use `--strict` when a nonzero exit is required while review blockers remain. `review_wtbd.py` preserves existing decision files instead of overwriting human work.
+The strict validator independently checks the raw fingerprint, manifest schema, identity decisions, exact groups, recomputed same-scene graph, human component cross-check, cross-split review table, pending-pair partition, split/class statistics, supplied expected-summary assertions, and empty blocker list.
 
-## Exact-duplicate policy
+The final machine-readable sources are `curation_manifest.csv`, `curated_instances.csv`, `curated_class_counts.csv`, `curated_split_membership.csv`, `curated_split_class_counts.csv`, `curation_summary.json`, and `curation_blockers.csv`.
 
-Exact groups are formed from both whole-file SHA-256 and decoded-pixel SHA-256. The canonical sample is the lowest natural sample ID and retains its official split; redundant copies are excluded.
+## Scientific interpretation
 
-| Group | Canonical | Retained split | Excluded redundant sample |
-|---|---:|---|---:|
-| `exact-001` | 547 | train | 640 (official validation) |
-| `exact-002` | 565 | train | 668 (official train) |
+The curated benchmark is intentionally different from the raw release. It is designed to reduce source-scene leakage for this experiment using stale-identity review, exact hashing, human-reviewed perceptual candidates, and connected-component deduplication. The project does not claim that the 720-image/1,065-object result reconstructs the authors' intended dataset or that every remaining within-split visual similarity is an independent physical scene.
 
-The official split file remains untouched. No included exact-duplicate group crosses a curated split.
-
-## Near-duplicate review
-
-The raw audit contains 491 non-exact dHash candidates, including 166 cross-split pairs. `near_duplicate_review_index.csv` prioritizes all 493 candidate rows (the 491 non-exact pairs plus two exact pairs) using exactness, cross-split status, dHash distance, image dimensions, annotation class overlap, object-count agreement, thumbnail pixel differences, and intensity correlation.
-
-No non-exact pair has been automatically declared leakage. All 491 remain pending human review, so Phase 2 remains blocked. The two exact pairs are handled by the exact policy above.
-
-## Raw and provisional curated statistics
-
-The curated statistics are generated from included manifest rows and their primary instances. They are not forced to match the publication.
-
-| Measure | Raw official release | Provisional curated interpretation |
-|---|---:|---:|
-| images | 1,065 | 801 |
-| objects | 1,584 | 1,215 |
-| excluded images | 0 | 264 |
-| unresolved identity rows included | not applicable | 0 |
-| redundant exact copies included | 2 raw copies present | 0 |
-
-The 264 exclusions comprise 262 pending identity rows and two redundant exact copies.
-
-| Class | Raw objects | Provisional curated objects |
-|---|---:|---:|
-| craze | 257 | 195 |
-| corrosion | 257 | 188 |
-| surface_injure | 412 | 315 |
-| thunderstrike | 92 | 66 |
-| crack | 224 | 167 |
-| hide_craze | 342 | 284 |
-
-| Split | Official images | Provisional curated images |
-|---|---:|---:|
-| train | 745 | 564 |
-| validation | 159 | 115 |
-| test | 161 | 122 |
-
-The authoritative machine-readable versions are `curation_summary.json`, `curated_class_counts.csv`, `curated_split_class_counts.csv`, and `curated_split_membership.csv`.
-
-## Validation and exit gate
-
-The manifest validator enforces centralized enums, complete schema, confirmed annotations for included rows, no included unresolved identity, one resolved image per included sample, and no duplicate group spanning curated splits. Tests also cover raw-path immutability, decision merging, exact canonicalization, reviewed same-scene canonical selection, deterministic statistics, annotator comparison, and fingerprint stability.
-
-The gate does not pass yet:
-
-- all 262 identity rows are safely excluded but await human decisions;
-- 491 non-exact near-duplicate pairs await review, including 166 cross-split candidates;
-- therefore the provisional 801-image interpretation is not authorized for Phase 3.
-
-`data/metadata/wtbd/curation_blockers.csv` is the exact machine-readable blocker list. No raw file was changed, no publication count was forced, no crop was generated, no model was implemented or trained, and no Phase 3 choice was made.
+No model code or pretrained weights were added, no model was trained, no crop preprocessing was frozen, and Phase 3 was not started.
