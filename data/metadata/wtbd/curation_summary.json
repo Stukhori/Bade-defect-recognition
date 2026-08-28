@@ -1,18 +1,16 @@
 {
-  "blockers": [
-    "262 identity decisions remain pending (all are policy-excluded)",
-    "491 non-exact near-duplicate decisions remain pending, including 166 cross-split pairs"
-  ],
+  "blockers": [],
   "curated_interpretation": {
+    "all_classes_present_in_every_split": true,
     "class_counts": {
-      "corrosion": 188,
-      "crack": 167,
-      "craze": 195,
-      "hide_craze": 284,
-      "surface_injure": 315,
-      "thunderstrike": 66
+      "corrosion": 178,
+      "crack": 131,
+      "craze": 169,
+      "hide_craze": 263,
+      "surface_injure": 264,
+      "thunderstrike": 60
     },
-    "completed_near_duplicate_decisions": 0,
+    "completed_near_duplicate_decisions": 130,
     "confirmed_same_scene_groups_crossing_splits": 0,
     "exact_duplicate_group_details": [
       {
@@ -41,32 +39,45 @@
       }
     ],
     "excluded_exact_duplicates": 2,
-    "excluded_images": 264,
+    "excluded_images": 345,
     "identity_mismatches": {
-      "manually_excluded": 0,
-      "policy_excluded_while_pending": 262,
+      "completed_human_decisions": 262,
+      "manually_excluded": 262,
+      "policy_excluded_while_pending": 0,
       "resolved_automatically": 0,
-      "resolved_manually": 0,
-      "still_pending": 262,
+      "resolved_manually": 262,
+      "reviewed_reused_exclusions": 262,
+      "still_pending": 0,
       "total": 262
     },
     "included_exact_duplicate_groups_crossing_splits": 0,
-    "included_images": 801,
+    "included_images": 720,
     "included_unresolved_identity_rows": 0,
     "near_duplicate_decision_counts": {
-      "pending_review": 491
+      "pending_review": 361,
+      "same_scene": 122,
+      "unrelated_false_positive": 8
     },
-    "object_count": 1215,
-    "pending_cross_split_near_duplicate_pairs": 166,
-    "pending_identity_rows": 262,
-    "pending_near_duplicate_pairs": 491,
+    "object_count": 1065,
+    "pending_cross_split_near_duplicate_pairs": 0,
+    "pending_identity_rows": 0,
+    "pending_near_duplicate_categories": {
+      "cross_split_retained_pairs": 0,
+      "involving_excluded_images": 283,
+      "within_split_retained_pairs": 78
+    },
+    "pending_near_duplicate_pairs": 361,
+    "retained_cross_split_completed_candidates": 8,
+    "same_scene_component_count": 50,
+    "same_scene_redundant_images_excluded": 81,
     "split_counts": {
-      "test": 122,
-      "train": 564,
-      "validation": 115
+      "test": 109,
+      "train": 510,
+      "validation": 101
     }
   },
   "curation_version": "wtbd-curation-v1",
+  "expected_post_review_validation": "pass",
   "phase_3_started": false,
   "published_counts_forced": false,
   "raw_data_modified": false,
@@ -92,5 +103,5 @@
   },
   "schema_version": "1.0",
   "source_dataset_fingerprint": "568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb",
-  "status": "BLOCKED_PENDING_HUMAN_REVIEW"
+  "status": "PASS"
 }

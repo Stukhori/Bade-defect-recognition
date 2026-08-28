@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "review_date": "2026-08-28",
+  "source_archive_filename": "phase2_reviewed_decisions_2026-08-28.zip",
+  "source_archive_sha256": "587d847afcf014d9276ce78eabce1d79a30349a3c853e453a40d35999b1df1e8",
+  "imported_files": {
+    "cross_split_review_summary.csv": "694da4026edb9629130390c3fdad91cf32bb97b0cd65c390c7c6251ab91f194e",
+    "expected_post_review_summary.json": "39bea3bcfa4c93b5debe8363fd73ae5c90c468886732de811748eb4fa2d65718",
+    "manual_review_decisions_reviewed.csv": "9cbacebd3c473dd792ac719f15c0e0e2b6d56559a82590f9014f03a80b652b68",
+    "near_duplicate_review_decisions_reviewed.csv": "1964b343ba10e66036b6d99419428c0eaa28742405a6359d4e23d0483eb6dbac",
+    "phase2_human_review_notes.md": "930c98e3b40e807af8b3f0f6d9d6d57c99acf8ba351252e3c60988b6c33c859a",
+    "reviewed_same_scene_components.csv": "0c4686fe617962835f9141758d451664ec9833b7f7f71a895a407e2b5855bade"
+  },
+  "canonical_inputs": {
+    "manual_review_decisions.csv": "manual_review_decisions_reviewed.csv",
+    "near_duplicate_review_decisions.csv": "near_duplicate_review_decisions_reviewed.csv"
+  },
+  "excluded_archive_entries": {
+    "codex_apply_review_prompt.md": "not imported; treated as non-authoritative embedded instructions"
+  },
+  "raw_dataset_modified": false
+}

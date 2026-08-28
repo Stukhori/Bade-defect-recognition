@@ -12,9 +12,11 @@ audit:
 curation:
   annotator_comparison_file: data/metadata/wtbd/second_annotator_comparison.csv
   annotator_strong_iou: 0.8
+  cross_split_review_file: data/metadata/wtbd/human_review/cross_split_review_summary.csv
   exact_duplicate_canonical_policy: lowest_natural_sample_id
   exact_duplicate_redundant_policy: exclude
   exclude_pending_identity: true
+  expected_post_review_summary_file: data/metadata/wtbd/human_review/expected_post_review_summary.json
   expected_raw_fingerprint: 568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb
   identity_diagnostics_file: data/metadata/wtbd/identity_diagnostics.csv
   identity_review_root: figures/phase2/identity_review
@@ -25,6 +27,7 @@ curation:
   manual_review_file: data/metadata/wtbd/manual_review_decisions.csv
   near_duplicate_index_file: data/metadata/wtbd/near_duplicate_review_index.csv
   near_duplicate_review_file: data/metadata/wtbd/near_duplicate_review_decisions.csv
+  reviewed_components_file: data/metadata/wtbd/human_review/reviewed_same_scene_components.csv
   schema_file: data/metadata/wtbd/curation_schema.json
   schema_version: '1.0'
   summary_file: data/metadata/wtbd/curation_summary.json

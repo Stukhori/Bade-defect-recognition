@@ -1,0 +1,32 @@
+{
+  "starting_provisional_included_images": 801,
+  "identity_reused_variants_excluded": 262,
+  "exact_duplicate_redundant_already_excluded": 2,
+  "same_scene_pair_decisions_written": 122,
+  "cross_split_same_scene_pairs_reviewed": 63,
+  "cross_split_false_positive_pairs_reviewed": 8,
+  "reviewed_same_scene_components": 50,
+  "additional_redundant_images_expected_to_exclude": 81,
+  "expected_included_images_after_reviewed_dedup": 720,
+  "expected_objects_after_reviewed_dedup": 1065,
+  "expected_split_image_counts": {
+    "train": 510,
+    "test": 109,
+    "validation": 101
+  },
+  "expected_split_percentages": {
+    "train": 70.8333,
+    "test": 15.1389,
+    "validation": 14.0278
+  },
+  "expected_class_counts": {
+    "surface_injure": 264,
+    "hide_craze": 263,
+    "corrosion": 178,
+    "craze": 169,
+    "crack": 131,
+    "thunderstrike": 60
+  },
+  "remaining_cross_split_dhash_candidates": 8,
+  "remaining_cross_split_candidates_should_all_be_reviewed_false_positives": true
+}

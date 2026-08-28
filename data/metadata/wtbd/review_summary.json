@@ -10,14 +10,26 @@
     "sample_count": 1065
   },
   "automatic_identity_resolutions_applied": 0,
-  "config_hash": "a4c17f8cdb2a",
+  "config_hash": "3d1fb2d18a91",
   "curation_version": "wtbd-curation-v1",
   "duplicate_review": {
     "candidate_rows": 493,
-    "cross_split_nonexact_pending": 166,
-    "nonexact_pending": 491
+    "completed_decisions": 130,
+    "cross_split_nonexact_pending": 95,
+    "decision_counts": {
+      "pending_review": 361,
+      "same_scene": 122,
+      "unrelated_false_positive": 8
+    },
+    "nonexact_pending": 361
   },
   "identity_mismatch_count": 262,
+  "identity_review": {
+    "completed_decisions": 262,
+    "decision_counts": {
+      "mark_annotation_reused": 262
+    }
+  },
   "identity_review_artifact_count": 262,
   "schema_version": "1.0",
   "source_dataset_fingerprint": "568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb"
