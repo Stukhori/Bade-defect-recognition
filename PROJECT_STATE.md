@@ -2,13 +2,77 @@
 
 ## Current phase
 
-- **Phase:** Phase 3 — Curated Classification Dataset and Preprocessing
-- **Status:** COMPLETE — deterministic crop, split, and training-subset gates pass
+- **Phase:** Phase 4 — Traditional Computer-Vision Baselines
+- **Status:** COMPLETE — HOG/LBP validation selection and frozen test evaluation pass
 - **Start date:** 2026-08-28
-- **Previous phases:** Phases 0, 1, and 2 — complete and frozen
-- **Next phase:** Phase 4 — Traditional Computer-Vision Baselines
+- **Previous phases:** Phases 0, 1, 2, and 3 — complete and frozen
+- **Next phase:** Phase 5 — ResNet-18 Transfer-Learning Baseline
 
-Phase 3 is complete. Phases 0–2 remain frozen. Phase 4 has not started; beginning it requires separate explicit authorization.
+Phase 4 is complete. Phases 0–3 remain frozen. Phase 5 has not started; beginning it requires separate explicit authorization.
+
+## Phase 4 — Traditional Computer-Vision Baselines
+
+Phase 4 establishes the frozen HOG + RBF-SVM and multi-scale spatial LBP + RBF-SVM baselines using only the full Phase 3 training partition. It is the first phase with real model-performance results.
+
+### Phase 4 status
+
+**COMPLETE.** Phase 3 passed its full gate before feature extraction or training. Exactly eight predeclared SVM candidates per feature family were evaluated using train and validation only. Both winners were frozen before the test gate, and exactly those two selected models were evaluated on test. The expanded suite reports **113 passed and 0 failed**.
+
+### Frozen input and feature identity
+
+- Processed version: `wtbd_crops_v1`.
+- Processed fingerprint: `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`.
+- Instance counts: 757 train, 146 validation, and 162 test; total 1,065.
+- HOG dimensions/config hash/feature fingerprint: 6,084 / `e0723cd80ec462644aec14e3827821d716d04ff375424b5de45ac5ddac4d5cf2` / `a89e1102fd90cf8d2ecc8698b029bd90f05abbdf39cd3861b3ceefaceef3ecbf`.
+- LBP dimensions/config hash/feature fingerprint: 1,372 / `e952103e7c0664952a0b8c568141bd26d177333c572f7ec134d1270c2592d122` / `2826d502592c6b4066cab2dd64b556a281e79752659401d271986d9990f004e8`.
+- Validation-grid fingerprint: `e897c6b58911baaf27d626d38a598404d538af7bf99f72aa7a1a7a1043ad8bb8`.
+
+### Frozen selection and results
+
+| Method | Selected C | gamma | Validation macro-F1 | Test accuracy | Test balanced accuracy | Test macro-F1 |
+|---|---:|---|---:|---:|---:|---:|
+| HOG + SVM | 10 | scale | 0.448100 | 0.530864 | 0.457766 | 0.477988 |
+| LBP + SVM | 10 | scale | 0.495356 | 0.611111 | 0.572746 | 0.592401 |
+
+Per-class test F1 in frozen class order (craze/corrosion/surface_injure/thunderstrike/crack/hide_craze):
+
+- HOG: 0.596491 / 0.452830 / 0.500000 / 0.363636 / 0.347826 / 0.607143.
+- LBP: 0.677966 / 0.526316 / 0.470588 / 0.500000 / 0.666667 / 0.712871.
+
+### Efficiency record
+
+| Measure | HOG + SVM | LBP + SVM |
+|---|---:|---:|
+| first full feature extraction | 17.708 s | 45.016 s |
+| final train-only fit | 2.924 s | 0.647 s |
+| feature latency/image | 10.564 ms | 31.609 ms |
+| prediction latency/image | 3.549 ms | 0.861 ms |
+| combined latency/image | 14.112 ms | 32.470 ms |
+| model size | 35,551,712 bytes | 7,687,831 bytes |
+
+Timings are descriptive medians from the recorded Windows CPU environment and do not imply other-hardware performance.
+
+### Phase 4 evidence and exit gate
+
+- Result ID: `phase4_traditional_v1`.
+- Clean apparatus commit used by frozen configs: `f5ae5ae8dd7b7dd8f315fdbc944138f32cbfb3b8`.
+- Frozen winner configs: `configs/frozen/traditional_hog_svm.yaml` and `traditional_lbp_svm.yaml`.
+- Versioned machine-readable outputs: `experiments/summaries/phase4_traditional_v1/`.
+- Regenerable models/full run: `experiments/results/phase4_traditional_v1/`.
+- Scientific figures: `figures/phase4/`.
+- Complete method and result record: `docs/phase4_traditional_baselines.md`.
+- [x] Phase 2 strict and Phase 3 complete gates pass before training.
+- [x] Processed dataset fingerprint and all 1,065 sample identities remain unchanged.
+- [x] HOG is exactly 1,065 × 6,084 and LBP is exactly 1,065 × 1,372; all values are finite.
+- [x] Scalers/SVMs fit training instances only; test cannot enter validation selection.
+- [x] Exactly 8 HOG and 8 LBP validation candidates are saved.
+- [x] Deterministic tie-breaking selected C=10/gamma=scale for both families.
+- [x] Winner YAML files were written before test evaluation.
+- [x] Only the two selected configurations were evaluated on test.
+- [x] Metrics, per-class records, predictions, confusion matrices, timing, model hashes, and sizes are machine-readable.
+- [x] Unchanged canonical rerun reproduces scientific files, fingerprints, predictions, metrics, and model hashes.
+- [x] Full test suite passes: 113 passed, 0 failed.
+- [x] No CNN, pretrained weight, 25/50/75% run, augmentation, corruption, or Phase 5 work was started.
 
 ## Phase 3 — Curated Classification Dataset and Preprocessing
 
@@ -310,4 +374,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phases 0–2 remain frozen unless the user explicitly requests a documented revision. Phase 3 is complete and `wtbd_crops_v1` is the authoritative common classification input for the next phase. Phase 4 has not started: do not extract scientific features, train models, download pretrained weights, or implement robustness experiments without separate explicit authorization.
+Completed Phases 0–3 remain frozen unless the user explicitly requests a documented revision. Phase 4 is complete; its HOG/LBP feature definitions and selected SVM hyperparameters are frozen for later comparisons. Phase 5 has not started: do not implement or train ResNet-18, download pretrained weights, or run later data-efficiency or robustness experiments without separate explicit authorization.

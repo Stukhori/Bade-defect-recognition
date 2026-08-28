@@ -10,7 +10,7 @@ The reference interpreter is Python 3.11. With [`uv`](https://docs.astral.sh/uv/
 uv sync --extra dev
 ```
 
-Runtime dependencies are PyYAML, NumPy, Pillow, and matplotlib; pytest is the development/test dependency. PyTorch and torchvision are not required or installed.
+Runtime dependencies are PyYAML, NumPy, Pillow, matplotlib, scikit-image, scikit-learn, and joblib; pytest is the development/test dependency. PyTorch and torchvision are not required or installed.
 
 ## Run the complete test suite
 
@@ -60,6 +60,16 @@ uv run python scripts/build_training_subsets.py --config configs/crop_dataset.ya
 
 The common 224 × 224 RGB PNG payload is under `data/processed/wtbd_crops_v1/images/` and is ignored by Git. Its versioned manifest, checksums, summary, and fingerprint are beside it; split manifests are under `data/splits/wtbd_crops_v1/`, and compact statistics and subset fingerprints are under `data/metadata/wtbd/`. See [`docs/phase3_crop_preprocessing.md`](docs/phase3_crop_preprocessing.md).
 
+## Run the frozen traditional baselines
+
+The canonical Phase 4 command validates Phase 3, extracts or validates cached HOG/LBP features, performs the fixed validation-only SVM grids, freezes both winners, and evaluates only the selected models on test:
+
+```bash
+uv run python scripts/run_traditional_baselines.py --config configs/traditional_baselines.yaml
+```
+
+Versioned machine-readable results are under `experiments/summaries/phase4_traditional_v1/`; regenerable model binaries and caches remain ignored under `experiments/results/` and `experiments/cache/`. Figures are under `figures/phase4/`. See [`docs/phase4_traditional_baselines.md`](docs/phase4_traditional_baselines.md).
+
 ## Phase boundaries
 
-Phases 0–2 remain frozen, and Phase 3 is complete. The processed benchmark contains 1,065 classification crops from 720 retained source images with no unresolved retained cross-split candidate. Phase 4 feature extraction and model fitting have not started.
+Phases 0–3 remain frozen, and Phase 4 is complete. HOG + SVM and LBP + SVM selected configurations and first test results are frozen. Phase 5 ResNet-18 work has not started.
