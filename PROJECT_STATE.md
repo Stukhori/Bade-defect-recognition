@@ -2,13 +2,78 @@
 
 ## Current phase
 
-- **Phase:** Phase 2 — WTBD Dataset Acquisition and Forensic Audit
-- **Status:** COMPLETE — reviewed curation passes the Phase 2 exit gate
+- **Phase:** Phase 3 — Curated Classification Dataset and Preprocessing
+- **Status:** COMPLETE — deterministic crop, split, and training-subset gates pass
 - **Start date:** 2026-08-28
-- **Previous phases:** Phase 0 and Phase 1 — complete and frozen
-- **Next phase:** Phase 3 — Frozen Split Representation and Crop/Preprocessing Design
+- **Previous phases:** Phases 0, 1, and 2 — complete and frozen
+- **Next phase:** Phase 4 — Traditional Computer-Vision Baselines
 
-Phase 2 is complete. Phase 0 research decisions and Phase 1 infrastructure remain frozen. Phase 3 has not started; beginning it requires a separate explicit authorization.
+Phase 3 is complete. Phases 0–2 remain frozen. Phase 4 has not started; beginning it requires separate explicit authorization.
+
+## Phase 3 — Curated Classification Dataset and Preprocessing
+
+Phase 3 transforms every retained Phase 2 annotation into one deterministic classification sample. It freezes the common crop representation and source-grouped data-efficiency manifests without performing feature extraction, model fitting, augmentation, corruption, or performance evaluation.
+
+### Phase 3 status
+
+**COMPLETE.** The clean rebuild generated exactly 1,065 validated 224 × 224 RGB PNG crops from 720 curated source images. All 1,065 PNGs and 28 metadata/QC artifacts reproduced byte-for-byte on a second complete build. The expanded suite reports **93 passed and 0 failed**; Phase 2 strict validation and both Phase 3 validation commands pass.
+
+### Frozen crop and dataset policy
+
+- Processed version: `wtbd_crops_v1`.
+- Unit: one classification sample per curated annotated defect instance.
+- Stable instance identity: `<source_image_id>_<validated_object_index>`.
+- Frozen labels: craze=0, corrosion=1, surface_injure=2, thunderstrike=3, crack=4, hide_craze=5.
+- Crop side: `max(64, ceil(1.5 × max(bbox_width, bbox_height)))`, capped at the largest square that fits the decoded source image.
+- Geometry: square centered as closely as possible; shift inside image boundaries; no padding or synthetic pixels; complete annotation required.
+- Input bounds remain one-based inclusive VOC; recorded crop bounds are zero-based half-open pixel coordinates.
+- Neutral output: deterministic bilinear resize to 224 × 224, RGB, lossless PNG; no enhancement, normalization, augmentation, or corruption.
+- Common-input rule: every later core method derives from the same Phase 3 image.
+
+### Processed dataset and provenance
+
+- Upstream raw fingerprint: `568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb`.
+- Phase 2 curation-manifest SHA-256: `9e5ce3b44457e52f686fb16f62df18a10a576262c9f0f89b96ccdd75d89c0767`.
+- Phase 3 resolved-config SHA-256: `e91f2026c3e6ac8dc75adf138014cf07a4e9d8907c638ae21fe52c799460b9b8`.
+- Processed dataset fingerprint: `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`.
+- Class counts: craze 169, corrosion 178, surface_injure 264, thunderstrike 60, crack 131, hide_craze 263.
+- Source images by split: train 510, validation 101, test 109.
+- Crop instances by split: train 757, validation 146, test 162.
+- Every class is present in every split; source-ID split intersections are empty.
+- Crop side median: 537 pixels. Defect occupancy min/p05/p25/median/p75/p95/max: 0.028451/0.059817/0.128937/0.239509/0.355987/0.426917/0.646800.
+- Four crops use the 64-pixel minimum, 568 are shifted at a boundary, and 167 are clipped to the maximum in-image square. No crop truncates its annotation.
+
+### Frozen data-efficiency subsets
+
+- Scientific subset seeds: 17, 29, and 43.
+- Unit: training source image; every selected source contributes all of its defect instances.
+- Exact source targets: 128/255/383/510 for 25%/50%/75%/100%.
+- Every seed family is strictly nested and every subset contains all six classes.
+- Validation and test do not enter the selection objective and remain fixed.
+- Partial-fraction instance totals are 252/440/608; the full training set contains 757 instances.
+- Seed 17 fingerprints: `b231a06c1e90ce97090359e861df054c98e1084c46288571424851b37ab606dd`, `ec9f49a5532a62afac49942d45fe02c214442d944a173a4954152d2bdb9c3a7f`, `bd8d15b8214c52378f83cdf666cd46fc0411272fcc1967654d3c0280a47cb496`, `32819d7250690290f9f7ea19325b053affbbf30bcaca21a3ea0fe5c4f2584b95`.
+- Seed 29 fingerprints: `a2b427a6a682de42ef29280042c0ffbe862f80963b13dbb15aa5bfabf77db10c`, `b6f5222161c60af4373413caf49409b12f0e29720b6dd035ee2e4aad2e620f8c`, `3f2a2f67ca829e008d12e95f3526d8595aff0a61e2ae99a9acb2150a215fc21d`, `32819d7250690290f9f7ea19325b053affbbf30bcaca21a3ea0fe5c4f2584b95`.
+- Seed 43 fingerprints: `3b43aaefb03318b3b5349ffd81626b0f15dd1fc3eb7e3d40523a0e1cf6580f33`, `5a66073adc48f8aa57c7c7711a86676540adfa5a6ee5e59d981d5cc874632a19`, `6ee68e91f499b1e011ebbe17a97cf3f1bc8e314ba28de0331156ad7f17560005`, `32819d7250690290f9f7ea19325b053affbbf30bcaca21a3ea0fe5c4f2584b95`.
+
+### Phase 3 evidence and exit gate
+
+- Frozen config: `configs/crop_dataset.yaml`.
+- Processed manifest, checksum manifest, summary, resolved config, and regenerable payload location: `data/processed/wtbd_crops_v1/`.
+- Instance split and nested subset manifests: `data/splits/wtbd_crops_v1_split.csv` and `data/splits/wtbd_crops_v1/`.
+- Crop statistics, split counts, label map, and subset fingerprints: `data/metadata/wtbd/`.
+- Training-only QC sheets: `figures/phase3/crop_qc/`.
+- Methodology and complete results: `docs/phase3_crop_preprocessing.md`.
+- [x] Phases 0–2 remain frozen and Phase 2 strict validation passes.
+- [x] Raw and curated fingerprints/counts match the frozen inputs.
+- [x] Exactly 1,065 valid crops were generated with no excluded source.
+- [x] Class counts and source/instance split counts reproduce exactly.
+- [x] Every crop contains its full annotation and uses no padding.
+- [x] Three nested source-group subset families validate at exact target counts.
+- [x] Every split and every training subset contains all six classes.
+- [x] Processed and subset fingerprints are recorded.
+- [x] Clean deterministic regeneration passes for 1,093/1,093 artifacts.
+- [x] Full test suite passes: 93 passed, 0 failed.
+- [x] No model, pretrained weight, augmentation, corruption, or Phase 4 work was started.
 
 ## Phase 2 — WTBD Dataset Acquisition and Forensic Audit
 
@@ -203,17 +268,18 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 - [x] Configuration schema, smoke command, artifact directory conventions, and machine-readable JSON output.
 - [x] Logging, Git/environment provenance, deterministic controls, and validation tests.
 
-### Dataset and preprocessing phase, before model experiments
+### Resolved in Phase 3
 
-- Verification procedure for the supplied WTBD source-image split and fallback only if it is unavailable or invalid.
-- Exact fixed context-margin definition and rounding behavior.
-- Crop boundary, malformed-annotation, and image/annotation integrity handling.
-- Exact resize/pad dimensions, interpolation, color conversion, normalization, and method-fair preprocessing rules.
-- Exact stratified training-subset construction and handling when perfect stratification is infeasible.
-- The three numeric random-seed values; these must be frozen before Phase 3.
+- [x] The validated supplied source-image split is inherited by every crop.
+- [x] The contextual crop multiplier, minimum, coordinate conversion, and rounding behavior are frozen.
+- [x] Boundary shifting, annotation containment, and image/annotation integrity handling are frozen and tested.
+- [x] The 224 × 224 RGB PNG common input, bilinear interpolation, no-padding policy, and later method-fairness boundary are frozen.
+- [x] Deterministic grouped, nested training-subset construction is implemented and validated.
+- [x] Scientific data-efficiency seeds are frozen as 17, 29, and 43.
+
+### Phase 4 and later, before applicable results are viewed
+
 - Exact class weighting or balancing protocol, including the explicit choice to use none if applicable.
-
-### Phase 3 preparation, before applicable results are viewed
 
 - HOG and LBP feature-extraction parameters.
 - SVM kernel, regularization, multiclass handling, scaling, and validation search protocol.
@@ -244,4 +310,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phase 0 and Phase 1 decisions and documents remain frozen unless the user explicitly requests a documented revision. Phase 2 is complete and its reviewed manifest is the authoritative WTBD benchmark input for the next phase. Phase 3 has not started: do not create final crops, implement or train models, download pretrained weights, or freeze preprocessing without separate explicit authorization.
+Completed Phases 0–2 remain frozen unless the user explicitly requests a documented revision. Phase 3 is complete and `wtbd_crops_v1` is the authoritative common classification input for the next phase. Phase 4 has not started: do not extract scientific features, train models, download pretrained weights, or implement robustness experiments without separate explicit authorization.

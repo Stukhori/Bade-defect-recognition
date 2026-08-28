@@ -1,6 +1,6 @@
 # Robust Wind Turbine Blade Defect Recognition
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phase 2 acquired, audited, human-reviewed, and non-destructively curated the official WTBD release. Its exit gate passes; no model results exist. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phase 3 has frozen and generated the deterministic classification crops and source-aware data-efficiency subsets from the reviewed Phase 2 WTBD curation. Its exit gate passes; no model results exist. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -49,6 +49,17 @@ uv run python scripts/curate_wtbd.py --config configs/curation.yaml --validate-o
 
 `--strict` now succeeds only when the reviewed manifest passes every Phase 2 gate. Decisions and imported review provenance are versioned; rerunning review preserves the decision files. See [`docs/phase2_curation.md`](docs/phase2_curation.md).
 
+## Regenerate the Phase 3 classification dataset
+
+With the immutable official WTBD release present under `data/raw/wtbd/`, rebuild the 1,065 lossless crops and then the nested training subsets:
+
+```bash
+uv run python scripts/build_wtbd_crops.py --config configs/crop_dataset.yaml
+uv run python scripts/build_training_subsets.py --config configs/crop_dataset.yaml
+```
+
+The common 224 × 224 RGB PNG payload is under `data/processed/wtbd_crops_v1/images/` and is ignored by Git. Its versioned manifest, checksums, summary, and fingerprint are beside it; split manifests are under `data/splits/wtbd_crops_v1/`, and compact statistics and subset fingerprints are under `data/metadata/wtbd/`. See [`docs/phase3_crop_preprocessing.md`](docs/phase3_crop_preprocessing.md).
+
 ## Phase boundaries
 
-Phases 0 and 1 remain frozen, and Phase 2 is complete. The reviewed benchmark contains 720 images and 1,065 objects with no unresolved retained cross-split candidate. Phase 3 preprocessing, feature extraction, model fitting, and robustness evaluation have not started.
+Phases 0–2 remain frozen, and Phase 3 is complete. The processed benchmark contains 1,065 classification crops from 720 retained source images with no unresolved retained cross-split candidate. Phase 4 feature extraction and model fitting have not started.

@@ -5,7 +5,7 @@ WTBD version 1 was acquired in Phase 2 from the official Springer Nature Figshar
 - `raw/` is reserved for immutable original downloaded source data. Never edit, rename internally, overwrite, or transform raw dataset files in place.
 - `metadata/` contains small, versionable provenance, checksums, raw-audit tables, review decisions, the curation manifest, and raw/curated summaries derived without altering raw files.
 - `interim/` is reserved for intermediate transformations that can be recreated from raw data and recorded configuration.
-- `processed/` is reserved for derived, final model-ready data that can be recreated from raw data and recorded configuration.
-- `splits/` is reserved for small, version-controlled split metadata. Future split files must preserve source-image grouping and provenance.
+- `processed/` contains the versioned `wtbd_crops_v1` metadata and the regenerable, Git-ignored 224 × 224 PNG payload.
+- `splits/` contains small, version-controlled instance split and nested source-group subset manifests.
 
-Raw, interim, and processed payloads are ignored by Git. Their directory placeholders and this policy are tracked. Metadata and small split definitions remain versionable. The reviewed Phase 2 curated split metadata passes its gate, but final classification crops and model-ready preprocessing have not been created; those belong to Phase 3.
+Raw and interim payloads and generated crop pixels are ignored by Git. Phase 3 configs, processed manifests, checksums, fingerprints, summaries, and split definitions are versioned. Regenerate the crop payload with `python scripts/build_wtbd_crops.py --config configs/crop_dataset.yaml`, followed by `python scripts/build_training_subsets.py --config configs/crop_dataset.yaml`.

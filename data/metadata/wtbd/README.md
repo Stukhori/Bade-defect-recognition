@@ -1,6 +1,6 @@
 # WTBD Audit Metadata
 
-This tracked directory contains small, deterministic metadata derived from the immutable official WTBD release in `data/raw/wtbd/`. It contains no image pixels and no model-ready crops.
+This tracked directory contains small, deterministic metadata derived from the immutable official WTBD release and its reviewed curation. It contains no image pixels.
 
 - `source.json` records official Springer Nature Figshare provenance and the archive checksum.
 - `audit_resolved_config.yaml` is the exact Phase 2 audit configuration.
@@ -20,6 +20,9 @@ This tracked directory contains small, deterministic metadata derived from the i
 - `curation_blockers.csv` is the machine-readable exit-gate blocker table; after reviewed curation it contains only its header.
 - `curation_summary.json` and the `curated_*` CSV files keep final reviewed curated statistics separate from the raw audit.
 - `human_review/` preserves the reviewed decision sources, connected-component cross-check, expected-count assertions, notes, checksums, and import boundary.
+- `classification_label_map.json` freezes the Phase 3 six-class integer order.
+- `phase3_crop_statistics.csv` and `phase3_split_instance_counts.csv` record crop geometry and inherited instance-split statistics.
+- `training_subset_summary.json` records all scientific subset counts, deviations, nesting assertions, and fingerprints.
 
 Regenerate these records with:
 
@@ -27,6 +30,8 @@ Regenerate these records with:
 uv run python scripts/audit_wtbd.py --config configs/dataset_audit.yaml
 uv run python scripts/review_wtbd.py --config configs/curation.yaml
 uv run python scripts/curate_wtbd.py --config configs/curation.yaml
+uv run python scripts/build_wtbd_crops.py --config configs/crop_dataset.yaml
+uv run python scripts/build_training_subsets.py --config configs/crop_dataset.yaml
 ```
 
-The official raw release is CC BY 4.0 and remains excluded from Git. Phase 2 curation status is `PASS`; the reviewed manifest is the authoritative benchmark input for a separately authorized Phase 3.
+The official raw release is CC BY 4.0 and remains excluded from Git. Phase 2 curation and Phase 3 preprocessing both pass their gates. Phase 4 has not started.
