@@ -20,9 +20,13 @@ from windblade.data.curation import (
     _exact_group_map,
     apply_identity_decisions,
     assert_output_paths_safe,
+    build_same_scene_components,
+    classify_pending_near_duplicates,
     curated_statistics,
     current_raw_fingerprint,
     match_annotation_objects,
+    missing_classes_by_split,
+    same_scene_component_violations,
     validate_manifest,
     verify_raw_fingerprint,
 )
@@ -161,15 +165,16 @@ def test_same_scene_decision_excludes_redundant_sample() -> None:
             "reviewer": "reviewer-1",
         }
     ]
-    resolved, completed = _apply_near_decisions(rows, candidates, decisions)
+    resolved, completed, components = _apply_near_decisions(rows, candidates, decisions)
     by_id = {row["sample_id"]: row for row in resolved}
     assert completed == 1
+    assert len(components) == 1
     assert by_id["10"]["include"] is True
     assert by_id["743"]["include"] is False
     assert by_id["743"]["reason_code"] == ReasonCode.NEAR_SAME_SCENE_REDUNDANT.value
 
 
-def test_same_scene_decision_honors_recorded_canonical() -> None:
+def test_same_scene_canonical_must_be_deterministic_lowest_id() -> None:
     rows = [manifest_row("10", "train"), manifest_row("743", "test")]
     candidates = [{"pair_id": "pair-0001", "image_a": "10.jpg", "image_b": "743.jpg"}]
     decisions = [
@@ -183,10 +188,90 @@ def test_same_scene_decision_honors_recorded_canonical() -> None:
             "reviewer": "reviewer-1",
         }
     ]
-    resolved, _ = _apply_near_decisions(rows, candidates, decisions)
+    with pytest.raises(CurationError, match="computed lowest ID 10"):
+        _apply_near_decisions(rows, candidates, decisions)
+
+
+def pending_decision(pair_id: str, first: str, second: str) -> dict[str, str]:
+    return {
+        "pair_id": pair_id,
+        "image_a": f"{first}.jpg",
+        "image_b": f"{second}.jpg",
+        "decision": NearDuplicateDecision.PENDING.value,
+        "canonical_sample_id": "",
+        "notes": "",
+        "reviewer": "",
+    }
+
+
+def test_pending_pair_with_excluded_sample_is_not_a_blocker() -> None:
+    first = manifest_row("1", "train")
+    second = manifest_row("2", "test")
+    second["include"] = False
+    second["curated_split"] = ""
+    candidates = [{"pair_id": "p1", "image_a": "1.jpg", "image_b": "2.jpg"}]
+    result = classify_pending_near_duplicates([first, second], candidates, [pending_decision("p1", "1", "2")])
+    assert result["involving_excluded_images"] == ["p1"]
+    assert result["cross_split_retained_pairs"] == []
+
+
+def test_pending_within_split_pair_is_not_a_blocker() -> None:
+    rows = [manifest_row("1", "train"), manifest_row("2", "train")]
+    candidates = [{"pair_id": "p1", "image_a": "1.jpg", "image_b": "2.jpg"}]
+    result = classify_pending_near_duplicates(rows, candidates, [pending_decision("p1", "1", "2")])
+    assert result["within_split_retained_pairs"] == ["p1"]
+    assert result["cross_split_retained_pairs"] == []
+
+
+def test_pending_cross_split_retained_pair_is_a_blocker() -> None:
+    rows = [manifest_row("1", "train"), manifest_row("2", "test")]
+    candidates = [{"pair_id": "p1", "image_a": "1.jpg", "image_b": "2.jpg"}]
+    result = classify_pending_near_duplicates(rows, candidates, [pending_decision("p1", "1", "2")])
+    assert result["cross_split_retained_pairs"] == ["p1"]
+
+
+def test_transitive_same_scene_component_keeps_only_lowest_id() -> None:
+    candidates = [
+        {"pair_id": "p1", "image_a": "10.jpg", "image_b": "30.jpg"},
+        {"pair_id": "p2", "image_a": "20.jpg", "image_b": "30.jpg"},
+    ]
+    decisions = [
+        {**pending_decision("p1", "10", "30"), "decision": "same_scene", "canonical_sample_id": "10", "reviewer": "r"},
+        {**pending_decision("p2", "20", "30"), "decision": "same_scene", "canonical_sample_id": "10", "reviewer": "r"},
+    ]
+    rows = [manifest_row("10", "test"), manifest_row("20", "train"), manifest_row("30", "validation")]
+    resolved, completed, components = _apply_near_decisions(rows, candidates, decisions)
     by_id = {row["sample_id"]: row for row in resolved}
-    assert by_id["10"]["include"] is False
-    assert by_id["743"]["include"] is True
+    assert completed == 2
+    assert components[0].canonical_sample_id == "10"
+    assert components[0].members == ("10", "20", "30")
+    assert by_id["10"]["include"] is True
+    assert by_id["20"]["include"] is False
+    assert by_id["30"]["include"] is False
+    assert by_id["20"]["reason_code"] == ReasonCode.NEAR_SAME_SCENE_REDUNDANT.value
+    assert same_scene_component_violations(resolved, components) == []
+
+
+def test_completed_unrelated_cross_split_pair_remains_included() -> None:
+    rows = [manifest_row("1", "train"), manifest_row("2", "test")]
+    candidates = [{"pair_id": "p1", "image_a": "1.jpg", "image_b": "2.jpg"}]
+    decision = {
+        **pending_decision("p1", "1", "2"),
+        "decision": NearDuplicateDecision.UNRELATED.value,
+        "reviewer": "r",
+    }
+    resolved, completed, components = _apply_near_decisions(rows, candidates, [decision])
+    assert completed == 1
+    assert components == ()
+    assert all(row["include"] for row in resolved)
+
+
+def test_all_classes_must_remain_in_every_split() -> None:
+    labels = ("craze", "corrosion", "surface_injure", "thunderstrike", "crack", "hide_craze")
+    counts = {(split, label): 1 for split in ("train", "validation", "test") for label in labels}
+    assert missing_classes_by_split(counts) == []
+    counts[("test", "thunderstrike")] = 0
+    assert missing_classes_by_split(counts) == ["test:thunderstrike"]
 
 
 def test_curated_statistics_are_deterministic_and_exclude_rows() -> None:

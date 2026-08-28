@@ -39,3 +39,6 @@ experiments/results/**
 
 # Logs outside ignored run directories
 *.log
+
+# Local review-transfer bundles (versioned contents live under data/metadata)
+phase2_human_review_artifacts_*.zip

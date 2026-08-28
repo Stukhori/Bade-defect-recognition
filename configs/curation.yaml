@@ -16,6 +16,9 @@ curation:
   expected_raw_fingerprint: 568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb
   manual_review_file: data/metadata/wtbd/manual_review_decisions.csv
   near_duplicate_review_file: data/metadata/wtbd/near_duplicate_review_decisions.csv
+  reviewed_components_file: data/metadata/wtbd/human_review/reviewed_same_scene_components.csv
+  cross_split_review_file: data/metadata/wtbd/human_review/cross_split_review_summary.csv
+  expected_post_review_summary_file: data/metadata/wtbd/human_review/expected_post_review_summary.json
   identity_diagnostics_file: data/metadata/wtbd/identity_diagnostics.csv
   annotator_comparison_file: data/metadata/wtbd/second_annotator_comparison.csv
   near_duplicate_index_file: data/metadata/wtbd/near_duplicate_review_index.csv

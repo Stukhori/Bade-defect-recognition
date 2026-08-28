@@ -368,11 +368,12 @@ No curation summary was present when this raw audit was rendered. The raw findin
 The immutable raw audit is followed by the versioned `wtbd-curation-v1` reconciliation layer documented in `docs/phase2_curation.md`. It never edits an image, XML, or official split file.
 
 - Curation status: **{curation_summary['status']}**.
-- Identity mismatches: {identity['total']}; automatically resolved: {identity['resolved_automatically']}; manually resolved: {identity['resolved_manually']}; policy-excluded while pending: {identity['policy_excluded_while_pending']}.
-- Provisional curated images/objects: {curated['included_images']} / {curated['object_count']}.
+- Identity mismatches: {identity['total']}; completed human decisions: {identity['completed_human_decisions']}; reviewed reused/derived exclusions: {identity['reviewed_reused_exclusions']}; still pending: {identity['still_pending']}.
+- Curated benchmark images/objects: {curated['included_images']} / {curated['object_count']}.
 - Excluded images: {curated['excluded_images']}, including {curated['excluded_exact_duplicates']} redundant exact copies.
+- Reviewed same-scene components: {curated['same_scene_component_count']}; redundant component members excluded: {curated['same_scene_redundant_images_excluded']}.
 - Exact duplicate groups crossing curated splits: {curated['included_exact_duplicate_groups_crossing_splits']}.
-- Pending non-exact near-duplicate pairs: {curated['pending_near_duplicate_pairs']}, including {curated['pending_cross_split_near_duplicate_pairs']} cross-split candidates.
+- Pending non-exact candidates: {curated['pending_near_duplicate_pairs']}; involving excluded images: {curated['pending_near_duplicate_categories']['involving_excluded_images']}; retained within one split: {curated['pending_near_duplicate_categories']['within_split_retained_pairs']}; retained across splits: {curated['pending_near_duplicate_categories']['cross_split_retained_pairs']}.
 
 Every unresolved row is listed in `data/metadata/wtbd/curation_blockers.csv`. Recommendations are evidence only and are never silently applied as decisions.
 """
@@ -504,7 +505,7 @@ The included `preprocessing_demo.py` reads common image extensions with OpenCV, 
 
 ## 17. Phase 2 exit-gate status
 
-**{summary['audit']['status'].upper()}**. All counts and conclusions in this document were generated from the machine-readable audit, not manually transcribed. No model was trained, no model weights were downloaded, no final classification crops were created, and no Phase 3 preprocessing choice was frozen.
+Raw official-release audit status: **{summary['audit']['status'].upper()}** because its files still disagree with publication counts and contain stale identities/duplicates. Curated Phase 2 exit-gate status: **{curation_summary['status'] if curation_summary else 'NOT RUN'}**. The curation does not claim to reconstruct the authors' intended dataset; it constructs a documented leakage-reduced benchmark. All counts were generated from machine-readable evidence, not manually transcribed. No model was trained, no model weights were downloaded, no final classification crops were created, and no Phase 3 preprocessing choice was frozen.
 """
 
 

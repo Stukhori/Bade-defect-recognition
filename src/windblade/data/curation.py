@@ -149,6 +149,13 @@ class CurationResult:
     blockers: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class SameSceneComponent:
+    group_id: str
+    canonical_sample_id: str
+    members: tuple[str, ...]
+
+
 def _resolve(root: Path, value: str) -> Path:
     path = Path(value)
     return path if path.is_absolute() else root / path
@@ -604,6 +611,11 @@ def build_review_evidence(
         for row in diagnostics
         if "annotation_exactly_repeats_declared_sample" in str(row["evidence_flags"])
     )
+    identity_review_decisions = _read_csv(manual_path)
+    near_review_decisions = _read_csv(near_decision_path)
+    identity_decision_counts = Counter(row["decision"] for row in identity_review_decisions)
+    near_decision_counts = Counter(row["decision"] for row in near_review_decisions)
+    candidate_by_pair = {row["pair_id"]: row for row in near_rows}
     summary = {
         "schema_version": "1.0",
         "curation_version": policy["version"],
@@ -612,6 +624,14 @@ def build_review_evidence(
         "identity_mismatch_count": len(diagnostics),
         "automatic_identity_resolutions_applied": 0,
         "identity_review_artifact_count": len(diagnostics),
+        "identity_review": {
+            "decision_counts": dict(sorted(identity_decision_counts.items())),
+            "completed_decisions": sum(
+                count
+                for decision, count in identity_decision_counts.items()
+                if decision != IdentityDecision.PENDING.value
+            ),
+        },
         "annotator_comparison": {
             "sample_count": len(annotator_rows),
             "categories": dict(sorted(aggregate.items())),
@@ -619,18 +639,18 @@ def build_review_evidence(
         },
         "duplicate_review": {
             "candidate_rows": len(near_rows),
-            "nonexact_pending": sum(
-                1
-                for row in near_rows
-                if not _parse_bool(row["exact_duplicate"], field="exact_duplicate")
-                and not _parse_bool(row["pixel_duplicate"], field="pixel_duplicate")
+            "decision_counts": dict(sorted(near_decision_counts.items())),
+            "completed_decisions": sum(
+                count
+                for decision, count in near_decision_counts.items()
+                if decision != NearDuplicateDecision.PENDING.value
             ),
+            "nonexact_pending": near_decision_counts[NearDuplicateDecision.PENDING.value],
             "cross_split_nonexact_pending": sum(
                 1
-                for row in near_rows
-                if _parse_bool(row["cross_split"], field="cross_split")
-                and not _parse_bool(row["exact_duplicate"], field="exact_duplicate")
-                and not _parse_bool(row["pixel_duplicate"], field="pixel_duplicate")
+                for row in near_review_decisions
+                if row["decision"] == NearDuplicateDecision.PENDING.value
+                and _parse_bool(candidate_by_pair[row["pair_id"]]["cross_split"], field="cross_split")
             ),
         },
     }
@@ -758,15 +778,16 @@ def _exact_group_map(images: Sequence[Mapping[str, str]]) -> dict[str, tuple[str
     return result
 
 
-def _apply_near_decisions(
-    rows: list[dict[str, Any]],
+def build_same_scene_components(
     candidates: Sequence[Mapping[str, str]],
     decisions: Sequence[Mapping[str, str]],
-) -> tuple[list[dict[str, Any]], int]:
+) -> tuple[tuple[SameSceneComponent, ...], int]:
+    """Build deterministic connected components from completed same-scene edges."""
+
     _validate_decision_columns(decisions, NEAR_DECISION_COLUMNS, "near-duplicate review file")
     candidate_by_pair = {row["pair_id"]: row for row in candidates}
     union = _UnionFind()
-    preferred_canonicals: list[tuple[str, str, str]] = []
+    declared_canonicals: list[tuple[str, str]] = []
     completed = 0
     seen: set[str] = set()
     for decision_row in decisions:
@@ -776,6 +797,12 @@ def _apply_near_decisions(
         seen.add(pair_id)
         if pair_id not in candidate_by_pair:
             raise CurationError(f"near-duplicate decision references unknown pair {pair_id}")
+        candidate = candidate_by_pair[pair_id]
+        if (
+            Path(decision_row["image_a"]).name != Path(candidate["image_a"]).name
+            or Path(decision_row["image_b"]).name != Path(candidate["image_b"]).name
+        ):
+            raise CurationError(f"near-duplicate decision {pair_id} image pair does not match review index")
         decision = NearDuplicateDecision(decision_row["decision"])
         if decision is NearDuplicateDecision.PENDING:
             continue
@@ -783,42 +810,250 @@ def _apply_near_decisions(
             raise CurationError(f"completed near-duplicate decision {pair_id} requires reviewer")
         completed += 1
         if decision is NearDuplicateDecision.SAME_SCENE:
-            candidate = candidate_by_pair[pair_id]
             first_id = Path(candidate["image_a"]).stem
             second_id = Path(candidate["image_b"]).stem
-            requested_canonical = decision_row["canonical_sample_id"].strip()
-            if requested_canonical and requested_canonical not in {first_id, second_id}:
-                raise CurationError(
-                    f"near-duplicate decision {pair_id} canonical sample must be one of its pair"
-                )
             union.union(first_id, second_id)
-            if requested_canonical:
-                preferred_canonicals.append((first_id, second_id, requested_canonical))
+            declared = decision_row["canonical_sample_id"].strip().removesuffix(".0")
+            if declared:
+                declared_canonicals.append((first_id, declared))
     groups: dict[str, list[str]] = defaultdict(list)
     for sample_id in union.parent:
         groups[union.find(sample_id)].append(sample_id)
-    by_id = {row["sample_id"]: row for row in rows}
-    for index, group in enumerate(sorted(groups.values(), key=lambda g: natural_id_key(min(g, key=natural_id_key))), start=1):
-        requested = {
-            preferred
-            for first, second, preferred in preferred_canonicals
-            if union.find(first) == union.find(group[0]) or union.find(second) == union.find(group[0])
+    ordered_groups = sorted(
+        groups.values(), key=lambda group: natural_id_key(min(group, key=natural_id_key))
+    )
+    components: list[SameSceneComponent] = []
+    for index, group in enumerate(ordered_groups, start=1):
+        members = tuple(sorted(group, key=natural_id_key))
+        canonical = members[0]
+        declared_for_group = {
+            declared
+            for member, declared in declared_canonicals
+            if union.find(member) == union.find(members[0])
         }
-        if len(requested) > 1:
-            raise CurationError(f"conflicting canonical samples for reviewed near-duplicate group: {sorted(requested)}")
-        canonical = next(iter(requested)) if requested else min(group, key=natural_id_key)
-        group_id = f"near-reviewed-{index:03d}"
-        for sample_id in group:
+        if declared_for_group and declared_for_group != {canonical}:
+            raise CurationError(
+                f"reviewed canonical mismatch for scene component {canonical}: "
+                f"declared {sorted(declared_for_group)}, computed lowest ID {canonical}"
+            )
+        components.append(SameSceneComponent(f"scene-{index:03d}", canonical, members))
+    return tuple(components), completed
+
+
+def apply_same_scene_components(
+    rows: list[dict[str, Any]],
+    components: Sequence[SameSceneComponent],
+) -> list[dict[str, Any]]:
+    """Keep one lowest-ID canonical and exclude every other component member."""
+
+    by_id = {row["sample_id"]: row for row in rows}
+    for component in components:
+        for sample_id in component.members:
+            if sample_id not in by_id:
+                raise CurationError(f"same-scene component references unknown sample {sample_id}")
             row = by_id[sample_id]
-            if row["duplicate_status"] in {DuplicateStatus.EXACT_CANONICAL.value, DuplicateStatus.EXACT_REDUNDANT.value}:
-                continue
-            row["duplicate_group_id"] = group_id
+            row["duplicate_group_id"] = component.group_id
             row["duplicate_status"] = DuplicateStatus.NEAR_SAME_SCENE.value
-            if sample_id != canonical:
+            if sample_id != component.canonical_sample_id:
                 row["include"] = False
                 row["curated_split"] = ""
                 row["reason_code"] = ReasonCode.NEAR_SAME_SCENE_REDUNDANT.value
-    return rows, completed
+    return rows
+
+
+def _apply_near_decisions(
+    rows: list[dict[str, Any]],
+    candidates: Sequence[Mapping[str, str]],
+    decisions: Sequence[Mapping[str, str]],
+) -> tuple[list[dict[str, Any]], int, tuple[SameSceneComponent, ...]]:
+    components, completed = build_same_scene_components(candidates, decisions)
+    return apply_same_scene_components(rows, components), completed, components
+
+
+def classify_pending_near_duplicates(
+    rows: Sequence[Mapping[str, Any]],
+    candidates: Sequence[Mapping[str, str]],
+    decisions: Sequence[Mapping[str, str]],
+) -> dict[str, list[str]]:
+    """Partition pending candidates by relevance to the curated benchmark."""
+
+    by_id = {str(row["sample_id"]): row for row in rows}
+    candidate_by_pair = {row["pair_id"]: row for row in candidates}
+    categories: dict[str, list[str]] = {
+        "involving_excluded_images": [],
+        "within_split_retained_pairs": [],
+        "cross_split_retained_pairs": [],
+    }
+    for decision in decisions:
+        if decision["decision"] != NearDuplicateDecision.PENDING.value:
+            continue
+        pair_id = decision["pair_id"]
+        candidate = candidate_by_pair[pair_id]
+        first = by_id[Path(candidate["image_a"]).stem]
+        second = by_id[Path(candidate["image_b"]).stem]
+        first_included = (
+            first["include"]
+            if isinstance(first["include"], bool)
+            else _parse_bool(first["include"], field="include")
+        )
+        second_included = (
+            second["include"]
+            if isinstance(second["include"], bool)
+            else _parse_bool(second["include"], field="include")
+        )
+        if not first_included or not second_included:
+            categories["involving_excluded_images"].append(pair_id)
+        elif first["curated_split"] == second["curated_split"]:
+            categories["within_split_retained_pairs"].append(pair_id)
+        else:
+            categories["cross_split_retained_pairs"].append(pair_id)
+    return categories
+
+
+def same_scene_component_violations(
+    rows: Sequence[Mapping[str, Any]],
+    components: Sequence[SameSceneComponent],
+) -> list[str]:
+    by_id = {str(row["sample_id"]): row for row in rows}
+    violations: list[str] = []
+    for component in components:
+        included = [
+            sample_id
+            for sample_id in component.members
+            if (
+                by_id[sample_id]["include"]
+                if isinstance(by_id[sample_id]["include"], bool)
+                else _parse_bool(by_id[sample_id]["include"], field="include")
+            )
+        ]
+        if included != [component.canonical_sample_id]:
+            violations.append(
+                f"{component.group_id} includes {included}; expected only {component.canonical_sample_id}"
+            )
+    return violations
+
+
+def validate_reviewed_components(
+    components: Sequence[SameSceneComponent],
+    review_rows: Sequence[Mapping[str, str]],
+    manifest_rows: Sequence[Mapping[str, Any]],
+) -> None:
+    """Cross-check computed components against the supplied human-review table."""
+
+    required = [
+        "scene_group_id",
+        "canonical_sample_id",
+        "canonical_image",
+        "member_sample_id",
+        "member_image",
+        "official_split",
+        "is_canonical",
+    ]
+    _validate_decision_columns(review_rows, required, "reviewed component file")
+    by_id = {str(row["sample_id"]): row for row in manifest_rows}
+    expected = {
+        (
+            component.group_id,
+            component.canonical_sample_id,
+            f"{component.canonical_sample_id}.jpg",
+            member,
+            f"{member}.jpg",
+            str(by_id[member]["official_split"]),
+            member == component.canonical_sample_id,
+        )
+        for component in components
+        for member in component.members
+    }
+    observed = {
+        (
+            row["scene_group_id"],
+            row["canonical_sample_id"].removesuffix(".0"),
+            row["canonical_image"],
+            row["member_sample_id"].removesuffix(".0"),
+            row["member_image"],
+            row["official_split"],
+            _parse_bool(row["is_canonical"], field="is_canonical"),
+        )
+        for row in review_rows
+    }
+    if observed != expected:
+        raise CurationError(
+            "reviewed same-scene components disagree with components recomputed from pair decisions"
+        )
+
+
+def validate_cross_split_review(
+    decisions: Sequence[Mapping[str, str]],
+    review_rows: Sequence[Mapping[str, str]],
+) -> None:
+    """Verify the supplied cross-split review summary matches completed pair decisions."""
+
+    required = ["pair_id", "image_a", "image_b", "final_decision", "canonical_sample_id"]
+    _validate_decision_columns(review_rows, required, "cross-split review summary")
+    decision_by_pair = {row["pair_id"]: row for row in decisions}
+    seen: set[str] = set()
+    for row in review_rows:
+        pair_id = row["pair_id"]
+        if pair_id in seen:
+            raise CurationError(f"duplicate cross-split review row for {pair_id}")
+        seen.add(pair_id)
+        if pair_id not in decision_by_pair:
+            raise CurationError(f"cross-split review references unknown pair {pair_id}")
+        decision = decision_by_pair[pair_id]
+        if decision["decision"] != row["final_decision"]:
+            raise CurationError(f"cross-split review decision mismatch for {pair_id}")
+        if Path(decision["image_a"]).name != Path(row["image_a"]).name or Path(
+            decision["image_b"]
+        ).name != Path(row["image_b"]).name:
+            raise CurationError(f"cross-split review image mismatch for {pair_id}")
+        expected_canonical = decision["canonical_sample_id"].strip().removesuffix(".0")
+        observed_canonical = row["canonical_sample_id"].strip().removesuffix(".0")
+        if expected_canonical != observed_canonical:
+            raise CurationError(f"cross-split review canonical mismatch for {pair_id}")
+        if row["final_decision"] == NearDuplicateDecision.PENDING.value:
+            raise CurationError(f"cross-split review contains unresolved pair {pair_id}")
+
+
+def missing_classes_by_split(
+    split_class_counts: Mapping[tuple[str, str], int],
+) -> list[str]:
+    return [
+        f"{split}:{label}"
+        for split in ("train", "validation", "test")
+        for label in CANONICAL_CLASSES
+        if int(split_class_counts.get((split, label), 0)) <= 0
+    ]
+
+
+def validate_expected_post_review_summary(
+    expected: Mapping[str, Any],
+    actual: Mapping[str, Any],
+) -> None:
+    """Treat supplied expected counts as assertions, never as output sources."""
+
+    curated = actual["curated_interpretation"]
+    comparisons = {
+        "included images": (expected["expected_included_images_after_reviewed_dedup"], curated["included_images"]),
+        "objects": (expected["expected_objects_after_reviewed_dedup"], curated["object_count"]),
+        "split counts": (expected["expected_split_image_counts"], curated["split_counts"]),
+        "class counts": (expected["expected_class_counts"], curated["class_counts"]),
+        "same-scene components": (expected["reviewed_same_scene_components"], curated["same_scene_component_count"]),
+        "same-scene redundant exclusions": (
+            expected["additional_redundant_images_expected_to_exclude"],
+            curated["same_scene_redundant_images_excluded"],
+        ),
+        "remaining cross-split candidates": (
+            expected["remaining_cross_split_dhash_candidates"],
+            curated["retained_cross_split_completed_candidates"],
+        ),
+    }
+    mismatches = [
+        f"{name}: expected {wanted!r}, recomputed {observed!r}"
+        for name, (wanted, observed) in comparisons.items()
+        if wanted != observed
+    ]
+    if mismatches:
+        raise CurationError("post-review validation mismatch: " + "; ".join(mismatches))
 
 
 def validate_manifest(rows: Sequence[Mapping[str, Any]]) -> list[str]:
@@ -986,10 +1221,23 @@ def build_curation(
             row["reason_code"] = ReasonCode.EXACT_REDUNDANT.value
 
     near_decisions = _read_csv(_resolve(root, policy["near_duplicate_review_file"]))
-    rows, completed_near = _apply_near_decisions(rows, near_candidates, near_decisions)
+    rows, completed_near, same_scene_components = _apply_near_decisions(
+        rows, near_candidates, near_decisions
+    )
     for row in rows:
         included = bool(row["include"])
         row["curated_split"] = row["official_split"] if included else ""
+    reviewed_components_path = _resolve(root, policy["reviewed_components_file"])
+    cross_split_review_path = _resolve(root, policy["cross_split_review_file"])
+    if not reviewed_components_path.is_file():
+        raise CurationError(f"reviewed component cross-check file is missing: {reviewed_components_path}")
+    if not cross_split_review_path.is_file():
+        raise CurationError(f"cross-split review summary is missing: {cross_split_review_path}")
+    validate_reviewed_components(
+        same_scene_components, _read_csv(reviewed_components_path), rows
+    )
+    validate_cross_split_review(near_decisions, _read_csv(cross_split_review_path))
+    component_violations = same_scene_component_violations(rows, same_scene_components)
     validation_errors = validate_manifest(rows)
     if validation_errors:
         raise CurationError("curation manifest validation failed: " + "; ".join(validation_errors))
@@ -1029,32 +1277,22 @@ def build_curation(
     pending_identity = sum(
         1 for row in rows if row["identity_status"] == IdentityStatus.PENDING_REVIEW.value
     )
-    pending_near = sum(
-        1
-        for row in near_decisions
-        if row["decision"] == NearDuplicateDecision.PENDING.value
-    )
-    cross_pending_near = sum(
-        1
-        for decision in near_decisions
-        if decision["decision"] == NearDuplicateDecision.PENDING.value
-        and _parse_bool(candidate_by_pair[decision["pair_id"]]["cross_split"], field="cross_split")
-    ) if (candidate_by_pair := {row["pair_id"]: row for row in near_candidates}) else 0
+    pending_categories = classify_pending_near_duplicates(rows, near_candidates, near_decisions)
+    pending_near = sum(len(items) for items in pending_categories.values())
+    cross_pending_near = len(pending_categories["cross_split_retained_pairs"])
     blockers: list[str] = []
     if pending_identity:
-        blockers.append(f"{pending_identity} identity decisions remain pending (all are policy-excluded)")
-    if pending_near:
+        blockers.append(f"{pending_identity} identity decisions remain pending")
+    if cross_pending_near:
         blockers.append(
-            f"{pending_near} non-exact near-duplicate decisions remain pending, including {cross_pending_near} cross-split pairs"
+            f"{cross_pending_near} pending near-duplicate pairs cross curated splits with both images included"
         )
-    status = "PASS" if not blockers else "BLOCKED_PENDING_HUMAN_REVIEW"
+    blockers.extend(component_violations)
     mismatch_rows = [row for row in rows if Path(str(row["primary_declared_filename"])).stem != row["sample_id"]]
     manually_resolved_identity = sum(
         1
         for row in mismatch_rows
         if row["review_status"] == ReviewStatus.COMPLETED.value
-        and row["identity_status"]
-        in {IdentityStatus.XML_NAME_CORRECT.value, IdentityStatus.EMBEDDED_FILENAME_CORRECT.value}
     )
     manually_excluded_identity = sum(
         1
@@ -1078,6 +1316,20 @@ def build_curation(
             }
         )
     near_decision_counts = Counter(row["decision"] for row in near_decisions)
+    candidate_by_pair = {row["pair_id"]: row for row in near_candidates}
+    retained_cross_split_completed = 0
+    for decision in near_decisions:
+        if decision["decision"] == NearDuplicateDecision.PENDING.value:
+            continue
+        candidate = candidate_by_pair[decision["pair_id"]]
+        first = by_id[Path(candidate["image_a"]).stem]
+        second = by_id[Path(candidate["image_b"]).stem]
+        if first["include"] and second["include"] and first["curated_split"] != second["curated_split"]:
+            retained_cross_split_completed += 1
+    missing_split_classes = missing_classes_by_split(split_class_counts)
+    if missing_split_classes:
+        blockers.append("missing curated split/classes: " + ", ".join(missing_split_classes))
+    status = "PASS" if not blockers else "BLOCKED_PENDING_HUMAN_REVIEW"
     raw_summary = read_json(audit_metadata / "audit_summary.json")
     summary = {
         "schema_version": "1.0",
@@ -1105,10 +1357,19 @@ def build_curation(
             "pending_identity_rows": pending_identity,
             "pending_near_duplicate_pairs": pending_near,
             "pending_cross_split_near_duplicate_pairs": cross_pending_near,
+            "pending_near_duplicate_categories": {
+                name: len(pair_ids) for name, pair_ids in pending_categories.items()
+            },
             "completed_near_duplicate_decisions": completed_near,
             "included_unresolved_identity_rows": 0,
             "included_exact_duplicate_groups_crossing_splits": 0,
-            "confirmed_same_scene_groups_crossing_splits": 0,
+            "confirmed_same_scene_groups_crossing_splits": len(component_violations),
+            "same_scene_component_count": len(same_scene_components),
+            "same_scene_redundant_images_excluded": sum(
+                len(component.members) - 1 for component in same_scene_components
+            ),
+            "retained_cross_split_completed_candidates": retained_cross_split_completed,
+            "all_classes_present_in_every_split": not missing_split_classes,
             "identity_mismatches": {
                 "total": len(mismatch_rows),
                 "resolved_automatically": 0,
@@ -1116,6 +1377,15 @@ def build_curation(
                 "manually_excluded": manually_excluded_identity,
                 "policy_excluded_while_pending": pending_identity,
                 "still_pending": pending_identity,
+                "completed_human_decisions": sum(
+                    1 for row in mismatch_rows if row["review_status"] == ReviewStatus.COMPLETED.value
+                ),
+                "reviewed_reused_exclusions": sum(
+                    1
+                    for row in mismatch_rows
+                    if row["identity_status"] == IdentityStatus.ANNOTATION_REUSED.value
+                    and not row["include"]
+                ),
             },
             "exact_duplicate_group_details": exact_group_details,
             "near_duplicate_decision_counts": dict(sorted(near_decision_counts.items())),
@@ -1125,6 +1395,11 @@ def build_curation(
         "published_counts_forced": False,
         "phase_3_started": False,
     }
+    expected_summary_path = _resolve(root, policy["expected_post_review_summary_file"])
+    if not expected_summary_path.is_file():
+        raise CurationError(f"expected post-review validation file is missing: {expected_summary_path}")
+    validate_expected_post_review_summary(read_json(expected_summary_path), summary)
+    summary["expected_post_review_validation"] = "pass"
     write_json(summary_path, summary)
     write_deterministic_csv(
         metadata_root / "curation_blockers.csv",
@@ -1137,11 +1412,18 @@ def build_curation(
             + [
                 {
                     "blocker_type": "near_duplicate",
-                    "record_id": row["pair_id"],
-                    "detail": "cross_split" if _parse_bool(candidate_by_pair[row["pair_id"]]["cross_split"], field="cross_split") else "within_split",
+                    "record_id": pair_id,
+                    "detail": "cross_split_retained_pending",
                 }
-                for row in near_decisions
-                if row["decision"] == NearDuplicateDecision.PENDING.value
+                for pair_id in pending_categories["cross_split_retained_pairs"]
+            ]
+            + [
+                {"blocker_type": "same_scene_component", "record_id": "component", "detail": detail}
+                for detail in component_violations
+            ]
+            + [
+                {"blocker_type": "class_coverage", "record_id": item, "detail": "missing"}
+                for item in missing_split_classes
             ]
         ),
         ["blocker_type", "record_id", "detail"],
@@ -1166,6 +1448,50 @@ def validate_existing_curation(config: ResolvedConfig, repository_root: str | Pa
     if any(row["source_dataset_fingerprint"] != fingerprint for row in rows):
         raise CurationError("manifest fingerprint does not match immutable raw release")
     summary = read_json(summary_path)
+    audit_metadata = _resolve(root, dataset["metadata_root"])
+    candidates = _read_csv(_resolve(root, policy["near_duplicate_index_file"]))
+    decisions = _read_csv(_resolve(root, policy["near_duplicate_review_file"]))
+    components, _ = build_same_scene_components(candidates, decisions)
+    validate_reviewed_components(
+        components,
+        _read_csv(_resolve(root, policy["reviewed_components_file"])),
+        rows,
+    )
+    validate_cross_split_review(
+        decisions, _read_csv(_resolve(root, policy["cross_split_review_file"]))
+    )
+    component_errors = same_scene_component_violations(rows, components)
+    if component_errors:
+        raise CurationError("same-scene component validation failed: " + "; ".join(component_errors))
+    pending = classify_pending_near_duplicates(rows, candidates, decisions)
+    if pending["cross_split_retained_pairs"]:
+        raise CurationError(
+            "pending cross-split pairs remain included: "
+            + ", ".join(pending["cross_split_retained_pairs"])
+        )
+    instances = _read_csv(audit_metadata / "instances.csv")
+    recomputed = curated_statistics(rows, instances)
+    curated = summary["curated_interpretation"]
+    if recomputed["included_image_count"] != curated["included_images"]:
+        raise CurationError("curated included-image count does not reproduce from manifest")
+    if recomputed["object_count"] != curated["object_count"]:
+        raise CurationError("curated object count does not reproduce from manifest")
+    if recomputed["class_counts"] != curated["class_counts"]:
+        raise CurationError("curated class counts do not reproduce from manifest")
+    if recomputed["split_counts"] != curated["split_counts"]:
+        raise CurationError("curated split counts do not reproduce from manifest")
+    split_class_rows = _read_csv(audit_metadata / "curated_split_class_counts.csv")
+    split_class_counts = {
+        (row["split"], row["class"]): int(row["instance_count"]) for row in split_class_rows
+    }
+    missing = missing_classes_by_split(split_class_counts)
+    if missing:
+        raise CurationError("classes missing from curated splits: " + ", ".join(missing))
+    validate_expected_post_review_summary(
+        read_json(_resolve(root, policy["expected_post_review_summary_file"])), summary
+    )
+    if summary["status"] != "PASS" or summary.get("blockers"):
+        raise CurationError("curation summary does not satisfy the Phase 2 exit gate")
     return CurationResult(
         str(summary["status"]),
         manifest_path,
