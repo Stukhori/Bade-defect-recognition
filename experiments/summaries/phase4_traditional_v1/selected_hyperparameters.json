@@ -1,0 +1,94 @@
+{
+  "methods": {
+    "hog": {
+      "feature_config": {
+        "block_norm": "L2-Hys",
+        "cells_per_block": [
+          2,
+          2
+        ],
+        "expected_dimensions": 6084,
+        "feature_vector": true,
+        "grayscale": true,
+        "orientations": 9,
+        "pixels_per_cell": [
+          16,
+          16
+        ],
+        "transform_sqrt": true
+      },
+      "feature_config_hash": "e0723cd80ec462644aec14e3827821d716d04ff375424b5de45ac5ddac4d5cf2",
+      "git_commit": "f5ae5ae8dd7b7dd8f315fdbc944138f32cbfb3b8",
+      "method": "hog+rbf_svm",
+      "phase": 4,
+      "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+      "schema_version": "1.0",
+      "selection": {
+        "numeric_tolerance": 1e-12,
+        "primary_metric": "macro_f1",
+        "split": "validation",
+        "validation_balanced_accuracy": 0.4575386633452995,
+        "validation_grid_fingerprint": "e897c6b58911baaf27d626d38a598404d538af7bf99f72aa7a1a7a1043ad8bb8",
+        "validation_macro_f1": 0.4480996944232238,
+        "validation_macro_recall": 0.4575386633452995
+      },
+      "selection_timestamp_utc": "2026-08-28T09:52:47.801568Z",
+      "svm": {
+        "C": 10.0,
+        "class_weight": "balanced",
+        "gamma": "scale",
+        "kernel": "rbf",
+        "probability": false
+      }
+    },
+    "lbp": {
+      "feature_config": {
+        "expected_dimensions": 1372,
+        "grayscale": true,
+        "grid": [
+          7,
+          7
+        ],
+        "scales": [
+          {
+            "bins": 10,
+            "method": "uniform",
+            "points": 8,
+            "radius": 1
+          },
+          {
+            "bins": 18,
+            "method": "uniform",
+            "points": 16,
+            "radius": 2
+          }
+        ]
+      },
+      "feature_config_hash": "e952103e7c0664952a0b8c568141bd26d177333c572f7ec134d1270c2592d122",
+      "git_commit": "f5ae5ae8dd7b7dd8f315fdbc944138f32cbfb3b8",
+      "method": "lbp+rbf_svm",
+      "phase": 4,
+      "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+      "schema_version": "1.0",
+      "selection": {
+        "numeric_tolerance": 1e-12,
+        "primary_metric": "macro_f1",
+        "split": "validation",
+        "validation_balanced_accuracy": 0.51451753496948,
+        "validation_grid_fingerprint": "e897c6b58911baaf27d626d38a598404d538af7bf99f72aa7a1a7a1043ad8bb8",
+        "validation_macro_f1": 0.495355605764074,
+        "validation_macro_recall": 0.51451753496948
+      },
+      "selection_timestamp_utc": "2026-08-28T09:52:47.819279Z",
+      "svm": {
+        "C": 10.0,
+        "class_weight": "balanced",
+        "gamma": "scale",
+        "kernel": "rbf",
+        "probability": false
+      }
+    }
+  },
+  "test_metrics_available_at_freeze_time": false,
+  "validation_grid_fingerprint": "e897c6b58911baaf27d626d38a598404d538af7bf99f72aa7a1a7a1043ad8bb8"
+}

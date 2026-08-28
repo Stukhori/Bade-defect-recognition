@@ -1,0 +1,13 @@
+{
+  "feature_config_hash": "e0723cd80ec462644aec14e3827821d716d04ff375424b5de45ac5ddac4d5cf2",
+  "feature_fingerprint": "a89e1102fd90cf8d2ecc8698b029bd90f05abbdf39cd3861b3ceefaceef3ecbf",
+  "method": "hog",
+  "model_file": "model.joblib",
+  "model_sha256": "30c46fd50b8da5779434dad856f7c0b270ab101a14e27cecc43be4b0d275bb2d",
+  "model_size_bytes": 35551712,
+  "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+  "selected_C": 10.0,
+  "selected_gamma": "scale",
+  "test_instances": 162,
+  "training_instances": 757
+}

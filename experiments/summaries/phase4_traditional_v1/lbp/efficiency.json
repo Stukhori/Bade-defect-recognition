@@ -1,0 +1,43 @@
+{
+  "combined_median_seconds_per_image": 0.032469885802488586,
+  "deterministic_repeat_metrics_identical": true,
+  "deterministic_repeat_predictions_identical": true,
+  "feature_config_hash": "e952103e7c0664952a0b8c568141bd26d177333c572f7ec134d1270c2592d122",
+  "feature_dimensions": 1372,
+  "feature_fingerprint": "2826d502592c6b4066cab2dd64b556a281e79752659401d271986d9990f004e8",
+  "feature_timing": {
+    "batch_seconds": [
+      5.033748099929653,
+      5.120632700040005,
+      5.477961199940182
+    ],
+    "median_batch_seconds": 5.120632700040005,
+    "median_seconds_per_image": 0.03160884382740744,
+    "repeats": 3,
+    "sample_count": 162,
+    "warmup_runs": 1
+  },
+  "initial_full_dataset_feature_extraction_seconds": 45.01579169998877,
+  "method": "lbp",
+  "model_sha256": "742aa499caab3376173cd434caaf645a09a9654fd2f0d53a5fe7e005fb8dca1e",
+  "model_size_bytes": 7687831,
+  "prediction_median_seconds_per_image": 0.0008610419750811509,
+  "prediction_timing": {
+    "batch_seconds": [
+      0.1481023000087589,
+      0.13948879996314645,
+      0.1357081999303773,
+      0.14584910008125007,
+      0.13463500002399087,
+      0.14653499994892627,
+      0.13674720004200935
+    ],
+    "median_batch_seconds": 0.13948879996314645,
+    "median_seconds_per_image": 0.0008610419750811509,
+    "repeats": 7,
+    "sample_count": 162,
+    "warmup_runs": 1
+  },
+  "svm_fit_seconds": 0.6467165999347344,
+  "test_feature_extraction_median_seconds_per_image": 0.03160884382740744
+}

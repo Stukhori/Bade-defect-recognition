@@ -1,0 +1,87 @@
+{
+  "class_order": [
+    "craze",
+    "corrosion",
+    "surface_injure",
+    "thunderstrike",
+    "crack",
+    "hide_craze"
+  ],
+  "cnn_trained": false,
+  "configuration_hash": "9d782d2e30ab1861de2f4ece0e120a204541a9ed61bf4e41b1f64c70e77658f4",
+  "created_utc": "2026-08-28T09:56:09.472249Z",
+  "data_efficiency_fractions_run": [
+    1.0
+  ],
+  "deterministic_repeat_passed": true,
+  "environment": {
+    "captured_utc": "2026-08-28T09:56:09.472249Z",
+    "cpu": "AMD64 Family 23 Model 24 Stepping 1, AuthenticAMD",
+    "cuda_available": null,
+    "cuda_device_count": null,
+    "git_commit": "f5ae5ae8dd7b7dd8f315fdbc944138f32cbfb3b8",
+    "git_dirty": true,
+    "hostname": "LAPTOP-H1VSHD8M",
+    "logical_cpu_count": 8,
+    "operating_system": "Windows",
+    "operating_system_release": "10",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "project_version": "0.1.0",
+    "python_executable": "python.exe",
+    "python_implementation": "CPython",
+    "python_version": "3.11.15",
+    "pytorch_available": false,
+    "pytorch_import_error": "ModuleNotFoundError",
+    "pytorch_version": null,
+    "selected_device": "cpu",
+    "torchvision_version": null
+  },
+  "feature_config_hashes": {
+    "hog": "e0723cd80ec462644aec14e3827821d716d04ff375424b5de45ac5ddac4d5cf2",
+    "lbp": "e952103e7c0664952a0b8c568141bd26d177333c572f7ec134d1270c2592d122"
+  },
+  "feature_fingerprints": {
+    "hog": "a89e1102fd90cf8d2ecc8698b029bd90f05abbdf39cd3861b3ceefaceef3ecbf",
+    "lbp": "2826d502592c6b4066cab2dd64b556a281e79752659401d271986d9990f004e8"
+  },
+  "git": {
+    "git_commit": "f5ae5ae8dd7b7dd8f315fdbc944138f32cbfb3b8",
+    "git_dirty": true
+  },
+  "library_versions": {
+    "Pillow": "12.3.0",
+    "joblib": "1.5.3",
+    "numpy": "2.4.6",
+    "scikit-image": "0.26.0",
+    "scikit-learn": "1.9.0"
+  },
+  "phase": 4,
+  "phase3_gate_passed_before_training": true,
+  "phase5_started": false,
+  "pretrained_weights_downloaded": false,
+  "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+  "processed_dataset_version": "wtbd_crops_v1",
+  "rejected_test_evaluations": 0,
+  "result_id": "phase4_traditional_v1",
+  "robustness_started": false,
+  "sample_counts": {
+    "all": 1065,
+    "test": 162,
+    "train": 757,
+    "validation": 146
+  },
+  "schema_version": "1.0",
+  "selected_candidates": {
+    "hog": {
+      "C": 10.0,
+      "gamma": "scale"
+    },
+    "lbp": {
+      "C": 10.0,
+      "gamma": "scale"
+    }
+  },
+  "status": "completed",
+  "test_evaluated_candidates": 2,
+  "validation_grid_fingerprint": "e897c6b58911baaf27d626d38a598404d538af7bf99f72aa7a1a7a1043ad8bb8"
+}
