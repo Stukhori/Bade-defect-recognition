@@ -1,0 +1,77 @@
+extends: traditional_baselines.yaml
+
+project:
+  phase: 5
+
+experiment:
+  name: phase5_resnet18_baseline
+  seed: 17
+
+method:
+  family: transfer_learning_cnn
+  name: torchvision_resnet18_imagenet1k_v1
+
+runtime:
+  device: auto
+
+model:
+  architecture: resnet18
+  weights: IMAGENET1K_V1
+  num_classes: 6
+  fine_tune: all
+  expected_total_parameters: 11179590
+
+input:
+  size: [224, 224]
+  augmentation: none
+  normalization:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+training:
+  train_fraction: 1.0
+  epochs: 30
+  batch_size: 32
+  validation_batch_size: 64
+  max_epochs: 30
+  patience: 6
+  min_delta: 0.0001
+  optimizer: adamw
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+  class_weight: balanced
+  mixed_precision: false
+  num_workers: 0
+  scheduler: none
+
+search:
+  seed: 17
+  learning_rates: [0.0001, 0.0003]
+  weight_decays: [0.0, 0.0001]
+
+final:
+  seeds: [17, 29, 43]
+
+selection:
+  metric: macro_f1
+  primary_metric: macro_f1
+  split: validation
+  numeric_tolerance: 1.0e-12
+  tie_breaking:
+    - higher_macro_f1
+    - higher_balanced_accuracy
+    - higher_macro_recall
+    - lower_learning_rate
+    - lower_weight_decay
+
+inference_timing:
+  batch_size: 1
+  warmup_passes: 20
+  measured_passes: 100
+
+resnet18:
+  result_id: phase5_resnet18_v1
+  output_root: experiments/results/phase5_resnet18_v1
+  summary_root: experiments/summaries/phase5_resnet18_v1
+  figures_root: figures/phase5
+  frozen_config: configs/frozen/resnet18.yaml

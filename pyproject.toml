@@ -16,6 +16,8 @@ dependencies = [
   "joblib>=1.4,<2",
   "scikit-image>=0.24,<1",
   "scikit-learn>=1.6,<2",
+  "torch>=2.6,<3",
+  "torchvision>=0.21,<1",
 ]
 
 [project.optional-dependencies]
