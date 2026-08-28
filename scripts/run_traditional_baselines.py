@@ -7,15 +7,21 @@ import json
 from pathlib import Path
 
 from windblade.config import load_config
-from windblade.traditional import run_traditional_baselines
+from windblade.traditional import run_traditional_baselines, validate_traditional_results
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", default="configs/traditional_baselines.yaml")
+    parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    result = run_traditional_baselines(load_config(root / args.config), root)
+    config = load_config(root / args.config)
+    if args.validate_only:
+        result = validate_traditional_results(config, root)
+        print(json.dumps(result, sort_keys=True))
+        return 0
+    result = run_traditional_baselines(config, root)
     print(
         json.dumps(
             {

@@ -702,3 +702,94 @@ def run_traditional_baselines(config: ResolvedConfig, repository_root: str | Pat
         "output_root": output_root,
         "summary_root": summary_root,
     }
+
+
+def validate_traditional_results(
+    config: ResolvedConfig, repository_root: str | Path
+) -> dict[str, Any]:
+    """Validate the frozen Phase 4 result package without fitting a model."""
+
+    root = Path(repository_root).resolve()
+    data = config.as_dict()
+    _validate_phase4_config(data)
+    phase3 = validate_processed_dataset(config, root)
+    validate_training_subsets(config, root)
+    expected_fingerprint = data["dataset"]["processed_fingerprint"]
+    if phase3["processed_dataset_fingerprint"] != expected_fingerprint:
+        raise TraditionalExperimentError("Phase 3 fingerprint changed")
+    summary_root = (root / data["traditional"]["summary_root"]).resolve()
+    manifest = json.loads((summary_root / "manifest.json").read_text(encoding="utf-8"))
+    if (
+        manifest.get("status") != "completed"
+        or manifest.get("processed_dataset_fingerprint") != expected_fingerprint
+        or manifest.get("sample_counts")
+        != {"all": 1065, "train": 757, "validation": 146, "test": 162}
+        or manifest.get("test_evaluated_candidates") != 2
+        or manifest.get("rejected_test_evaluations") != 0
+        or not manifest.get("deterministic_repeat_passed")
+        or manifest.get("phase5_started")
+    ):
+        raise TraditionalExperimentError("Phase 4 manifest fails its exit assertions")
+
+    grid_rows = read_csv(summary_root / "validation_grid.csv")
+    if len(grid_rows) != 16:
+        raise TraditionalExperimentError("validation grid does not contain 16 rows")
+    selected: dict[str, dict[str, str]] = {}
+    for family in ("hog", "lbp"):
+        family_rows = [row for row in grid_rows if row["method"] == family]
+        winners = [row for row in family_rows if row["selected"].lower() == "true"]
+        if len(family_rows) != 8 or len(winners) != 1:
+            raise TraditionalExperimentError(f"{family} validation grid/winner count is invalid")
+        selected[family] = winners[0]
+        frozen_path = (root / data["traditional"][f"frozen_{family}_config"]).resolve()
+        frozen = yaml.safe_load(frozen_path.read_text(encoding="utf-8"))
+        if (
+            float(frozen["svm"]["C"]) != float(winners[0]["C"])
+            or frozen["svm"]["gamma"] != winners[0]["gamma"]
+            or frozen["processed_dataset_fingerprint"] != expected_fingerprint
+            or frozen["selection"]["validation_grid_fingerprint"]
+            != manifest["validation_grid_fingerprint"]
+        ):
+            raise TraditionalExperimentError(f"{family} frozen config disagrees with validation winner")
+
+        metrics = json.loads((summary_root / family / "test_metrics.json").read_text(encoding="utf-8"))
+        predictions = read_csv(summary_root / family / "test_predictions.csv")
+        if metrics.get("class_order") != list(LABELS) or len(predictions) != 162:
+            raise TraditionalExperimentError(f"{family} test metrics/predictions are incomplete")
+        if sum(sum(int(value) for value in row) for row in metrics["confusion_matrix_counts"]) != 162:
+            raise TraditionalExperimentError(f"{family} confusion matrix does not total 162")
+        if len({row["instance_id"] for row in predictions}) != 162:
+            raise TraditionalExperimentError(f"{family} test prediction identities are not unique")
+        efficiency = json.loads((summary_root / family / "efficiency.json").read_text(encoding="utf-8"))
+        expected_dimensions = 6084 if family == "hog" else 1372
+        if (
+            int(efficiency["feature_dimensions"]) != expected_dimensions
+            or not efficiency["deterministic_repeat_predictions_identical"]
+            or not efficiency["deterministic_repeat_metrics_identical"]
+        ):
+            raise TraditionalExperimentError(f"{family} efficiency/reproducibility record is invalid")
+
+    required_figures = {
+        "validation_grid_hog.png",
+        "validation_grid_lbp.png",
+        "confusion_hog_counts.png",
+        "confusion_hog_normalized.png",
+        "confusion_lbp_counts.png",
+        "confusion_lbp_normalized.png",
+        "traditional_baseline_comparison.png",
+    }
+    figure_root = (root / data["traditional"]["figures_root"]).resolve()
+    if {path.name for path in figure_root.glob("*.png")} != required_figures:
+        raise TraditionalExperimentError("Phase 4 scientific figure set is incomplete or contains extras")
+    return {
+        "status": "PASS",
+        "result_id": manifest["result_id"],
+        "processed_dataset_fingerprint": expected_fingerprint,
+        "validation_candidates": {"hog": 8, "lbp": 8},
+        "selected": {
+            family: {"C": float(row["C"]), "gamma": row["gamma"]}
+            for family, row in selected.items()
+        },
+        "test_evaluated_candidates": 2,
+        "deterministic_repeat_passed": True,
+    }
