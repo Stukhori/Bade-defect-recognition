@@ -248,6 +248,7 @@ def run_resnet18_baseline(config: ResolvedConfig, repository_root: str | Path) -
     selected = select_candidate(tuning_rows)
     for row in tuning_rows:
         row["selected"] = row["candidate_id"] == selected["candidate_id"]
+    selected["selected"] = True
     grid_fp = _grid_fingerprint(tuning_rows)
     write_csv(output / "tuning/grid_results.csv", tuning_rows, tuple(tuning_rows[0]))
     frozen = _freeze(root / data["resnet18"]["frozen_config"], selected, grid_fp, pretrained["pretrained_backbone_fingerprint"], git_commit)
@@ -286,6 +287,7 @@ def run_resnet18_baseline(config: ResolvedConfig, repository_root: str | Path) -
     write_csv(output / "aggregate/per_seed_summary.csv", seed_rows, tuple(seed_rows[0]))
     per_class_rows = [{"class_id": i, "class_label": label, **{f"{metric}_{stat}": aggregate["per_class"][label][metric][stat] for metric in ("precision", "recall", "f1") for stat in ("mean", "sample_sd")}} for i, label in enumerate(LABELS)]
     write_csv(output / "aggregate/per_class_summary.csv", per_class_rows, tuple(per_class_rows[0]))
+    _write_phase4_comparison(root, output, aggregate, figures)
     timing = inference_latency(final_results[17]["model"], datasets["test"][0]["image"], device)
     efficiency = {"device": str(device), "total_parameters": EXPECTED_RESNET18_PARAMETERS, "trainable_parameters": EXPECTED_RESNET18_PARAMETERS, "canonical_seed": 17, "checkpoint_bytes": final_results[17]["checkpoint"]["checkpoint_bytes"], "inference": timing, "training": [{key: row[key] for key in ("seed", "training_seconds", "epochs_executed", "best_epoch", "average_seconds_per_epoch")} for row in seed_rows]}
     atomic_write_text(output / "aggregate/efficiency.json", json_text(efficiency))
@@ -329,4 +331,47 @@ def validate_resnet18_results(config: ResolvedConfig, repository_root: str | Pat
             raise ResNetExperimentError(f"seed {seed} prediction package invalid")
     repro = json.loads((summary / "reproducibility.json").read_text(encoding="utf-8"))
     if repro["status"] != "PASS": raise ResNetExperimentError("Phase 5 reproducibility failed")
+    required_figures = {
+        "tuning_validation_macro_f1.png", "final_training_curves_seed17.png",
+        "final_training_curves_seed29.png", "final_training_curves_seed43.png",
+        "confusion_seed17.png", "confusion_seed29.png", "confusion_seed43.png",
+        "confusion_mean_normalized.png", "resnet_seed_variability.png",
+        "phase4_vs_resnet_summary.png",
+    }
+    actual_figures = {path.name for path in (root / data["resnet18"]["figures_root"]).glob("*.png")}
+    if actual_figures != required_figures:
+        raise ResNetExperimentError("Phase 5 scientific figure set is incomplete or contains extras")
     return {"status": "PASS", "result_id": manifest["result_id"], "pretrained_backbone_fingerprint": manifest["pretrained_backbone_fingerprint"], "tuning_candidates": 4, "final_seeds": [17, 29, 43], "reproducibility": "PASS"}
+
+
+def _write_phase4_comparison(
+    root: Path, output: Path, aggregate: Mapping[str, Any], figures: Path
+) -> None:
+    """Create descriptive comparisons from already-frozen Phase 4 outputs."""
+
+    phase4_root = root / "experiments/summaries/phase4_traditional_v1"
+    methods: dict[str, dict[str, float]] = {}
+    for family, display in (("hog", "HOG + SVM"), ("lbp", "LBP + SVM")):
+        metrics = json.loads((phase4_root / family / "test_metrics.json").read_text(encoding="utf-8"))
+        methods[display] = {key: float(metrics[key]) for key in ("macro_f1", "balanced_accuracy", "accuracy")}
+    methods["ResNet-18 mean"] = {key: aggregate["overall"][key]["mean"] for key in ("macro_f1", "balanced_accuracy", "accuracy")}
+    rows = []
+    for method, values in methods.items():
+        rows.append({"method": method, **values, "macro_f1_sample_sd": aggregate["overall"]["macro_f1"]["sample_sd"] if method == "ResNet-18 mean" else "", "device_note": "Windows CPU; method-specific recorded timing"})
+    write_csv(output / "aggregate/phase4_comparison.csv", rows, tuple(rows[0]))
+
+    seed_rows = read_csv(output / "aggregate/per_seed_summary.csv")
+    fig, ax = plt.subplots(figsize=(8, 5))
+    seeds = [row["seed"] for row in seed_rows]
+    values = [float(row["macro_f1"]) for row in seed_rows]
+    ax.bar(seeds, values, color="#2f78c4")
+    ax.axhline(float(np.mean(values)), color="#e07a1f", linestyle="--", label="three-seed mean")
+    ax.set_ylim(0, 1); ax.set_xlabel("Training seed"); ax.set_ylabel("Test macro-F1"); ax.set_title("ResNet-18 training-seed variability"); ax.legend()
+    fig.tight_layout(); fig.savefig(figures / "resnet_seed_variability.png", dpi=160); plt.close(fig)
+
+    measures = ("macro_f1", "balanced_accuracy", "accuracy"); names = list(methods); x = np.arange(len(names)); width = 0.24
+    fig, ax = plt.subplots(figsize=(9, 5))
+    for index, measure in enumerate(measures):
+        ax.bar(x + (index - 1) * width, [methods[name][measure] for name in names], width, label=measure)
+    ax.set_ylim(0, 1); ax.set_xticks(x, names); ax.set_ylabel("Frozen test score"); ax.set_title("Phase 4 baselines and ResNet-18 three-seed mean"); ax.legend()
+    fig.tight_layout(); fig.savefig(figures / "phase4_vs_resnet_summary.png", dpi=160); plt.close(fig)

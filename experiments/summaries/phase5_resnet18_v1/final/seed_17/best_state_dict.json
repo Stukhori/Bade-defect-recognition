@@ -1,0 +1,181 @@
+{
+  "architecture": "torchvision_resnet18",
+  "checkpoint_bytes": 44794379,
+  "checkpoint_fingerprint": "e87ca88dad134833a54171674332ea76920f957e7d7e1df10b9ec308ebeff8d8",
+  "class_count": 6,
+  "class_order": [
+    "craze",
+    "corrosion",
+    "surface_injure",
+    "thunderstrike",
+    "crack",
+    "hide_craze"
+  ],
+  "epoch": 7,
+  "git_commit": "0f08692b8bb3cd695242ff3edee2588b4e62c628",
+  "learning_rate": 0.0003,
+  "pretrained_weight_enum": "ResNet18_Weights.IMAGENET1K_V1",
+  "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+  "seed": 17,
+  "validation_metrics": {
+    "accuracy": 0.9246575342465754,
+    "balanced_accuracy": 0.8837463705884758,
+    "class_order": [
+      "craze",
+      "corrosion",
+      "surface_injure",
+      "thunderstrike",
+      "crack",
+      "hide_craze"
+    ],
+    "confusion_matrix_counts": [
+      [
+        16,
+        0,
+        0,
+        1,
+        0,
+        2
+      ],
+      [
+        0,
+        20,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        46,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        2,
+        6,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        24,
+        0
+      ],
+      [
+        1,
+        2,
+        0,
+        0,
+        0,
+        23
+      ]
+    ],
+    "confusion_matrix_row_normalized": [
+      [
+        0.8421052631578947,
+        0.0,
+        0.0,
+        0.05263157894736842,
+        0.0,
+        0.10526315789473684
+      ],
+      [
+        0.0,
+        0.9090909090909091,
+        0.045454545454545456,
+        0.0,
+        0.0,
+        0.045454545454545456
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.2222222222222222,
+        0.6666666666666666,
+        0.0,
+        0.1111111111111111
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.038461538461538464,
+        0.07692307692307693,
+        0.0,
+        0.0,
+        0.0,
+        0.8846153846153846
+      ]
+    ],
+    "macro_f1": 0.8973875631522107,
+    "macro_precision": 0.9163395998129892,
+    "macro_recall": 0.8837463705884758,
+    "per_class": {
+      "corrosion": {
+        "class_id": 1,
+        "f1": 0.9090909090909091,
+        "precision": 0.9090909090909091,
+        "recall": 0.9090909090909091,
+        "support": 22
+      },
+      "crack": {
+        "class_id": 4,
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 24
+      },
+      "craze": {
+        "class_id": 0,
+        "f1": 0.8888888888888888,
+        "precision": 0.9411764705882353,
+        "recall": 0.8421052631578947,
+        "support": 19
+      },
+      "hide_craze": {
+        "class_id": 5,
+        "f1": 0.8679245283018868,
+        "precision": 0.8518518518518519,
+        "recall": 0.8846153846153846,
+        "support": 26
+      },
+      "surface_injure": {
+        "class_id": 2,
+        "f1": 0.968421052631579,
+        "precision": 0.9387755102040817,
+        "recall": 1.0,
+        "support": 46
+      },
+      "thunderstrike": {
+        "class_id": 3,
+        "f1": 0.75,
+        "precision": 0.8571428571428571,
+        "recall": 0.6666666666666666,
+        "support": 9
+      }
+    },
+    "zero_division": 0
+  },
+  "weight_decay": 0.0
+}

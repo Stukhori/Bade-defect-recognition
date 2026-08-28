@@ -2,13 +2,58 @@
 
 ## Current phase
 
-- **Phase:** Phase 4 — Traditional Computer-Vision Baselines
-- **Status:** COMPLETE — HOG/LBP validation selection and frozen test evaluation pass
+- **Phase:** Phase 5 — ResNet-18 Transfer-Learning Baseline
+- **Status:** COMPLETE — selection, three-seed test evaluation, and deterministic rerun pass
 - **Start date:** 2026-08-28
-- **Previous phases:** Phases 0, 1, 2, and 3 — complete and frozen
-- **Next phase:** Phase 5 — ResNet-18 Transfer-Learning Baseline
+- **Previous phases:** Phases 0, 1, 2, 3, and 4 — complete and frozen
+- **Next phase:** Phase 6 — MobileNetV3-Small Transfer-Learning Baseline
 
-Phase 4 is complete. Phases 0–3 remain frozen. Phase 5 has not started; beginning it requires separate explicit authorization.
+Phase 5 is complete. Phases 0–4 remain frozen. Phase 6 has not started; beginning it requires separate explicit authorization.
+
+## Phase 5 — ResNet-18 Transfer-Learning Baseline
+
+### Status and frozen identity
+
+**COMPLETE.** Phase 4 passed before Phase 5 began. The result validator and exact seed-17 rerun pass. The expanded suite reports **124 passed and 0 failed** with 11 known scikit-learn deprecation warnings.
+
+- Result ID: `phase5_resnet18_v1`.
+- Dataset/fingerprint: `wtbd_crops_v1` / `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`.
+- Counts: 757 train, 146 validation, 162 test; source-image isolation unchanged.
+- Runtime: PyTorch `2.13.0+cpu`, torchvision `0.28.0`, device `cpu`; CUDA unavailable.
+- Weight enum: `ResNet18_Weights.IMAGENET1K_V1`.
+- Pretrained backbone fingerprint: `78d60a5d12431f3233de6606575384b8b65c4c2c8bb4fc1b039001d0e0c1db57`.
+- Parameters: 11,179,590 total and trainable.
+- Frozen selection: learning rate `0.0003`, weight decay `0`; best tuning validation macro-F1 `0.8973875632`.
+- Final seeds/best epochs: 17→7, 29→3, 43→5.
+- Checkpoint size: 44,794,379 bytes per seed.
+- Seed-17 CPU forward latency: 106.225 ms median and 128.939 ms p95, batch 1, 20 warm-ups and 100 measurements.
+
+### Final results
+
+| Seed | Validation macro-F1 | Test macro-F1 | Balanced accuracy | Accuracy | Macro precision | Macro recall | Training seconds |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 17 | 0.897388 | 0.911068 | 0.919369 | 0.901235 | 0.906522 | 0.919369 | 2962.080 |
+| 29 | 0.871300 | 0.883807 | 0.884479 | 0.864198 | 0.892118 | 0.884479 | 1730.863 |
+| 43 | 0.855144 | 0.891068 | 0.903580 | 0.901235 | 0.885600 | 0.903580 | 1995.253 |
+| Mean ± sample SD | — | 0.895314 ± 0.014118 | 0.902476 ± 0.017472 | 0.888889 ± 0.021383 | 0.894747 ± 0.010706 | 0.902476 ± 0.017472 | — |
+
+Per-class F1 mean ± sample SD in frozen order: craze `0.928511 ± 0.002555`, corrosion `0.847535 ± 0.032036`, surface_injure `0.845446 ± 0.047499`, thunderstrike `0.947368 ± 0.091161`, crack `0.898776 ± 0.003853`, hide_craze `0.904251 ± 0.040824`.
+
+### Evidence and exit gate
+
+- Frozen configuration: `configs/frozen/resnet18.yaml`.
+- Versioned outputs: `experiments/summaries/phase5_resnet18_v1/`.
+- Regenerable checkpoints/full run: `experiments/results/phase5_resnet18_v1/`.
+- Figures: `figures/phase5/`.
+- Full record: `docs/phase5_resnet18_baseline.md`.
+- [x] Exactly four validation-only candidates used tuning seed 17; tuning test evaluations = 0.
+- [x] The winner was frozen before test prediction.
+- [x] Fresh final seeds 17/29/43 used full train and validation-only stopping.
+- [x] All three checkpoints existed before the test loader was constructed.
+- [x] Each final seed received one primary test evaluation; no ensemble or discarded seed.
+- [x] Predictions, six logits, histories, metrics, matrices, timing, and fingerprints are machine-readable.
+- [x] The independent seed-17 rerun exactly matches best epoch, validation/test predictions, metrics, scientific history, and checkpoint fingerprint.
+- [x] No crop/split change, augmentation, MobileNet, data-efficiency, corruption, robustness, or Phase 6 work occurred.
 
 ## Phase 4 — Traditional Computer-Vision Baselines
 
@@ -341,18 +386,16 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 - [x] Deterministic grouped, nested training-subset construction is implemented and validated.
 - [x] Scientific data-efficiency seeds are frozen as 17, 29, and 43.
 
-### Phase 4 and later, before applicable results are viewed
+### Resolved in Phases 4–5
 
-- Exact class weighting or balancing protocol, including the explicit choice to use none if applicable.
+- [x] HOG/LBP feature extraction, SVM fitting, and validation selection are frozen by Phase 4.
+- [x] ResNet-18 train-only balanced loss, optimizer grid, batch size, epoch limit, early stopping, no-augmentation policy, full fine-tuning, tie handling, checkpointing, and timing are frozen by Phase 5.
 
-- HOG and LBP feature-extraction parameters.
-- SVM kernel, regularization, multiclass handling, scaling, and validation search protocol.
-- CNN optimizer, learning-rate schedule, batch size, epoch limit, early-stopping rule, augmentation, and layer-freezing/fine-tuning protocol.
-- Model-selection tie handling and checkpoint-selection details.
+### Phase 6 and later, before applicable results are viewed
+
+- MobileNetV3-Small implementation details and its validation-selected optimizer configuration.
 - Exact numerical corruption parameters and deterministic implementations for all four severity scales.
-- Exact metric-library/version conventions, including undefined per-class metric handling.
-- Inference-latency hardware/software conditions, batch size, warm-up, repetition, and summary procedure.
-- Model/checkpoint size and trainable-parameter accounting conventions.
+- Any later phase-specific timing additions that do not inherit the frozen Phase 5 procedure.
 
 ## Phase 0 exit-gate record
 
@@ -374,4 +417,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phases 0–3 remain frozen unless the user explicitly requests a documented revision. Phase 4 is complete; its HOG/LBP feature definitions and selected SVM hyperparameters are frozen for later comparisons. Phase 5 has not started: do not implement or train ResNet-18, download pretrained weights, or run later data-efficiency or robustness experiments without separate explicit authorization.
+Completed Phases 0–5 remain frozen unless the user explicitly requests a documented revision. Phase 4 HOG/LBP definitions and SVM selections and the Phase 5 ResNet-18 definition and optimizer selection are frozen for later comparisons. Phase 6 has not started: do not implement or train MobileNetV3-Small, or run later data-efficiency or robustness experiments, without separate explicit authorization.

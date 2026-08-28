@@ -1,6 +1,6 @@
 # Robust Wind Turbine Blade Defect Recognition
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phase 3 has frozen and generated the deterministic classification crops and source-aware data-efficiency subsets from the reviewed Phase 2 WTBD curation. Its exit gate passes; no model results exist. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–5 are complete and frozen. Results now include the Phase 4 handcrafted baselines and the Phase 5 ImageNet-pretrained ResNet-18 baseline on the same source-isolated Phase 3 crop benchmark. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -10,7 +10,7 @@ The reference interpreter is Python 3.11. With [`uv`](https://docs.astral.sh/uv/
 uv sync --extra dev
 ```
 
-Runtime dependencies are PyYAML, NumPy, Pillow, matplotlib, scikit-image, scikit-learn, and joblib; pytest is the development/test dependency. PyTorch and torchvision are not required or installed.
+Runtime dependencies include PyYAML, NumPy, Pillow, matplotlib, scikit-image, scikit-learn, joblib, PyTorch, and torchvision; pytest is the development/test dependency.
 
 ## Run the complete test suite
 
@@ -70,6 +70,16 @@ uv run python scripts/run_traditional_baselines.py --config configs/traditional_
 
 Versioned machine-readable results are under `experiments/summaries/phase4_traditional_v1/`; regenerable model binaries and caches remain ignored under `experiments/results/` and `experiments/cache/`. Figures are under `figures/phase4/`. See [`docs/phase4_traditional_baselines.md`](docs/phase4_traditional_baselines.md).
 
+## Run the frozen ResNet-18 baseline
+
+The canonical Phase 5 command validates Phases 3–4, loads the explicit official ImageNet weights, runs the four-candidate validation grid, freezes the selected optimizer configuration, trains seeds 17/29/43, performs gated test evaluation, and verifies a full seed-17 deterministic rerun:
+
+```bash
+uv run python scripts/run_resnet18_baseline.py --config configs/resnet18_baseline.yaml
+```
+
+The frozen selection is `configs/frozen/resnet18.yaml`. Versioned results are under `experiments/summaries/phase5_resnet18_v1/`; regenerable checkpoints remain ignored under `experiments/results/phase5_resnet18_v1/`. Figures are under `figures/phase5/`. See [`docs/phase5_resnet18_baseline.md`](docs/phase5_resnet18_baseline.md).
+
 ## Phase boundaries
 
-Phases 0–3 remain frozen, and Phase 4 is complete. HOG + SVM and LBP + SVM selected configurations and first test results are frozen. Phase 5 ResNet-18 work has not started.
+Phases 0–5 are complete and frozen. Phase 6 — MobileNetV3-Small Transfer-Learning Baseline — has not been started.

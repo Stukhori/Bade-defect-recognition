@@ -1,0 +1,4 @@
+method,macro_f1,balanced_accuracy,accuracy,macro_f1_sample_sd,device_note
+HOG + SVM,0.47798778741419395,0.4577658672896768,0.5308641975308642,,Windows CPU; method-specific recorded timing
+LBP + SVM,0.5924013467096828,0.5727455965551204,0.6111111111111112,,Windows CPU; method-specific recorded timing
+ResNet-18 mean,0.8953144214810704,0.9024760072379121,0.8888888888888888,0.014117652330935615,Windows CPU; method-specific recorded timing
