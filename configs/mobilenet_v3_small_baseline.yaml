@@ -1,0 +1,18 @@
+extends: resnet18_baseline.yaml
+
+project:
+  phase: 6
+experiment:
+  name: phase6_mobilenet_v3_small_baseline
+method:
+  name: torchvision_mobilenet_v3_small_imagenet1k_v1
+model:
+  architecture: mobilenet_v3_small
+  weights: IMAGENET1K_V1
+  expected_total_parameters: 1524006
+mobilenet:
+  result_id: phase6_mobilenet_v3_small_v1
+  output_root: experiments/results/phase6_mobilenet_v3_small_v1
+  summary_root: experiments/summaries/phase6_mobilenet_v3_small_v1
+  figures_root: figures/phase6
+  frozen_config: configs/frozen/mobilenet_v3_small.yaml

@@ -31,3 +31,14 @@ def test_checkpoint_rejects_dataset_mismatch(tmp_path: Path) -> None:
         assert "dataset fingerprint mismatch" in str(error)
     else:
         raise AssertionError("mismatched dataset checkpoint was accepted")
+
+
+def test_checkpoint_rejects_architecture_mismatch(tmp_path: Path) -> None:
+    model = nn.Linear(1, 1)
+    save_checkpoint(tmp_path / "best.pt", model.state_dict(), {"processed_dataset_fingerprint": "abc", "architecture": "expected"})
+    try:
+        load_checkpoint(tmp_path / "best.pt", expected_dataset_fingerprint="abc", expected_architecture="wrong")
+    except ValueError as error:
+        assert "architecture mismatch" in str(error)
+    else:
+        raise AssertionError("mismatched architecture was accepted")

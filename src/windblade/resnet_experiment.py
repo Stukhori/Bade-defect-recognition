@@ -186,11 +186,11 @@ def _freeze(
     return record
 
 
-def _plot_tuning(rows: Sequence[Mapping[str, Any]], path: Path) -> None:
+def _plot_tuning(rows: Sequence[Mapping[str, Any]], path: Path, model_name: str = "ResNet-18") -> None:
     labels = [f"lr={r['learning_rate']:g}\nwd={r['weight_decay']:g}" for r in rows]
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.bar(labels, [r["validation_macro_f1"] for r in rows], color=["#e07a1f" if r["selected"] else "#2f78c4" for r in rows])
-    ax.set_ylim(0, 1); ax.set_ylabel("Best validation macro-F1"); ax.set_title("ResNet-18 predeclared tuning grid")
+    ax.set_ylim(0, 1); ax.set_ylabel("Best validation macro-F1"); ax.set_title(f"{model_name} predeclared tuning grid")
     fig.tight_layout(); fig.savefig(path, dpi=160); plt.close(fig)
 
 

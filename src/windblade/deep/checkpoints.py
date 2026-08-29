@@ -45,12 +45,15 @@ def load_checkpoint(
     *,
     expected_dataset_fingerprint: str,
     metadata_path: str | Path | None = None,
+    expected_architecture: str | None = None,
 ) -> tuple[dict[str, torch.Tensor], dict[str, Any]]:
     target = Path(path)
     meta_path = Path(metadata_path) if metadata_path else target.with_suffix(".json")
     metadata = json.loads(meta_path.read_text(encoding="utf-8"))
     if metadata["processed_dataset_fingerprint"] != expected_dataset_fingerprint:
         raise ValueError("checkpoint processed dataset fingerprint mismatch")
+    if expected_architecture is not None and metadata.get("architecture") != expected_architecture:
+        raise ValueError("checkpoint architecture mismatch")
     state = torch.load(target, map_location="cpu", weights_only=True)
     if state_dict_fingerprint(state) != metadata["checkpoint_fingerprint"]:
         raise ValueError("checkpoint state fingerprint mismatch")
