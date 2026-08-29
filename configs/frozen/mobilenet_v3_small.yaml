@@ -1,0 +1,70 @@
+class_order:
+- craze
+- corrosion
+- surface_injure
+- thunderstrike
+- crack
+- hide_craze
+final_seeds:
+- 17
+- 29
+- 43
+frozen_before_test: true
+frozen_utc: '2026-08-29T06:53:39.794680Z'
+git_commit: e5e7be43e8f8bdd81ab57900f2be2b16d76616ee
+input:
+  augmentation: none
+  normalization:
+    mean:
+    - 0.485
+    - 0.456
+    - 0.406
+    std:
+    - 0.229
+    - 0.224
+    - 0.225
+  size:
+  - 224
+  - 224
+model:
+  architecture: torchvision_mobilenet_v3_small
+  fine_tune: all
+  num_classes: 6
+  pretrained_mobilenet_fingerprint: 982065f8b6dec87a6c0d70a9a0b132bc976615c1f2d6a4fa2d93bc060caaf1d1
+  pretrained_weight_enum: MobileNet_V3_Small_Weights.IMAGENET1K_V1
+  total_parameters: 1524006
+phase: 6
+processed_dataset_fingerprint: 4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991
+schema_version: '1.0'
+selection:
+  grid_fingerprint: d61b35f9655a50f266fc52f2ba745c6904cf6e1bd367f0f8bfdcc4f8f77aa5b6
+  metric: validation_macro_f1
+  numeric_tolerance: 1.0e-12
+  tuning_seed: 17
+  validation_balanced_accuracy: 0.8595723710140186
+  validation_macro_f1: 0.8734123957236086
+  validation_macro_recall: 0.8595723710140186
+training:
+  batch_size: 32
+  betas:
+  - 0.9
+  - 0.999
+  class_weight_formula: N/(6*N_c), train only
+  class_weights:
+  - 1.0257452726364136
+  - 1.0013227462768555
+  - 0.6819819808006287
+  - 3.0039682388305664
+  - 1.356630802154541
+  - 0.6710993051528931
+  eps: 1.0e-08
+  learning_rate: 0.0001
+  max_epochs: 30
+  min_delta: 0.0001
+  mixed_precision: false
+  num_workers: 0
+  optimizer: AdamW
+  patience: 6
+  scheduler: null
+  validation_batch_size: 64
+  weight_decay: 0.0

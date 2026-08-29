@@ -1,0 +1,37 @@
+{
+  "checkpoint_bytes": 6219239,
+  "device": "cpu",
+  "inference": {
+    "batch_size": 1,
+    "images_per_second_from_median": 45.316946762393,
+    "measured_passes": 100,
+    "median_seconds": 0.02206679998198524,
+    "p95_seconds": 0.03398988003027625,
+    "warmup_passes": 20
+  },
+  "total_parameters": 1524006,
+  "trainable_parameters": 1524006,
+  "training": [
+    {
+      "average_seconds_per_epoch": 33.16725176521678,
+      "best_epoch": 17,
+      "epochs_executed": 23,
+      "seed": 17,
+      "training_seconds": 762.846790599986
+    },
+    {
+      "average_seconds_per_epoch": 33.275071617387965,
+      "best_epoch": 17,
+      "epochs_executed": 23,
+      "seed": 29,
+      "training_seconds": 765.3266471999232
+    },
+    {
+      "average_seconds_per_epoch": 33.251899813332905,
+      "best_epoch": 27,
+      "epochs_executed": 30,
+      "seed": 43,
+      "training_seconds": 997.5569943999872
+    }
+  ]
+}

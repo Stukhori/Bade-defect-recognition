@@ -1,6 +1,6 @@
 # Robust Wind Turbine Blade Defect Recognition
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–5 are complete and frozen. Results now include the Phase 4 handcrafted baselines and the Phase 5 ImageNet-pretrained ResNet-18 baseline on the same source-isolated Phase 3 crop benchmark. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–6 are complete and frozen. Results include the Phase 4 handcrafted baselines and matched Phase 5/6 ResNet-18 and MobileNetV3-Small baselines. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -80,6 +80,14 @@ uv run python scripts/run_resnet18_baseline.py --config configs/resnet18_baselin
 
 The frozen selection is `configs/frozen/resnet18.yaml`. Versioned results are under `experiments/summaries/phase5_resnet18_v1/`; regenerable checkpoints remain ignored under `experiments/results/phase5_resnet18_v1/`. Figures are under `figures/phase5/`. See [`docs/phase5_resnet18_baseline.md`](docs/phase5_resnet18_baseline.md).
 
+## Run the frozen MobileNetV3-Small baseline
+
+```bash
+uv run python scripts/run_mobilenet_v3_small_baseline.py --config configs/mobilenet_v3_small_baseline.yaml
+```
+
+Frozen config: `configs/frozen/mobilenet_v3_small.yaml`. Results: `experiments/summaries/phase6_mobilenet_v3_small_v1/`. See `docs/phase6_mobilenet_v3_small_baseline.md`.
+
 ## Phase boundaries
 
-Phases 0–5 are complete and frozen. Phase 6 — MobileNetV3-Small Transfer-Learning Baseline — has not been started.
+Phases 0–6 are complete and frozen. Phase 7 — Data-Efficiency Experiment — has not been started.

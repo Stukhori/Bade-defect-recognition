@@ -2,13 +2,21 @@
 
 ## Current phase
 
-- **Phase:** Phase 5 — ResNet-18 Transfer-Learning Baseline
-- **Status:** COMPLETE — selection, three-seed test evaluation, and deterministic rerun pass
+- **Phase:** Phase 6 — MobileNetV3-Small Transfer-Learning Baseline
+- **Status:** COMPLETE — selection, efficiency comparison, three-seed evaluation, and deterministic rerun pass
 - **Start date:** 2026-08-28
 - **Previous phases:** Phases 0, 1, 2, 3, and 4 — complete and frozen
-- **Next phase:** Phase 6 — MobileNetV3-Small Transfer-Learning Baseline
+- **Next phase:** Phase 7 — Data-Efficiency Experiment
 
-Phase 5 is complete. Phases 0–4 remain frozen. Phase 6 has not started; beginning it requires separate explicit authorization.
+Phase 6 is complete. Phases 0–5 remain frozen. Phase 7 has not started.
+
+## Phase 6 — MobileNetV3-Small Transfer-Learning Baseline
+
+**COMPLETE.** Result `phase6_mobilenet_v3_small_v1`; apparatus commit `e5e7be4`. Dataset fingerprint remains `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`. Official pretrained fingerprint: `982065f8b6dec87a6c0d70a9a0b132bc976615c1f2d6a4fa2d93bc060caaf1d1`. PyTorch/torchvision: `2.13.0+cpu`/`0.28.0`; CPU; 1,524,006 trainable parameters.
+
+Frozen LR/WD: `0.0001`/`0`; winning validation macro-F1 `0.873412`. Final best epochs: 17/17/27. Test macro-F1: 0.901740/0.894307/0.889915; aggregate `0.895321 ± 0.005977`. Balanced accuracy: `0.903765 ± 0.004203`; accuracy: `0.882716 ± 0.006173`. Checkpoint size: 6,219,239 bytes; CPU latency: 22.067 ms median and 33.990 ms p95.
+
+Relative to frozen ResNet: 86.37% fewer parameters, 86.12% smaller checkpoint, 79.23% lower median latency, and 100.0007% descriptive macro-F1 retention. Exact seed-17 rerun passed. Three primary test evaluations occurred; no ResNet retraining, data-efficiency, robustness, or Phase 7 work occurred. Evidence: `docs/phase6_mobilenet_v3_small_baseline.md` and `experiments/summaries/phase6_mobilenet_v3_small_v1/`.
 
 ## Phase 5 — ResNet-18 Transfer-Learning Baseline
 

@@ -1,0 +1,9 @@
+{
+  "best_epoch_identical": true,
+  "checkpoint_fingerprint_identical": true,
+  "scientific_history_identical": true,
+  "status": "PASS",
+  "test_metrics_identical": true,
+  "test_predictions_identical": true,
+  "validation_predictions_identical": true
+}

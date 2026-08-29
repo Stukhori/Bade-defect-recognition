@@ -1,0 +1,8 @@
+{
+  "latency_reduction": 0.7922642761808639,
+  "macro_f1_absolute_difference": 6.3007738844156336e-06,
+  "macro_f1_performance_retention": 1.0000070374984846,
+  "model_size_reduction": 0.8611602808468446,
+  "parameter_reduction": 0.8636796161576588,
+  "resnet_source": "experiments/summaries/phase5_resnet18_v1"
+}

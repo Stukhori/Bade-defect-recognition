@@ -1,0 +1,181 @@
+{
+  "architecture": "torchvision_mobilenet_v3_small",
+  "checkpoint_bytes": 6219239,
+  "checkpoint_fingerprint": "8573eaee7f9ff1d5a3f3732629f2228928fa599a17ab720f096ab3b438b7afd5",
+  "class_count": 6,
+  "class_order": [
+    "craze",
+    "corrosion",
+    "surface_injure",
+    "thunderstrike",
+    "crack",
+    "hide_craze"
+  ],
+  "epoch": 12,
+  "git_commit": "e5e7be43e8f8bdd81ab57900f2be2b16d76616ee",
+  "learning_rate": 0.0003,
+  "pretrained_weight_enum": "MobileNet_V3_Small_Weights.IMAGENET1K_V1",
+  "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+  "seed": 17,
+  "validation_metrics": {
+    "accuracy": 0.8972602739726028,
+    "balanced_accuracy": 0.85539828846465,
+    "class_order": [
+      "craze",
+      "corrosion",
+      "surface_injure",
+      "thunderstrike",
+      "crack",
+      "hide_craze"
+    ],
+    "confusion_matrix_counts": [
+      [
+        12,
+        2,
+        2,
+        0,
+        0,
+        3
+      ],
+      [
+        0,
+        21,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        44,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        2,
+        6,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        24,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        24
+      ]
+    ],
+    "confusion_matrix_row_normalized": [
+      [
+        0.631578947368421,
+        0.10526315789473684,
+        0.10526315789473684,
+        0.0,
+        0.0,
+        0.15789473684210525
+      ],
+      [
+        0.0,
+        0.9545454545454546,
+        0.0,
+        0.0,
+        0.0,
+        0.045454545454545456
+      ],
+      [
+        0.0,
+        0.0,
+        0.9565217391304348,
+        0.0,
+        0.0,
+        0.043478260869565216
+      ],
+      [
+        0.0,
+        0.0,
+        0.2222222222222222,
+        0.6666666666666666,
+        0.0,
+        0.1111111111111111
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.07692307692307693,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9230769230769231
+      ]
+    ],
+    "macro_f1": 0.8731469227549855,
+    "macro_precision": 0.9101744250762484,
+    "macro_recall": 0.85539828846465,
+    "per_class": {
+      "corrosion": {
+        "class_id": 1,
+        "f1": 0.9333333333333333,
+        "precision": 0.9130434782608695,
+        "recall": 0.9545454545454546,
+        "support": 22
+      },
+      "crack": {
+        "class_id": 4,
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 24
+      },
+      "craze": {
+        "class_id": 0,
+        "f1": 0.7272727272727273,
+        "precision": 0.8571428571428571,
+        "recall": 0.631578947368421,
+        "support": 19
+      },
+      "hide_craze": {
+        "class_id": 5,
+        "f1": 0.8421052631578947,
+        "precision": 0.7741935483870968,
+        "recall": 0.9230769230769231,
+        "support": 26
+      },
+      "surface_injure": {
+        "class_id": 2,
+        "f1": 0.9361702127659575,
+        "precision": 0.9166666666666666,
+        "recall": 0.9565217391304348,
+        "support": 46
+      },
+      "thunderstrike": {
+        "class_id": 3,
+        "f1": 0.8,
+        "precision": 1.0,
+        "recall": 0.6666666666666666,
+        "support": 9
+      }
+    },
+    "zero_division": 0
+  },
+  "weight_decay": 0.0
+}
