@@ -14,7 +14,7 @@ Phase 7 is complete. Phases 0–6 remain frozen. Phase 8 has not started.
 
 ### Status and frozen identity
 
-**COMPLETE.** Result `phase7_data_efficiency_v1`; apparatus commits `cd7f80a` and pre-science gate fix `1ae074f`. The final result-artifact commit is recorded in the subsequent Git state update. The Phase 3 fingerprint remains `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`.
+**COMPLETE.** Result `phase7_data_efficiency_v1`; apparatus commits `cd7f80a` and pre-science gate fix `1ae074f`; result-artifact commit `b67d1f9`. The Phase 3 fingerprint remains `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`.
 
 - Primary reduced fits: 36 total — nine each for HOG, LBP, ResNet-18, and MobileNetV3-Small.
 - New CNN trainings: 18; primary reduced-data test evaluations: 36.
@@ -59,7 +59,7 @@ Thunderstrike has 12/22/32/42 training examples. Its F1 curves are HOG 0.200/0.2
 - Recorded primary reduced CNN training: ResNet 13,896.5 seconds (3.86 h); MobileNet 4,181.1 seconds (1.16 h); total 18,077.6 seconds (5.02 h).
 - Canonical ResNet seed-17/25% rerun: PASS for initial head, best epoch, scientific history, validation/test predictions, metrics, and checkpoint fingerprint.
 - Canonical MobileNet seed-17/25% rerun: PASS for the same exact comparisons. Timings were excluded.
-- Expanded final test suite and final result commit are recorded after the final gate.
+- Expanded final test suite: **134 passed, 0 failed**, with 11 unchanged scikit-learn deprecation warnings.
 - Versioned results: `experiments/summaries/phase7_data_efficiency_v1/`.
 - Figures: `figures/phase7/` (12 required figures).
 - Full record: `docs/phase7_data_efficiency.md`.
