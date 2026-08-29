@@ -993,7 +993,10 @@ def run_data_efficiency(config: ResolvedConfig, repository_root: str | Path) -> 
 
     for method in CLASSICAL:
         features, cache = _load_feature_cache(root, method, all_rows, gate["frozen"][method])
-        expected_fingerprint = validate_traditional_results(load_config(root / "configs/traditional_baselines.yaml"), root)["feature_fingerprints"][method]
+        phase4_manifest = _json(
+            root / "experiments" / "summaries" / "phase4_traditional_v1" / "manifest.json"
+        )
+        expected_fingerprint = phase4_manifest["feature_fingerprints"][method]
         if cache["feature_fingerprint"] != expected_fingerprint:
             raise DataEfficiencyError(f"{method} cached feature fingerprint differs from frozen Phase 4")
         for seed in SEEDS:
