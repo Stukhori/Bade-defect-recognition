@@ -100,15 +100,25 @@ def split_rows(rows: Sequence[Mapping[str, str]]) -> dict[str, list[dict[str, st
     return result
 
 
-def balanced_class_weights(train_rows: Sequence[Mapping[str, str]]) -> torch.Tensor:
-    """Calculate N/(K*N_c), exclusively from rows declared as training."""
+def balanced_subset_class_weights(train_rows: Sequence[Mapping[str, str]]) -> torch.Tensor:
+    """Calculate N/(K*N_c) from an arbitrary, nonempty train-only subset."""
 
     if any(row["split"] != "train" for row in train_rows):
         raise ValueError("class weights accept training rows only")
     counts = np.bincount([int(row["class_id"]) for row in train_rows], minlength=len(LABELS))
+    if not train_rows or len(counts) != len(LABELS) or np.any(counts == 0):
+        raise ValueError("class weights require every frozen class in the active training subset")
+    return torch.tensor(len(train_rows) / (len(LABELS) * counts), dtype=torch.float32)
+
+
+def balanced_class_weights(train_rows: Sequence[Mapping[str, str]]) -> torch.Tensor:
+    """Calculate the frozen full-training weights used by Phases 5 and 6."""
+
+    weights = balanced_subset_class_weights(train_rows)
+    counts = np.bincount([int(row["class_id"]) for row in train_rows], minlength=len(LABELS))
     if len(train_rows) != 757 or counts.tolist() != [123, 126, 185, 42, 93, 188]:
         raise ValueError("frozen Phase 3 training class counts changed")
-    return torch.tensor(len(train_rows) / (len(LABELS) * counts), dtype=torch.float32)
+    return weights
 
 
 def make_loader(

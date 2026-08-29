@@ -1,0 +1,59 @@
+extends: crop_dataset.yaml
+
+project:
+  phase: 7
+
+experiment:
+  name: phase7_data_efficiency
+  seed: 17
+
+method:
+  family: frozen_method_data_efficiency
+  name: four_method_nested_source_subsets_v1
+
+dataset:
+  processed_version: wtbd_crops_v1
+  processed_fingerprint: 4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991
+
+classes:
+  order: [craze, corrosion, surface_injure, thunderstrike, crack, hide_craze]
+
+data_efficiency:
+  result_id: phase7_data_efficiency_v1
+  output_root: experiments/results/phase7_data_efficiency_v1
+  summary_root: experiments/summaries/phase7_data_efficiency_v1
+  figures_root: figures/phase7
+  fractions: [0.25, 0.50, 0.75, 1.00]
+  reduced_fractions: [0.25, 0.50, 0.75]
+  source_counts:
+    "0.25": 128
+    "0.50": 255
+    "0.75": 383
+    "1.00": 510
+  instance_counts:
+    "0.25": 252
+    "0.50": 440
+    "0.75": 608
+    "1.00": 757
+  class_counts:
+    "0.25": [39, 40, 66, 12, 28, 67]
+    "0.50": [70, 72, 111, 22, 51, 114]
+    "0.75": [98, 100, 151, 32, 73, 154]
+    "1.00": [123, 126, 185, 42, 93, 188]
+  seeds: [17, 29, 43]
+  subset_unit: source_image
+  nested: true
+  validation_fixed: true
+  test_fixed: true
+  hyperparameter_search: false
+  primary_metric: macro_f1
+  frozen_configs:
+    hog: configs/frozen/traditional_hog_svm.yaml
+    lbp: configs/frozen/traditional_lbp_svm.yaml
+    resnet18: configs/frozen/resnet18.yaml
+    mobilenet_v3_small: configs/frozen/mobilenet_v3_small.yaml
+  upstream_results:
+    traditional: experiments/summaries/phase4_traditional_v1
+    resnet18: experiments/summaries/phase5_resnet18_v1
+    mobilenet_v3_small: experiments/summaries/phase6_mobilenet_v3_small_v1
+
