@@ -2,13 +2,80 @@
 
 ## Current phase
 
-- **Phase:** Phase 6 — MobileNetV3-Small Transfer-Learning Baseline
-- **Status:** COMPLETE — selection, efficiency comparison, three-seed evaluation, and deterministic rerun pass
-- **Start date:** 2026-08-28
-- **Previous phases:** Phases 0, 1, 2, 3, and 4 — complete and frozen
-- **Next phase:** Phase 7 — Data-Efficiency Experiment
+- **Phase:** Phase 7 — Data-Efficiency / Limited-Labeled-Data Experiment
+- **Status:** COMPLETE — 36 reduced-data fits, frozen-anchor aggregation, and both canonical reruns pass
+- **Start date:** 2026-08-29
+- **Previous phases:** Phases 0–6 — complete and frozen
+- **Next phase:** Phase 8 — Controlled Image-Degradation Robustness
 
-Phase 6 is complete. Phases 0–5 remain frozen. Phase 7 has not started.
+Phase 7 is complete. Phases 0–6 remain frozen. Phase 8 has not started.
+
+## Phase 7 — Data-Efficiency / Limited-Labeled-Data Experiment
+
+### Status and frozen identity
+
+**COMPLETE.** Result `phase7_data_efficiency_v1`; apparatus commits `cd7f80a` and pre-science gate fix `1ae074f`. The final result-artifact commit is recorded in the subsequent Git state update. The Phase 3 fingerprint remains `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`.
+
+- Primary reduced fits: 36 total — nine each for HOG, LBP, ResNet-18, and MobileNetV3-Small.
+- New CNN trainings: 18; primary reduced-data test evaluations: 36.
+- Full-data training runs: zero. The Phase 4/5/6 100% anchors were validated and reused.
+- Validation/test sizes remained 146/162 instances for every run.
+- Subset/model seeds remained paired as 17/29/43; all fractions started independently.
+- Same-seed initial CNN head fingerprints match across 25%/50%/75% for each architecture.
+- No Phase 7 hyperparameter search, augmentation, inference retiming, or Phase 8 corruption work occurred.
+
+Frozen configuration SHA-256 identities:
+
+- HOG: `2054b1605590aa34a56ab7808b2f95d589d337e4fb651048cac750fa8618de24`.
+- LBP: `24ff9776eacd0e26bb61a3bd13f3c840772ee5b46a5f3ac745ac164084ca9cc9`.
+- ResNet-18: `6ac9e437f026a5c30433ccc9a670496b75ecab7619b0fb7266ab395c0093c2ad`.
+- MobileNetV3-Small: `62d610e150c950a42641f726134ae17227cdac875139828f346c23e248cce87e`.
+
+Subset fingerprints (25/50/75/100%):
+
+- Seed 17: `b231a06c1e90ce97090359e861df054c98e1084c46288571424851b37ab606dd`, `ec9f49a5532a62afac49942d45fe02c214442d944a173a4954152d2bdb9c3a7f`, `bd8d15b8214c52378f83cdf666cd46fc0411272fcc1967654d3c0280a47cb496`, `32819d7250690290f9f7ea19325b053affbbf30bcaca21a3ea0fe5c4f2584b95`.
+- Seed 29: `a2b427a6a682de42ef29280042c0ffbe862f80963b13dbb15aa5bfabf77db10c`, `b6f5222161c60af4373413caf49409b12f0e29720b6dd035ee2e4aad2e620f8c`, `3f2a2f67ca829e008d12e95f3526d8595aff0a61e2ae99a9acb2150a215fc21d`, `32819d7250690290f9f7ea19325b053affbbf30bcaca21a3ea0fe5c4f2584b95`.
+- Seed 43: `3b43aaefb03318b3b5349ffd81626b0f15dd1fc3eb7e3d40523a0e1cf6580f33`, `5a66073adc48f8aa57c7c7711a86676540adfa5a6ee5e59d981d5cc874632a19`, `6ee68e91f499b1e011ebbe17a97cf3f1bc8e314ba28de0331156ad7f17560005`, `32819d7250690290f9f7ea19325b053affbbf30bcaca21a3ea0fe5c4f2584b95`.
+
+### Primary results
+
+Test macro-F1 mean ± sample SD by labeled-source fraction:
+
+| Method | 25% | 50% | 75% | 100% |
+|---|---:|---:|---:|---:|
+| HOG + SVM | 0.334961 ± 0.004791 | 0.410712 ± 0.021288 | 0.450523 ± 0.011041 | 0.477988 (SD N/A) |
+| LBP + SVM | 0.396248 ± 0.014417 | 0.522589 ± 0.012073 | 0.548415 ± 0.013633 | 0.592401 (SD N/A) |
+| ResNet-18 | 0.741756 ± 0.021156 | 0.855151 ± 0.030380 | 0.890470 ± 0.006729 | 0.895314 ± 0.014118 |
+| MobileNetV3-Small | 0.723334 ± 0.017074 | 0.813294 ± 0.017598 | 0.854272 ± 0.004630 | 0.895321 ± 0.005977 |
+
+Retention at 25/50/75% is HOG 70.08/85.93/94.25%, LBP 66.89/88.22/92.57%, ResNet 82.85/95.51/99.46%, and MobileNet 80.79/90.84/95.42%. Marginal macro-F1 gains for 25→50/50→75/75→100 are HOG 0.075750/0.039811/0.027465, LBP 0.126341/0.025827/0.043986, ResNet 0.113395/0.035319/0.004844, and MobileNet 0.089960/0.040978/0.041049.
+
+The smallest tested fraction reaching 95% of full-data macro-F1 is 100% for HOG, 100% for LBP, 50% for ResNet, and 75% for MobileNet. Normalized macro-F1 learning-curve AUC is 0.422570/0.521776/0.854719/0.825631 for HOG/LBP/ResNet/MobileNet.
+
+Thunderstrike has 12/22/32/42 training examples. Its F1 curves are HOG 0.200/0.255/0.200/0.364, LBP 0.200/0.309/0.442/0.500, ResNet 0.693/0.896/0.967/0.947, and MobileNet 0.727/0.912/0.928/0.965. Small support limits interpretation. Corrosion and surface-injury results remain among the more difficult CNN class-level outcomes, and several per-class curves are non-monotonic.
+
+### Compute, reproducibility, and evidence
+
+- Recorded primary reduced CNN training: ResNet 13,896.5 seconds (3.86 h); MobileNet 4,181.1 seconds (1.16 h); total 18,077.6 seconds (5.02 h).
+- Canonical ResNet seed-17/25% rerun: PASS for initial head, best epoch, scientific history, validation/test predictions, metrics, and checkpoint fingerprint.
+- Canonical MobileNet seed-17/25% rerun: PASS for the same exact comparisons. Timings were excluded.
+- Expanded final test suite and final result commit are recorded after the final gate.
+- Versioned results: `experiments/summaries/phase7_data_efficiency_v1/`.
+- Figures: `figures/phase7/` (12 required figures).
+- Full record: `docs/phase7_data_efficiency.md`.
+
+### Exit gate
+
+- [x] Phases 3–6 and all 12 frozen subset manifests validate.
+- [x] Exact source, instance, class, validation, and test counts reproduce.
+- [x] Frozen HOG/LBP/ResNet/MobileNet configurations were used with no search.
+- [x] Reduced CNN weights use active training labels only; every run starts fresh from official pretrained weights.
+- [x] Nine reduced fits per method completed; no seed was removed.
+- [x] Every primary reduced run received one test evaluation; complete predictions, CNN logits, class metrics, histories, and checkpoint metadata exist.
+- [x] Frozen 100% results were reused and detailed inference timing was not repeated.
+- [x] Learning curves, retention, absolute loss, marginal gains, tested 95% threshold, normalized learning-curve AUC, per-class analysis, and thunderstrike analysis exist.
+- [x] Both canonical CNN reproducibility checks pass.
+- [x] Phase 8 has not started.
 
 ## Phase 6 — MobileNetV3-Small Transfer-Learning Baseline
 
@@ -399,9 +466,10 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 - [x] HOG/LBP feature extraction, SVM fitting, and validation selection are frozen by Phase 4.
 - [x] ResNet-18 train-only balanced loss, optimizer grid, batch size, epoch limit, early stopping, no-augmentation policy, full fine-tuning, tie handling, checkpointing, and timing are frozen by Phase 5.
 
-### Phase 6 and later, before applicable results are viewed
+### Resolved in Phases 6–7; remaining for Phase 8
 
-- MobileNetV3-Small implementation details and its validation-selected optimizer configuration.
+- [x] MobileNetV3-Small implementation details and validation-selected optimizer configuration were frozen in Phase 6.
+- [x] The four-method limited-labeled-data protocol and results were completed in Phase 7 without per-fraction retuning.
 - Exact numerical corruption parameters and deterministic implementations for all four severity scales.
 - Any later phase-specific timing additions that do not inherit the frozen Phase 5 procedure.
 
@@ -425,4 +493,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phases 0–5 remain frozen unless the user explicitly requests a documented revision. Phase 4 HOG/LBP definitions and SVM selections and the Phase 5 ResNet-18 definition and optimizer selection are frozen for later comparisons. Phase 6 has not started: do not implement or train MobileNetV3-Small, or run later data-efficiency or robustness experiments, without separate explicit authorization.
+Completed Phases 0–7 remain frozen unless the user explicitly requests a documented revision. Phase 8 has not started: do not define corruption severities, generate corrupted evaluation inputs, run robustness evaluation, or perform any later extension without separate explicit authorization.

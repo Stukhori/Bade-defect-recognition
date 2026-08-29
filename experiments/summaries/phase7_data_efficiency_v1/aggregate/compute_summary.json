@@ -1,0 +1,12 @@
+{
+  "inference_timing_repeated_in_phase7": false,
+  "new_reduced_cnn_training_seconds": {
+    "mobilenet_v3_small": 4181.060798700084,
+    "resnet18": 13896.511027600034
+  },
+  "new_reduced_cnn_training_seconds_total": 18077.571826300118,
+  "reused_inference_timing_sources": {
+    "mobilenet_v3_small": "experiments/summaries/phase6_mobilenet_v3_small_v1/aggregate/efficiency.json",
+    "resnet18": "experiments/summaries/phase5_resnet18_v1/aggregate/efficiency.json"
+  }
+}

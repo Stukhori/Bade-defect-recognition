@@ -1,0 +1,5 @@
+method,normalized_macro_f1_learning_curve_auc
+hog,0.4225697297871484
+lbp,0.5217763188514523
+resnet18,0.8547189175128745
+mobilenet_v3_small,0.825631075714111

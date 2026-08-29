@@ -1,0 +1,17 @@
+{
+  "checks": {
+    "best_epoch_identical": true,
+    "checkpoint_fingerprint_identical": true,
+    "initial_head_fingerprint_identical": true,
+    "scientific_history_identical": true,
+    "test_metrics_identical": true,
+    "test_predictions_identical": true,
+    "validation_metrics_identical": true,
+    "validation_predictions_identical": true
+  },
+  "fraction": 0.25,
+  "method": "mobilenet_v3_small",
+  "seed": 17,
+  "status": "PASS",
+  "timings_excluded": true
+}

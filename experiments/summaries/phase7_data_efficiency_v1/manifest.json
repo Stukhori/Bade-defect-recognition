@@ -1,0 +1,143 @@
+{
+  "apparatus_commit": "1ae074f996ede30f6a1d99d717a75768227d6597",
+  "canonical_reproducibility_reruns": 2,
+  "completed_utc": "2026-08-29T20:48:08.336839Z",
+  "environment": {
+    "captured_utc": "2026-08-29T15:26:32.585378Z",
+    "cpu": "AMD64 Family 23 Model 24 Stepping 1, AuthenticAMD",
+    "cuda_available": false,
+    "cuda_device_count": 0,
+    "git_commit": "1ae074f996ede30f6a1d99d717a75768227d6597",
+    "git_dirty": false,
+    "hostname": "LAPTOP-H1VSHD8M",
+    "logical_cpu_count": 8,
+    "operating_system": "Windows",
+    "operating_system_release": "10",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "project_version": "0.1.0",
+    "python_executable": "python.exe",
+    "python_implementation": "CPython",
+    "python_version": "3.11.15",
+    "pytorch_available": true,
+    "pytorch_version": "2.13.0+cpu",
+    "selected_device": "cpu",
+    "torchvision_version": "0.28.0"
+  },
+  "fractions": [
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "frozen_config_identities": {
+    "hog": {
+      "path": "configs/frozen/traditional_hog_svm.yaml",
+      "sha256": "2054b1605590aa34a56ab7808b2f95d589d337e4fb651048cac750fa8618de24"
+    },
+    "lbp": {
+      "path": "configs/frozen/traditional_lbp_svm.yaml",
+      "sha256": "24ff9776eacd0e26bb61a3bd13f3c840772ee5b46a5f3ac745ac164084ca9cc9"
+    },
+    "mobilenet_v3_small": {
+      "path": "configs/frozen/mobilenet_v3_small.yaml",
+      "sha256": "62d610e150c950a42641f726134ae17227cdac875139828f346c23e248cce87e"
+    },
+    "resnet18": {
+      "path": "configs/frozen/resnet18.yaml",
+      "sha256": "6ac9e437f026a5c30433ccc9a670496b75ecab7619b0fb7266ab395c0093c2ad"
+    }
+  },
+  "full_data_results_reused": true,
+  "full_data_training_runs": 0,
+  "hyperparameter_search": false,
+  "inference_timing_repeated": false,
+  "new_cnn_trainings_completed": 18,
+  "new_cnn_trainings_planned": 18,
+  "new_reduced_fits_completed": 36,
+  "new_reduced_fits_planned": 36,
+  "phase": 7,
+  "phase8_started": false,
+  "primary_test_evaluations": 36,
+  "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+  "reduced_fractions": [
+    0.25,
+    0.5,
+    0.75
+  ],
+  "reproducibility": {
+    "mobilenet_v3_small": {
+      "checks": {
+        "best_epoch_identical": true,
+        "checkpoint_fingerprint_identical": true,
+        "initial_head_fingerprint_identical": true,
+        "scientific_history_identical": true,
+        "test_metrics_identical": true,
+        "test_predictions_identical": true,
+        "validation_metrics_identical": true,
+        "validation_predictions_identical": true
+      },
+      "fraction": 0.25,
+      "method": "mobilenet_v3_small",
+      "seed": 17,
+      "status": "PASS",
+      "timings_excluded": true
+    },
+    "resnet18": {
+      "checks": {
+        "best_epoch_identical": true,
+        "checkpoint_fingerprint_identical": true,
+        "initial_head_fingerprint_identical": true,
+        "scientific_history_identical": true,
+        "test_metrics_identical": true,
+        "test_predictions_identical": true,
+        "validation_metrics_identical": true,
+        "validation_predictions_identical": true
+      },
+      "fraction": 0.25,
+      "method": "resnet18",
+      "seed": 17,
+      "status": "PASS",
+      "timings_excluded": true
+    }
+  },
+  "result_id": "phase7_data_efficiency_v1",
+  "reused_full_data": {
+    "phase4_hog": {
+      "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+      "retrained_in_phase7": false,
+      "reused": true,
+      "source_path": "experiments/summaries/phase4_traditional_v1/hog/test_metrics.json",
+      "source_sha256": "be23526cab6ef18565746b7ae74f38cfd10bc1974de24691b012c632d1c9575f"
+    },
+    "phase4_lbp": {
+      "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+      "retrained_in_phase7": false,
+      "reused": true,
+      "source_path": "experiments/summaries/phase4_traditional_v1/lbp/test_metrics.json",
+      "source_sha256": "3a5940792acc857c1da9cb1a5cba0da4c076534ff777f0dbc88031f06ec58be5"
+    },
+    "phase5_resnet": {
+      "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+      "retrained_in_phase7": false,
+      "reused": true,
+      "source_path": "experiments/summaries/phase5_resnet18_v1/aggregate/test_summary.json",
+      "source_sha256": "1a8aff18e06151312ef8c2778c58558e724fec5f9f57870803d4b009acbeb788"
+    },
+    "phase6_mobilenet": {
+      "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+      "retrained_in_phase7": false,
+      "reused": true,
+      "source_path": "experiments/summaries/phase6_mobilenet_v3_small_v1/aggregate/test_summary.json",
+      "source_sha256": "0385fc50ad4d6df964ee399b70e6286320d91f5ffd305c36095f6654a7ab0745"
+    }
+  },
+  "same_seed_initial_heads_match": true,
+  "schema_version": "1.0",
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "started_utc": "2026-08-29T15:26:32.822807Z",
+  "status": "completed"
+}

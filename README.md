@@ -1,6 +1,6 @@
 # Robust Wind Turbine Blade Defect Recognition
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–6 are complete and frozen. Results include the Phase 4 handcrafted baselines and matched Phase 5/6 ResNet-18 and MobileNetV3-Small baselines. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–7 are complete and frozen. Results include the Phase 4 handcrafted baselines, matched Phase 5/6 ResNet-18 and MobileNetV3-Small baselines, and the Phase 7 limited-labeled-data comparison. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -88,6 +88,16 @@ uv run python scripts/run_mobilenet_v3_small_baseline.py --config configs/mobile
 
 Frozen config: `configs/frozen/mobilenet_v3_small.yaml`. Results: `experiments/summaries/phase6_mobilenet_v3_small_v1/`. See `docs/phase6_mobilenet_v3_small_baseline.md`.
 
+## Run the frozen data-efficiency experiment
+
+The resumable canonical Phase 7 command validates Phases 3–6, runs only the predeclared 25%/50%/75% reduced-data fits, reuses every frozen 100% endpoint, performs the two canonical reproducibility reruns, and generates the learning-curve aggregates:
+
+```bash
+uv run python scripts/run_data_efficiency.py --config configs/data_efficiency.yaml
+```
+
+Results are under `experiments/summaries/phase7_data_efficiency_v1/`, figures under `figures/phase7/`, and the complete record is [`docs/phase7_data_efficiency.md`](docs/phase7_data_efficiency.md).
+
 ## Phase boundaries
 
-Phases 0–6 are complete and frozen. Phase 7 — Data-Efficiency Experiment — has not been started.
+Phases 0–7 are complete and frozen. Phase 8 — Controlled Image-Degradation Robustness — has not been started.

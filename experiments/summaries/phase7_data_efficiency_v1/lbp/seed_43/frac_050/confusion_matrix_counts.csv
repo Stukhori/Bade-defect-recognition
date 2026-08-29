@@ -1,0 +1,7 @@
+true_label,craze,corrosion,surface_injure,thunderstrike,crack,hide_craze
+craze,17,3,6,0,0,1
+corrosion,0,13,6,0,1,10
+surface_injure,2,3,20,0,0,8
+thunderstrike,1,1,3,2,0,2
+crack,0,1,3,0,5,5
+hide_craze,4,1,7,0,0,37

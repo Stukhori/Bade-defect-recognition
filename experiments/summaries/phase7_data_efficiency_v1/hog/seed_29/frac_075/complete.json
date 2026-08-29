@@ -1,0 +1,29 @@
+{
+  "C": 10.0,
+  "class_weight": "balanced_from_active_subset_by_SVC",
+  "feature_config_hash": "e0723cd80ec462644aec14e3827821d716d04ff375424b5de45ac5ddac4d5cf2",
+  "fit_seconds": 1.9938703998923302,
+  "fraction": 0.75,
+  "gamma": "scale",
+  "method": "hog",
+  "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+  "scaler_fit_scope": "active_training_subset_only",
+  "schema_version": "1.0",
+  "seed": 29,
+  "source_images": 383,
+  "source_subset_fingerprint": "3f2a2f67ca829e008d12e95f3526d8595aff0a61e2ae99a9acb2150a215fc21d",
+  "test_evaluations": 1,
+  "test_instances": 162,
+  "test_macro_f1": 0.446085052943685,
+  "training_class_counts": {
+    "corrosion": 100,
+    "crack": 73,
+    "craze": 98,
+    "hide_craze": 154,
+    "surface_injure": 151,
+    "thunderstrike": 32
+  },
+  "training_instances": 608,
+  "validation_instances": 146,
+  "validation_macro_f1": 0.43678194323355607
+}
