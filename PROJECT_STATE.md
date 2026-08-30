@@ -10,6 +10,23 @@
 
 Phase 9A is awaiting human review and is not yet frozen as a completed Phase 9. Phases 0–8 remain frozen. Phase 9B and Phase 10 have not started.
 
+## Separate non-scientific demonstration
+
+**Status: COMPLETE AND VALIDATED; does not change the scientific phase.** The local Streamlit application is an engineering demonstration of the already frozen classifier, not a scientific experiment or a Phase 10 deliverable.
+
+- Entry point: `app/app.py`; operating record: `docs/app.md`; app-only validation: `app/validation/`.
+- Frozen model: Phase 6 full-data MobileNetV3-Small seed 17, used because 17 is the predeclared canonical seed rather than because of a best-result comparison.
+- Input modes: an already prepared visible-defect crop, or a larger image with one region manually selected by the user.
+- The manual workflow reuses the exact Phase 3 contextual-square geometry and the same RGB/bilinear 224×224 pixel policy; regression tests confirm pixel identity against multiple stored Phase 3 references.
+- App output: one of the six frozen WTBD categories plus all six model scores, explicitly labeled as not calibrated confidence estimates.
+- Optional Grad-CAM imports the unchanged Phase 9A primitive; model-state and prediction invariance pass.
+- App dependencies are pinned separately in `requirements-app.txt`; scientific dependency constraints are unchanged.
+- Validation: both complete UI workflows pass; focused app suite 27 passed; complete suite 191 passed with 11 existing scikit-learn warnings; live server health returned HTTP 200/`ok`; frozen Phase 9A validator remains `PASS`.
+- Training, fine-tuning, calibration, ensembling, test-driven model/seed selection, new test-set evaluation, checkpoint mutation, external service calls, permanent upload storage, and tracked uploaded images: zero.
+- Scientific status remains **PHASE 9A COMPLETE — AWAITING HUMAN REVIEW**. Phase 9 is incomplete; Phase 9B and Phase 10 have not started. Phase 11 and Phase 12 remain optional and unstarted.
+
+The application classifies a manually identified visible surface-defect region. It does not automatically detect or localize defects, assess blade safety or condition, detect hidden/internal damage, estimate severity or remaining life, replace inspection professionals, or establish real-time target-hardware deployment.
+
 ## Phase 9A — Quantitative Error Analysis, Grad-CAM, and Blinded Human Review
 
 ### Status and frozen identity

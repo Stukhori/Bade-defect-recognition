@@ -12,6 +12,17 @@ uv sync --extra dev
 
 Runtime dependencies include PyYAML, NumPy, Pillow, matplotlib, scikit-image, scikit-learn, joblib, PyTorch, and torchvision; pytest is the development/test dependency.
 
+## Run the separate local demonstration
+
+The repository also contains a non-scientific Streamlit demonstration of the frozen Phase 6 MobileNetV3-Small full-data seed-17 classifier. Install its separately pinned UI dependencies and launch it locally:
+
+```bash
+uv pip install -r requirements-app.txt
+uv run streamlit run app/app.py
+```
+
+It accepts a prepared visible-defect crop or a larger image with a manually selected region. It does not automatically detect defects or assess blade safety. The local frozen checkpoint must already be present; no training, tuning, calibration, or test-set evaluation occurs. See [`docs/app.md`](docs/app.md) for the exact model identity, crop parity, scope, limitations, and validation record.
+
 ## Run the complete test suite
 
 ```bash
