@@ -10,6 +10,21 @@
 
 Phase 9A is awaiting human review and is not yet frozen as a completed Phase 9. Phases 0–8 remain frozen. Phase 9B and Phase 10 have not started.
 
+## Separate non-scientific human-review interface
+
+**Status: COMPLETE AND VALIDATED; does not change the scientific phase.** The local Streamlit review interface is a human-data-entry aid for the already generated Phase 9A packet. It is not a scientific experiment, does not incorporate the review, and does not start Phase 9B or Phase 10.
+
+- Entry point: `app/review_app.py`; operating guide: `docs/human_review_interface.md`; reusable isolated support: `src/windblade_review/`; machine-readable validation: `app/validation/review_interface_validation.json`.
+- Launch: `uv run streamlit run app/review_app.py --server.address 127.0.0.1`.
+- The public classifier demonstration remains separate at `app/app.py`; the review interface does not import or call its prediction code.
+- Pass A is one-case-at-a-time and exposes only the existing anonymous review ID, dataset true label, review images, and annotation visualization. It does not read or expose Pass B, the separate ID mapping, source IDs, predictions, model/seed identity, event information, or Grad-CAM before the gate.
+- Pass B requires all 300 valid Pass A responses, explicit attestation, **Validate and lock Pass A**, and a separate deliberate **Begin Pass B** action. The lock makes Pass A read-only in that interface session and displays its completed SHA-256.
+- Valid changes autosave to the current pass through a validated, same-directory temporary file and atomic replacement. Exact headers, review IDs, row order, response enums, notes, and the other pass are preserved. Restart resumes at the first incomplete case.
+- The interface performs no model or LLM inference, applies no heuristic or automated rule, supplies no judgments or answer suggestions, makes no external service call, and stores only the required CSV responses plus transient in-memory state.
+- Validation used temporary copied forms only. Focused review-interface suite: **22 passed, 0 failed**. Complete repository suite: **213 passed, 0 failed**, with 11 unchanged scikit-learn deprecation warnings. Phase 9A and classifier-app validators remain `PASS`; local-only live health returned HTTP 200/`ok` and the server was stopped.
+- At this interface commit, both canonical forms remain completely blank: Pass A `0/300`, SHA-256 `44a5200e8b921b65f55cd391943abfbd4ca600e9723fcd8c70a36eb6cf2b7d58`; Pass B `0/240`, SHA-256 `7ae98fa0cb8c05edd57632460b1a08339c96f4f24b0a991fc1b7ac64ccdfa9e8`.
+- No canonical judgment, mapping entry, packet image/HTML, checkpoint, prediction, quantitative output, or other scientific artifact changed. **Phase 9A remains complete and awaiting human review; Phase 9B and Phase 10 remain unstarted.**
+
 ## Separate non-scientific demonstration
 
 **Status: COMPLETE AND VALIDATED; does not change the scientific phase.** The local Streamlit application is an engineering demonstration of the already frozen classifier, not a scientific experiment or a Phase 10 deliverable.
@@ -66,9 +81,9 @@ All findings are post-hoc and descriptive. No geometry association is causal, an
 
 ### Human-review handoff
 
-1. Read `experiments/summaries/phase9_error_analysis_v1/human_review_packet/README.md`.
-2. Complete Pass A using `pass_a/index.html` and `pass_a/pass_a_review_form.csv` without opening Pass B or the ID mapping.
-3. Only after Pass A is complete, open `pass_b/index.html` and complete `pass_b/pass_b_review_form.csv`.
+1. Read `docs/human_review_interface.md` and `experiments/summaries/phase9_error_analysis_v1/human_review_packet/README.md`.
+2. Launch the local review interface and complete Pass A without opening Pass B or the ID mapping.
+3. After all 300 Pass A fields are valid, attest, validate and lock Pass A, then deliberately begin and complete Pass B.
 4. Return both completed forms for Phase 9B. Do not begin Phase 10.
 
 ## Phase 8 — Controlled Image-Degradation Robustness
@@ -611,4 +626,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phases 0–8 remain frozen unless the user explicitly requests a documented revision. Phase 9 has not started: do not begin detailed error analysis, model interpretability, or any later extension without separate explicit authorization.
+Completed Phases 0–8 remain frozen unless the user explicitly requests a documented revision. Phase 9A is complete and awaiting human review; Phase 9 is incomplete. Phase 9B and Phase 10 have not started and require separate explicit authorization after the completed human-review forms are returned.
