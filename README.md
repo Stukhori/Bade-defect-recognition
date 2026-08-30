@@ -23,6 +23,16 @@ uv run streamlit run app/app.py
 
 It accepts a prepared visible-defect crop or a larger image with a manually selected region. It does not automatically detect defects or assess blade safety. The local frozen checkpoint must already be present; no training, tuning, calibration, or test-set evaluation occurs. See [`docs/app.md`](docs/app.md) for the exact model identity, crop parity, scope, limitations, and validation record.
 
+## Run the local human-review interface
+
+The separate Phase 9A review interface enters human judgments into the existing blinded two-pass packet without loading a model or suggesting answers:
+
+```powershell
+uv run streamlit run app/review_app.py --server.address 127.0.0.1
+```
+
+Complete and lock Pass A before deliberately beginning Pass B. See [`docs/human_review_interface.md`](docs/human_review_interface.md) for the blinding, autosave, recovery, and final-verification procedure. This tool does not start Phase 9B.
+
 ## Run the complete test suite
 
 ```bash

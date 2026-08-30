@@ -1,0 +1,151 @@
+{
+  "canonical_forms": {
+    "pass_a": {
+      "answered_required": 0,
+      "complete": false,
+      "complete_cases": 0,
+      "path": "experiments/summaries/phase9_error_analysis_v1/human_review_packet/pass_a/pass_a_review_form.csv",
+      "rows": 60,
+      "sha256": "44a5200e8b921b65f55cd391943abfbd4ca600e9723fcd8c70a36eb6cf2b7d58",
+      "total_required": 300
+    },
+    "pass_b": {
+      "answered_required": 0,
+      "complete": false,
+      "complete_cases": 0,
+      "path": "experiments/summaries/phase9_error_analysis_v1/human_review_packet/pass_b/pass_b_review_form.csv",
+      "rows": 60,
+      "sha256": "7ae98fa0cb8c05edd57632460b1a08339c96f4f24b0a991fc1b7ac64ccdfa9e8",
+      "total_required": 240
+    }
+  },
+  "live_server_smoke": {
+    "address": "127.0.0.1",
+    "health_body": "ok",
+    "http_status": 200,
+    "port": 8502,
+    "server_stopped": true,
+    "status": "PASS",
+    "temporary_forms_removed": true
+  },
+  "mapping_sha256": "46b19248797997e8aa7236b9c3fbf17f972977f2cdb2c3a958bd12513f25210b",
+  "packet_and_mapping": {
+    "aggregate_sha256": "99f732f16634cd140ead5aa46663c33b8fc43490e3bc183cc1a6d8979f726f1c",
+    "file_count": 728
+  },
+  "prohibited_actions": {
+    "canonical_judgments_written": 0,
+    "external_service_calls": 0,
+    "mapping_reads_by_interface": 0,
+    "model_or_llm_inference": 0,
+    "scientific_artifacts_modified": 0
+  },
+  "schemas": {
+    "pass_a": {
+      "choices": {
+        "corruption_obscures_diagnostic_detail": [
+          "none",
+          "mild",
+          "strong",
+          "uncertain"
+        ],
+        "dataset_label_visually_plausible": [
+          "yes",
+          "no",
+          "uncertain"
+        ],
+        "defect_visible": [
+          "yes",
+          "partially",
+          "no",
+          "uncertain"
+        ],
+        "possible_crop_or_background_problem": [
+          "yes",
+          "no",
+          "uncertain"
+        ],
+        "visually_ambiguous_between_categories": [
+          "yes",
+          "no",
+          "uncertain"
+        ]
+      },
+      "headers": [
+        "review_id",
+        "defect_visible",
+        "corruption_obscures_diagnostic_detail",
+        "dataset_label_visually_plausible",
+        "visually_ambiguous_between_categories",
+        "possible_crop_or_background_problem",
+        "reviewer_notes"
+      ],
+      "optional_fields": [
+        "reviewer_notes"
+      ],
+      "required_fields": [
+        "defect_visible",
+        "corruption_obscures_diagnostic_detail",
+        "dataset_label_visually_plausible",
+        "visually_ambiguous_between_categories",
+        "possible_crop_or_background_problem"
+      ]
+    },
+    "pass_b": {
+      "choices": {
+        "activation_concentrated_on_degradation_artifact": [
+          "yes",
+          "no",
+          "uncertain"
+        ],
+        "activation_primarily_inside_annotation": [
+          "inside",
+          "partial",
+          "outside",
+          "diffuse",
+          "uncertain"
+        ],
+        "pattern_consistent_across_cnn_seeds": [
+          "yes",
+          "partly",
+          "no",
+          "uncertain"
+        ],
+        "prediction_visually_understandable_after_reveal": [
+          "yes",
+          "no",
+          "uncertain"
+        ]
+      },
+      "headers": [
+        "review_id",
+        "activation_primarily_inside_annotation",
+        "activation_concentrated_on_degradation_artifact",
+        "pattern_consistent_across_cnn_seeds",
+        "prediction_visually_understandable_after_reveal",
+        "reviewer_notes"
+      ],
+      "optional_fields": [
+        "reviewer_notes"
+      ],
+      "required_fields": [
+        "activation_primarily_inside_annotation",
+        "activation_concentrated_on_degradation_artifact",
+        "pattern_consistent_across_cnn_seeds",
+        "prediction_visually_understandable_after_reveal"
+      ]
+    }
+  },
+  "scope": "non-scientific local human-review interface",
+  "status": "PASS",
+  "temporary_copy_smoke": {
+    "pass_a_locked_sha256": "c132b349c608fc796abb331c4835bdae3454c1cceaa871d58b15a37cc0744f9f",
+    "pass_a_required_answers": 300,
+    "pass_b_opened_only_after_deliberate_action": true,
+    "pass_b_required_answers": 240,
+    "resume_checks": "PASS",
+    "status": "PASS",
+    "temporary_data_removed": true
+  },
+  "validated_utc": "2026-08-30T16:55:10.376475+00:00"
+}
