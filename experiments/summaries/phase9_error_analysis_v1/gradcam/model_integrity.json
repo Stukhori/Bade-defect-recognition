@@ -1,0 +1,109 @@
+{
+  "checks": [
+    {
+      "activation_shapes": [
+        [
+          1,
+          512,
+          7,
+          7
+        ]
+      ],
+      "checkpoint_sha256": "423044a36d0fe953eb20744fc6af7b5c725582d275a06c768e7a70401248b998",
+      "method": "resnet18",
+      "parameters_unchanged": true,
+      "seed": 17,
+      "state_dict_after": "e87ca88dad134833a54171674332ea76920f957e7d7e1df10b9ec308ebeff8d8",
+      "state_dict_before": "e87ca88dad134833a54171674332ea76920f957e7d7e1df10b9ec308ebeff8d8",
+      "target_module_path": "layer4.1"
+    },
+    {
+      "activation_shapes": [
+        [
+          1,
+          512,
+          7,
+          7
+        ]
+      ],
+      "checkpoint_sha256": "33124aa7b79d833d1853b993632681ad1c8251f8ac918c8d99fa55ce563b7671",
+      "method": "resnet18",
+      "parameters_unchanged": true,
+      "seed": 29,
+      "state_dict_after": "53c4dd81213f271aa6b0e00c71dff7bad172bae3f5a560ba112bd6dc761b2848",
+      "state_dict_before": "53c4dd81213f271aa6b0e00c71dff7bad172bae3f5a560ba112bd6dc761b2848",
+      "target_module_path": "layer4.1"
+    },
+    {
+      "activation_shapes": [
+        [
+          1,
+          512,
+          7,
+          7
+        ]
+      ],
+      "checkpoint_sha256": "dd928989b3e8c70e343a1599693aecd391d1272f445a2b2f5c3b9d0f3f6eeccd",
+      "method": "resnet18",
+      "parameters_unchanged": true,
+      "seed": 43,
+      "state_dict_after": "320ce93b293e6b810c1c6e1c4e845a68443fcfaae24ca7875a0648c352c3e23f",
+      "state_dict_before": "320ce93b293e6b810c1c6e1c4e845a68443fcfaae24ca7875a0648c352c3e23f",
+      "target_module_path": "layer4.1"
+    },
+    {
+      "activation_shapes": [
+        [
+          1,
+          576,
+          7,
+          7
+        ]
+      ],
+      "checkpoint_sha256": "9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5",
+      "method": "mobilenet_v3_small",
+      "parameters_unchanged": true,
+      "seed": 17,
+      "state_dict_after": "3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757",
+      "state_dict_before": "3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757",
+      "target_module_path": "features.12"
+    },
+    {
+      "activation_shapes": [
+        [
+          1,
+          576,
+          7,
+          7
+        ]
+      ],
+      "checkpoint_sha256": "a35411c0232ea747405045cb7874d7a97fe0195cfa7ffbd44606e46555925ea2",
+      "method": "mobilenet_v3_small",
+      "parameters_unchanged": true,
+      "seed": 29,
+      "state_dict_after": "9b7379911e193f8568bdfe4e6d7045eaeeb1d709b4c9f51b73b8d3eaaf28b49a",
+      "state_dict_before": "9b7379911e193f8568bdfe4e6d7045eaeeb1d709b4c9f51b73b8d3eaaf28b49a",
+      "target_module_path": "features.12"
+    },
+    {
+      "activation_shapes": [
+        [
+          1,
+          576,
+          7,
+          7
+        ]
+      ],
+      "checkpoint_sha256": "e2c1cfd91c9ceb6030fa24eba80b4481f93f8afb28be2f9f5e27946b019ed3e7",
+      "method": "mobilenet_v3_small",
+      "parameters_unchanged": true,
+      "seed": 43,
+      "state_dict_after": "7dd6d8689dd85960dfc794033afbab9cdd9128b216a2ff5ac222e0e2c11cf068",
+      "state_dict_before": "7dd6d8689dd85960dfc794033afbab9cdd9128b216a2ff5ac222e0e2c11cf068",
+      "target_module_path": "features.12"
+    }
+  ],
+  "cross_map_color_comparison_allowed": false,
+  "maps_independently_normalized": true,
+  "status": "PASS"
+}

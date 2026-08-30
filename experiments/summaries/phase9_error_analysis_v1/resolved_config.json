@@ -1,0 +1,278 @@
+{
+  "dataset": {
+    "expected_test_instances": 162,
+    "expected_test_sources": 109,
+    "manifest": "data/processed/wtbd_crops_v1/manifest.csv",
+    "name": "WTBD",
+    "processed_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+    "processed_root": "data/processed/wtbd_crops_v1",
+    "split_id": "wtbd_crops_v1_source_isolated_standard",
+    "version": "wtbd_crops_v1"
+  },
+  "evaluation": {
+    "classes": [
+      "craze",
+      "corrosion",
+      "surface_injure",
+      "thunderstrike",
+      "crack",
+      "hide_craze"
+    ],
+    "cnn_methods": [
+      "resnet18",
+      "mobilenet_v3_small"
+    ],
+    "conditions": [
+      "clean",
+      "gaussian_blur_mild",
+      "gaussian_blur_moderate",
+      "gaussian_blur_severe",
+      "resolution_mild",
+      "resolution_moderate",
+      "resolution_severe",
+      "brightness_mild",
+      "brightness_moderate",
+      "brightness_severe",
+      "jpeg_mild",
+      "jpeg_moderate",
+      "jpeg_severe"
+    ],
+    "methods": [
+      "hog",
+      "lbp",
+      "resnet18",
+      "mobilenet_v3_small"
+    ],
+    "primary_metric": "macro_f1",
+    "seeds": [
+      17,
+      29,
+      43
+    ]
+  },
+  "events": {
+    "beneficial_flip": "clean incorrect and degraded correct",
+    "changed_wrong": "clean incorrect, degraded incorrect, and predicted label changed",
+    "clean_only": "clean-condition row",
+    "harmful_flip": "clean correct and degraded incorrect",
+    "stable_correct": "clean correct and degraded correct",
+    "stable_wrong": "clean incorrect, degraded incorrect, and predicted label unchanged"
+  },
+  "experiment": {
+    "name": "phase9a_posthoc_error_analysis",
+    "output_root": "experiments/summaries/phase9_error_analysis_v1",
+    "seed": 20260830
+  },
+  "geometry": {
+    "boolean_fields": [
+      "boundary_shifted",
+      "max_side_clipped"
+    ],
+    "crop_side_analysis": "continuous_no_posthoc_cutoffs",
+    "occupancy_bins": [
+      {
+        "id": "lt_0.10",
+        "lower": null,
+        "upper": 0.1
+      },
+      {
+        "id": "0.10_to_lt_0.25",
+        "lower": 0.1,
+        "upper": 0.25
+      },
+      {
+        "id": "0.25_to_lt_0.50",
+        "lower": 0.25,
+        "upper": 0.5
+      },
+      {
+        "id": "ge_0.50",
+        "lower": 0.5,
+        "upper": null
+      }
+    ]
+  },
+  "gradcam": {
+    "alpha": 0.45,
+    "average_across_seeds": false,
+    "colormap": "magma",
+    "expected_activation_shapes": {
+      "mobilenet_v3_small": [
+        1,
+        576,
+        7,
+        7
+      ],
+      "resnet18": [
+        1,
+        512,
+        7,
+        7
+      ]
+    },
+    "interpolation": "bilinear_align_corners_false",
+    "methods": [
+      "resnet18",
+      "mobilenet_v3_small"
+    ],
+    "normalization": "independent_per_map_minmax_after_relu",
+    "preprocessing": "frozen_imagenet_normalization_on_224x224_phase3_pixels",
+    "preserve_background": true,
+    "render_size": [
+      224,
+      224
+    ],
+    "target_layers": {
+      "mobilenet_v3_small": "features.12",
+      "resnet18": "layer4.1"
+    },
+    "targets": [
+      "true_class",
+      "predicted_class_when_incorrect"
+    ],
+    "transition_inputs": [
+      "clean",
+      "degraded"
+    ],
+    "zero_range_policy": "all_zero_map"
+  },
+  "inputs": {
+    "checkpoints": {
+      "mobilenet_v3_small": "experiments/results/phase6_mobilenet_v3_small_v1/final",
+      "resnet18": "experiments/results/phase5_resnet18_v1/final"
+    },
+    "expected_phase8_commit": "681ed81f18156bb129517665e376eb384b3e49f3",
+    "expected_phase8_version": "phase8_robustness_v1",
+    "phase8_config": "configs/robustness.yaml",
+    "phase8_corruption_config_fingerprint": "a6a9e40c9c3de7130892df3cf49698f95718ce9241c8a963849016ce7adc1d57",
+    "phase8_corruption_manifest": "data/processed/wtbd_robustness_v1/manifest.csv",
+    "phase8_robustness_dataset_fingerprint": "da0eda8956adfef63e001d0d1614279a907c46feffc5e2f180c5acdbe89987db",
+    "phase8_summary_root": "experiments/summaries/phase8_robustness_v1"
+  },
+  "method": {
+    "family": "frozen_posthoc_analysis",
+    "name": "quantitative_errors_gradcam_human_review_v1"
+  },
+  "outputs": {
+    "figures_root": "figures/phase9",
+    "reproduction_scratch_root": "experiments/cache/phase9a_reproduction",
+    "result_id": "phase9_error_analysis_v1",
+    "schema_version": "1.0",
+    "summary_root": "experiments/summaries/phase9_error_analysis_v1"
+  },
+  "prohibited_operations": [
+    "model_training",
+    "model_fine_tuning",
+    "svm_or_scaler_refitting",
+    "checkpoint_mutation",
+    "label_split_crop_or_annotation_changes",
+    "corruption_changes",
+    "post_result_threshold_or_selection_tuning",
+    "test_driven_model_selection",
+    "new_models_or_augmentation",
+    "automated_visual_interpretation",
+    "phase10_or_app_generation"
+  ],
+  "project": {
+    "name": "windblade",
+    "phase": 9
+  },
+  "review_packet": {
+    "human_fields_must_be_blank": true,
+    "pass_a_fields": {
+      "corruption_obscures_diagnostic_detail": [
+        "none",
+        "mild",
+        "strong",
+        "uncertain"
+      ],
+      "dataset_label_visually_plausible": [
+        true,
+        false,
+        "uncertain"
+      ],
+      "defect_visible": [
+        true,
+        "partially",
+        false,
+        "uncertain"
+      ],
+      "possible_crop_or_background_problem": [
+        true,
+        false,
+        "uncertain"
+      ],
+      "reviewer_notes": "free_text",
+      "visually_ambiguous_between_categories": [
+        true,
+        false,
+        "uncertain"
+      ]
+    },
+    "pass_b_fields": {
+      "activation_concentrated_on_degradation_artifact": [
+        true,
+        false,
+        "uncertain"
+      ],
+      "activation_primarily_inside_annotation": [
+        "inside",
+        "partial",
+        "outside",
+        "diffuse",
+        "uncertain"
+      ],
+      "pattern_consistent_across_cnn_seeds": [
+        true,
+        "partly",
+        false,
+        "uncertain"
+      ],
+      "prediction_visually_understandable_after_reveal": [
+        true,
+        false,
+        "uncertain"
+      ],
+      "reviewer_notes": "free_text"
+    },
+    "version": "phase9a_blinded_two_pass_v1"
+  },
+  "runtime": {
+    "device": "cpu"
+  },
+  "selection": {
+    "class_order": [
+      "craze",
+      "corrosion",
+      "surface_injure",
+      "thunderstrike",
+      "crack",
+      "hide_craze"
+    ],
+    "consensus_minimum_seeds": 3,
+    "deduplicate_key": [
+      "instance_id",
+      "condition_id"
+    ],
+    "eligibility_priority": [
+      "consensus",
+      "majority"
+    ],
+    "insufficient_candidates": "report_shortfall_without_weakening_rule",
+    "majority_minimum_seeds": 2,
+    "quotas": {
+      "beneficial_flip": 6,
+      "clean_consensus_error": 10,
+      "seed_disagreement": 8,
+      "severe_harmful_flip": 20,
+      "severe_stable_correct": 8,
+      "severe_stable_wrong": 8
+    },
+    "sort_key": "immutable_instance_id",
+    "target_distinct_cases": 60
+  },
+  "training": {
+    "epochs": 0,
+    "train_fraction": 1.0
+  }
+}

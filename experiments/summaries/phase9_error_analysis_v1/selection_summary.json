@@ -1,0 +1,7 @@
+{
+  "algorithm": "class-balanced deterministic round robin with consensus before majority",
+  "selected": 60,
+  "shortfalls": {},
+  "target": 60,
+  "unique_sample_conditions": 60
+}
