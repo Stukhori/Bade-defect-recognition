@@ -1,0 +1,154 @@
+extends: base.yaml
+
+project:
+  phase: 9
+
+experiment:
+  name: phase9a_posthoc_error_analysis
+  seed: 20260830
+  output_root: experiments/summaries/phase9_error_analysis_v1
+
+dataset:
+  name: WTBD
+  version: wtbd_crops_v1
+  split_id: wtbd_crops_v1_source_isolated_standard
+  manifest: data/processed/wtbd_crops_v1/manifest.csv
+  processed_root: data/processed/wtbd_crops_v1
+  processed_fingerprint: 4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991
+  expected_test_instances: 162
+  expected_test_sources: 109
+
+method:
+  family: frozen_posthoc_analysis
+  name: quantitative_errors_gradcam_human_review_v1
+
+training:
+  train_fraction: 1.0
+  epochs: 0
+
+evaluation:
+  primary_metric: macro_f1
+  methods: [hog, lbp, resnet18, mobilenet_v3_small]
+  cnn_methods: [resnet18, mobilenet_v3_small]
+  seeds: [17, 29, 43]
+  classes: [craze, corrosion, surface_injure, thunderstrike, crack, hide_craze]
+  conditions:
+    - clean
+    - gaussian_blur_mild
+    - gaussian_blur_moderate
+    - gaussian_blur_severe
+    - resolution_mild
+    - resolution_moderate
+    - resolution_severe
+    - brightness_mild
+    - brightness_moderate
+    - brightness_severe
+    - jpeg_mild
+    - jpeg_moderate
+    - jpeg_severe
+
+runtime:
+  device: cpu
+
+inputs:
+  expected_phase8_version: phase8_robustness_v1
+  expected_phase8_commit: 681ed81f18156bb129517665e376eb384b3e49f3
+  phase8_config: configs/robustness.yaml
+  phase8_summary_root: experiments/summaries/phase8_robustness_v1
+  phase8_corruption_manifest: data/processed/wtbd_robustness_v1/manifest.csv
+  phase8_corruption_config_fingerprint: a6a9e40c9c3de7130892df3cf49698f95718ce9241c8a963849016ce7adc1d57
+  phase8_robustness_dataset_fingerprint: da0eda8956adfef63e001d0d1614279a907c46feffc5e2f180c5acdbe89987db
+  checkpoints:
+    resnet18: experiments/results/phase5_resnet18_v1/final
+    mobilenet_v3_small: experiments/results/phase6_mobilenet_v3_small_v1/final
+
+events:
+  clean_only: clean-condition row
+  stable_correct: clean correct and degraded correct
+  harmful_flip: clean correct and degraded incorrect
+  beneficial_flip: clean incorrect and degraded correct
+  changed_wrong: clean incorrect, degraded incorrect, and predicted label changed
+  stable_wrong: clean incorrect, degraded incorrect, and predicted label unchanged
+
+geometry:
+  occupancy_bins:
+    - {id: lt_0.10, lower: null, upper: 0.10}
+    - {id: 0.10_to_lt_0.25, lower: 0.10, upper: 0.25}
+    - {id: 0.25_to_lt_0.50, lower: 0.25, upper: 0.50}
+    - {id: ge_0.50, lower: 0.50, upper: null}
+  boolean_fields: [boundary_shifted, max_side_clipped]
+  crop_side_analysis: continuous_no_posthoc_cutoffs
+
+selection:
+  class_order: [craze, corrosion, surface_injure, thunderstrike, crack, hide_craze]
+  sort_key: immutable_instance_id
+  deduplicate_key: [instance_id, condition_id]
+  eligibility_priority: [consensus, majority]
+  consensus_minimum_seeds: 3
+  majority_minimum_seeds: 2
+  quotas:
+    clean_consensus_error: 10
+    severe_harmful_flip: 20
+    severe_stable_wrong: 8
+    severe_stable_correct: 8
+    beneficial_flip: 6
+    seed_disagreement: 8
+  target_distinct_cases: 60
+  insufficient_candidates: report_shortfall_without_weakening_rule
+
+gradcam:
+  methods: [resnet18, mobilenet_v3_small]
+  target_layers:
+    resnet18: layer4.1
+    mobilenet_v3_small: features.12
+  expected_activation_shapes:
+    resnet18: [1, 512, 7, 7]
+    mobilenet_v3_small: [1, 576, 7, 7]
+  preprocessing: frozen_imagenet_normalization_on_224x224_phase3_pixels
+  targets: [true_class, predicted_class_when_incorrect]
+  transition_inputs: [clean, degraded]
+  normalization: independent_per_map_minmax_after_relu
+  zero_range_policy: all_zero_map
+  interpolation: bilinear_align_corners_false
+  colormap: magma
+  alpha: 0.45
+  render_size: [224, 224]
+  preserve_background: true
+  average_across_seeds: false
+
+review_packet:
+  version: phase9a_blinded_two_pass_v1
+  pass_a_fields:
+    defect_visible: [yes, partially, no, uncertain]
+    corruption_obscures_diagnostic_detail: [none, mild, strong, uncertain]
+    dataset_label_visually_plausible: [yes, no, uncertain]
+    visually_ambiguous_between_categories: [yes, no, uncertain]
+    possible_crop_or_background_problem: [yes, no, uncertain]
+    reviewer_notes: free_text
+  pass_b_fields:
+    activation_primarily_inside_annotation: [inside, partial, outside, diffuse, uncertain]
+    activation_concentrated_on_degradation_artifact: [yes, no, uncertain]
+    pattern_consistent_across_cnn_seeds: [yes, partly, no, uncertain]
+    prediction_visually_understandable_after_reveal: [yes, no, uncertain]
+    reviewer_notes: free_text
+  human_fields_must_be_blank: true
+
+outputs:
+  schema_version: '1.0'
+  result_id: phase9_error_analysis_v1
+  summary_root: experiments/summaries/phase9_error_analysis_v1
+  figures_root: figures/phase9
+  reproduction_scratch_root: experiments/cache/phase9a_reproduction
+
+prohibited_operations:
+  - model_training
+  - model_fine_tuning
+  - svm_or_scaler_refitting
+  - checkpoint_mutation
+  - label_split_crop_or_annotation_changes
+  - corruption_changes
+  - post_result_threshold_or_selection_tuning
+  - test_driven_model_selection
+  - new_models_or_augmentation
+  - automated_visual_interpretation
+  - phase10_or_app_generation

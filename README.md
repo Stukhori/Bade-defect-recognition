@@ -106,6 +106,18 @@ The Phase 8 command verifies all upstream gates and frozen artifacts, exactly re
 uv run python scripts/run_robustness.py --config configs/robustness.yaml
 ```
 
+## Phase 9A: error analysis and blinded human review
+
+Phase 9A performs post-hoc quantitative error analysis on frozen Phase 8 predictions, generates Grad-CAM only from the frozen CNN checkpoints, and prepares an unfilled two-pass human-review packet. It performs no training or refitting:
+
+```powershell
+uv run python scripts/run_error_analysis.py --config configs/error_analysis.yaml --apparatus-check
+uv run python scripts/run_error_analysis.py --config configs/error_analysis.yaml
+uv run python scripts/run_error_analysis.py --config configs/error_analysis.yaml --validate-only
+```
+
+See [`docs/phase9_error_analysis.md`](docs/phase9_error_analysis.md) for the frozen analysis and review contract.
+
 Versioned results are under `experiments/summaries/phase8_robustness_v1/`, tracked dataset metadata under `data/processed/wtbd_robustness_v1/`, figures under `figures/phase8/`, and the complete record is [`docs/phase8_robustness.md`](docs/phase8_robustness.md). The 1,944 corrupted PNG payloads remain Git-ignored.
 
 ## Phase boundaries
