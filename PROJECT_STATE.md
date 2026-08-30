@@ -2,13 +2,57 @@
 
 ## Current phase
 
-- **Phase:** Phase 8 — Controlled Image-Degradation Robustness
-- **Status:** COMPLETE — 12 degraded conditions, 1,944 canonical images, 104 model/seed-condition evaluations, and full two-pass reproduction pass
+- **Phase:** Phase 9A — Quantitative Error Analysis, Grad-CAM, and Blinded Human Review
+- **Status:** PHASE 9A COMPLETE — AWAITING HUMAN REVIEW; Phase 9 is not complete
 - **Start date:** 2026-08-30
-- **Previous phases:** Phases 0–7 — complete and frozen
-- **Next phase:** Phase 9 — Error Analysis and Model Interpretability
+- **Previous phases:** Phases 0–8 — complete and frozen
+- **Next phase:** Phase 9B — validate and incorporate returned human review
 
-Phase 8 is complete. Phases 0–7 remain frozen. Phase 9 has not started.
+Phase 9A is awaiting human review and is not yet frozen as a completed Phase 9. Phases 0–8 remain frozen. Phase 9B and Phase 10 have not started.
+
+## Phase 9A — Quantitative Error Analysis, Grad-CAM, and Blinded Human Review
+
+### Status and frozen identity
+
+**PHASE 9A COMPLETE — AWAITING HUMAN REVIEW.** Apparatus commit `9758f139d5c35fab3d13d955ce5457fa843b0795`; generated-output commit `95e1bd7`. Phase 9 is not complete and is not frozen because the required human judgments have not been returned or incorporated.
+
+- Analysis-config fingerprint: `9a9c87f132359718636f46d1b9061e8e5539980b6c9b67a3f5336834ce1c9f1e`.
+- Frozen-input fingerprint: `dbedb680481e6477b94ff623858e1db4c1981f2b8f5491d0e04a99b5672173b1`.
+- Scientific-output fingerprint: `a5938ec22a0f496c6fd9ce3acd7d999cad56e8c13a85d9be4b4d59860aecd74b`.
+- Upstream fingerprints remain Phase 3 `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`, Phase 8 config `a6a9e40c9c3de7130892df3cf49698f95718ce9241c8a963849016ce7adc1d57`, and Phase 8 robustness data `da0eda8956adfef63e001d0d1614279a907c46feffc5e2f180c5acdbe89987db`.
+- Canonical error manifest: 16,848 rows covering every fixed sample and all 104 method/seed-condition prediction sets.
+- Review set: 60 unique sample-condition cases with all six event quotas met and no shortfall.
+- Grad-CAM: 507 finite evidence records; ResNet `layer4.1` (`1×512×7×7`) and MobileNet `features.12` (`1×576×7×7`); parameters unchanged for all six checkpoint identities.
+- Review packet: two linked HTML passes, ten contact sheets, two blank CSV forms, and a separately stored anonymous-ID mapping.
+- Training, fine-tuning, SVM/scaler refitting, checkpoint/prediction mutation, automated visual interpretation, and Phase 10/app work: zero.
+
+### Quantitative descriptive highlights
+
+- Lowest clean recall: thunderstrike for HOG (`0.2222`) and LBP (`0.3333`); corrosion for ResNet (`0.8000` mean) and MobileNet (`0.7556` mean).
+- Largest mean severe harmful-flip condition: JPEG for HOG (28), resolution for LBP (64), brightness for ResNet (`53.33 ± 9.29`) and MobileNet (`37.67 ± 4.04`).
+- Clean unanimous/majority-only/label-disagreement counts: ResNet 7/9/26; MobileNet 13/4/19.
+- Four severe conditions combined (648 sample-condition records): ResNet 97 unanimous failures, 78 majority-only failures, and 253 label-disagreement records; MobileNet 100, 67, and 177.
+- Strict clean cross-method rule: 10 samples missed by all four families, 22 correct for both CNNs but wrong for both handcrafted methods, 17 missed by both CNNs, and 38 one-family-only failures.
+
+All findings are post-hoc and descriptive. No geometry association is causal, and no visual or Grad-CAM explanation has been asserted.
+
+### Reproducibility and evidence
+
+- Phase 3–8 preflight validators: PASS.
+- Commit `681ed81` audit: presentation-only Phase 8 report correction; predictions, CNN logits, corrupted images, labels, checkpoints, and headline macro-F1 values unchanged.
+- Two complete Phase 9A generations: exact equality across 1,973 compared files and output fingerprint.
+- Independent Phase 9A validator: PASS.
+- Expanded suite: **164 passed, 0 failed**, with 11 unchanged scikit-learn deprecation warnings.
+- Machine-readable results and packet: `experiments/summaries/phase9_error_analysis_v1/`.
+- Grad-CAM and quantitative figures: `figures/phase9/`.
+- Full record: `docs/phase9_error_analysis.md`.
+
+### Human-review handoff
+
+1. Read `experiments/summaries/phase9_error_analysis_v1/human_review_packet/README.md`.
+2. Complete Pass A using `pass_a/index.html` and `pass_a/pass_a_review_form.csv` without opening Pass B or the ID mapping.
+3. Only after Pass A is complete, open `pass_b/index.html` and complete `pass_b/pass_b_review_form.csv`.
+4. Return both completed forms for Phase 9B. Do not begin Phase 10.
 
 ## Phase 8 — Controlled Image-Degradation Robustness
 

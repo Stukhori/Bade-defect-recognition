@@ -116,10 +116,10 @@ uv run python scripts/run_error_analysis.py --config configs/error_analysis.yaml
 uv run python scripts/run_error_analysis.py --config configs/error_analysis.yaml --validate-only
 ```
 
-See [`docs/phase9_error_analysis.md`](docs/phase9_error_analysis.md) for the frozen analysis and review contract.
+See [`docs/phase9_error_analysis.md`](docs/phase9_error_analysis.md) for the frozen analysis contract, quantitative results, and human-review instructions. Phase 9A is awaiting human review; Phase 9 is not complete.
 
 Versioned results are under `experiments/summaries/phase8_robustness_v1/`, tracked dataset metadata under `data/processed/wtbd_robustness_v1/`, figures under `figures/phase8/`, and the complete record is [`docs/phase8_robustness.md`](docs/phase8_robustness.md). The 1,944 corrupted PNG payloads remain Git-ignored.
 
 ## Phase boundaries
 
-Phases 0–8 are complete and frozen. Phase 9 — Error Analysis and Model Interpretability — has not been started.
+Phases 0–8 are complete and frozen. Phase 9A has generated the post-hoc quantitative analysis, Grad-CAM evidence, and blinded review packet and is awaiting human review. Phase 9 is not complete; Phase 9B and Phase 10 have not started.
