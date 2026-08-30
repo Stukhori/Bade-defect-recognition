@@ -2,13 +2,70 @@
 
 ## Current phase
 
-- **Phase:** Phase 7 — Data-Efficiency / Limited-Labeled-Data Experiment
-- **Status:** COMPLETE — 36 reduced-data fits, frozen-anchor aggregation, and both canonical reruns pass
-- **Start date:** 2026-08-29
-- **Previous phases:** Phases 0–6 — complete and frozen
-- **Next phase:** Phase 8 — Controlled Image-Degradation Robustness
+- **Phase:** Phase 8 — Controlled Image-Degradation Robustness
+- **Status:** COMPLETE — 12 degraded conditions, 1,944 canonical images, 104 model/seed-condition evaluations, and full two-pass reproduction pass
+- **Start date:** 2026-08-30
+- **Previous phases:** Phases 0–7 — complete and frozen
+- **Next phase:** Phase 9 — Error Analysis and Model Interpretability
 
-Phase 7 is complete. Phases 0–6 remain frozen. Phase 8 has not started.
+Phase 8 is complete. Phases 0–7 remain frozen. Phase 9 has not started.
+
+## Phase 8 — Controlled Image-Degradation Robustness
+
+### Status and frozen identity
+
+**COMPLETE.** Result `phase8_robustness_v1`; apparatus commit `b222435`; scientific-results commit `RESULT_COMMIT_TO_RECORD`. The Phase 3 fingerprint remains `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`.
+
+- Corruption config fingerprint: `a6a9e40c9c3de7130892df3cf49698f95718ce9241c8a963849016ce7adc1d57`.
+- Robustness dataset fingerprint: `da0eda8956adfef63e001d0d1614279a907c46feffc5e2f180c5acdbe89987db`.
+- Environment: Pillow 12.3.0; JPEG support enabled; JPEG library 8.0.
+- Dataset: 162 fixed test references, 12 independently generated degraded conditions, exactly 1,944 224 × 224 RGB PNGs.
+- Parameters: blur radii 0.75/1.5/3.0; bilinear resolution 168/112/56 → 224; brightness factors 0.75/0.50/0.25; JPEG quality 75/50/25 with subsampling 2, optimize false, progressive false.
+- Clean reproduction: PASS for HOG, LBP, and ResNet/MobileNet seeds 17/29/43; all predictions and metrics exact, and all stored CNN logits exact.
+- Training/fine-tuning/refitting: zero.
+
+Macro-F1 by clean/mild/moderate/severe:
+
+| Family | HOG + SVM | LBP + SVM | ResNet-18 mean ± SD | MobileNetV3-Small mean ± SD |
+|---|---|---|---|---|
+| Blur | 0.477988 / 0.454351 / 0.450664 / 0.351435 | 0.592401 / 0.555030 / 0.371985 / 0.203079 | 0.895314±0.014118 / 0.891084±0.020693 / 0.822025±0.018044 / 0.633788±0.032868 | 0.895321±0.005977 / 0.878574±0.022958 / 0.843774±0.014293 / 0.654345±0.041871 |
+| Resolution | 0.477988 / 0.467346 / 0.465164 / 0.395885 | 0.592401 / 0.530885 / 0.364424 / 0.175100 | 0.895314±0.014118 / 0.876557±0.021513 / 0.853611±0.027808 / 0.723203±0.025957 | 0.895321±0.005977 / 0.879019±0.019438 / 0.861577±0.013832 / 0.733372±0.016645 |
+| Brightness | 0.477988 / 0.425921 / 0.399174 / 0.318186 | 0.592401 / 0.561298 / 0.444338 / 0.262047 | 0.895314±0.014118 / 0.882760±0.018941 / 0.809782±0.000065 / 0.526303±0.072731 | 0.895321±0.005977 / 0.878433±0.016557 / 0.858144±0.005571 / 0.659088±0.048045 |
+| JPEG | 0.477988 / 0.439939 / 0.454484 / 0.298325 | 0.592401 / 0.512283 / 0.384648 / 0.218386 | 0.895314±0.014118 / 0.885217±0.013598 / 0.863319±0.003985 / 0.822440±0.020611 | 0.895321±0.005977 / 0.872486±0.006569 / 0.856341±0.011473 / 0.803678±0.030335 |
+
+Severe retention for blur/resolution/brightness/JPEG is HOG 73.52/82.82/66.57/62.41%, LBP 34.28/29.56/44.23/36.86%, ResNet 70.83/80.82/58.72/91.90%, and MobileNet 73.08/81.91/73.60/89.76%.
+
+Mean degraded-condition macro-F1/retention is HOG 0.410073/85.79%, LBP 0.381959/64.48%, ResNet 0.799174/89.28%, and MobileNet 0.814903/91.02%.
+
+Severe prediction-flip rates for blur/resolution/brightness/JPEG are HOG 41.36/29.01/29.01/33.33%, LBP 57.41/61.73/51.23/50.62%, ResNet 33.13/24.49/40.12/15.23%, and MobileNet 27.57/22.22/31.48/14.61%. Harmful and beneficial counts, including exact CNN per-seed values, are in the Phase 8 aggregate tables.
+
+Class-level descriptive findings: severe HOG/LBP thunderstrike F1 is 0 across all four families; small support constrains interpretation. For ResNet, severe brightness has the lowest thunderstrike/crack means (0.376/0.376), while severe JPEG class means remain 0.736–0.886. For MobileNet, severe blur craze is 0.478 and severe brightness thunderstrike is 0.493; severe JPEG class means remain 0.722–0.864. Detailed qualitative interpretation is reserved for Phase 9.
+
+### Reproducibility and evidence
+
+- Full deterministic regeneration: PASS across two complete runs.
+- Regenerated PNG hashes: 1,944/1,944 exact.
+- Predictions, CNN logits, metrics, scientific file set, aggregate tables, flip analyses, and both fingerprints: exact.
+- Independent Phase 8 result validator: PASS.
+- Expanded suite: **149 passed, 0 failed**, with 11 unchanged scikit-learn deprecation warnings.
+- Machine-readable results: `experiments/summaries/phase8_robustness_v1/` (483 files including the reproduction record).
+- Dataset metadata: `data/processed/wtbd_robustness_v1/`; corrupted PNG payload ignored.
+- Figures: `figures/phase8/` (10 main figures, 20 severe/clean mean normalized confusion matrices, and four training-only QC sheets).
+- Full record: `docs/phase8_robustness.md`.
+
+### Exit gate
+
+- [x] Phase 7 passed before Phase 8 began; Phases 0–7 remain frozen.
+- [x] Phase 3 fingerprint, instance counts, and source-isolated test membership are unchanged.
+- [x] All eight frozen model artifacts exist and reproduce clean outputs exactly.
+- [x] No model training, fine-tuning, SVM refit, or scaler refit occurred.
+- [x] Exactly twelve single-family degraded conditions and 1,944 common-pixel PNGs exist.
+- [x] Parameters match the pre-science config; each corruption derives independently from clean.
+- [x] Macro-F1, secondary metrics, per-class metrics, drops, retention, flips, transitions, predictions, logits, and matrices exist.
+- [x] Required figures and training-only QC sheets exist.
+- [x] Full corruption regeneration and evaluation reproduction pass exactly.
+- [x] Full pytest and independent result validation pass.
+- [x] Phase 9 has not started.
 
 ## Phase 7 — Data-Efficiency / Limited-Labeled-Data Experiment
 
@@ -493,4 +550,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phases 0–7 remain frozen unless the user explicitly requests a documented revision. Phase 8 has not started: do not define corruption severities, generate corrupted evaluation inputs, run robustness evaluation, or perform any later extension without separate explicit authorization.
+Completed Phases 0–8 remain frozen unless the user explicitly requests a documented revision. Phase 9 has not started: do not begin detailed error analysis, model interpretability, or any later extension without separate explicit authorization.

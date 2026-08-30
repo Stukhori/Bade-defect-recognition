@@ -1,0 +1,101 @@
+{
+  "clean": {
+    "condition_id": "clean",
+    "corruption_family": "clean",
+    "parameter": "original_phase3_png",
+    "severity": "clean",
+    "transformation_config_hash": "a46fc3f29acc06f5dd5d1f4bf0b6c6221430188b8843798ec66e5608efbc676b"
+  },
+  "conceptual_severity_only_within_family": true,
+  "degraded": [
+    {
+      "condition_id": "gaussian_blur_mild",
+      "corruption_family": "gaussian_blur",
+      "parameter": 0.75,
+      "severity": "mild",
+      "transformation_config_hash": "8f2fc0f71bde3fa319c2c6ed68817619489e9ca31b0cc757c31fd7548e12f9f6"
+    },
+    {
+      "condition_id": "gaussian_blur_moderate",
+      "corruption_family": "gaussian_blur",
+      "parameter": 1.5,
+      "severity": "moderate",
+      "transformation_config_hash": "bf58ced544172fc6a51e82b1832ce10314b3cd5687db5a83bc72359403dac8ce"
+    },
+    {
+      "condition_id": "gaussian_blur_severe",
+      "corruption_family": "gaussian_blur",
+      "parameter": 3.0,
+      "severity": "severe",
+      "transformation_config_hash": "de1a3ce7f6cdf208089ab4d203814df0713814af82435fce20648ea31a0344bd"
+    },
+    {
+      "condition_id": "resolution_mild",
+      "corruption_family": "resolution",
+      "parameter": 168,
+      "severity": "mild",
+      "transformation_config_hash": "7837935fc8703bfb3655ad360a63846540c23d870353fc9b3ab67c7253d20ff0"
+    },
+    {
+      "condition_id": "resolution_moderate",
+      "corruption_family": "resolution",
+      "parameter": 112,
+      "severity": "moderate",
+      "transformation_config_hash": "d765ce24b0796790ac5194ed1ef964b36b3fd5120ba9c72da79fbc64d28bd1a4"
+    },
+    {
+      "condition_id": "resolution_severe",
+      "corruption_family": "resolution",
+      "parameter": 56,
+      "severity": "severe",
+      "transformation_config_hash": "506931136e73ff51d0abf0934d91ca025966f2ade2de81c0541c5aac4b5bda5a"
+    },
+    {
+      "condition_id": "brightness_mild",
+      "corruption_family": "brightness",
+      "parameter": 0.75,
+      "severity": "mild",
+      "transformation_config_hash": "a46f7c429110314b57dc8b36d01b671de5d626a6d386687c8ba1d039175755d8"
+    },
+    {
+      "condition_id": "brightness_moderate",
+      "corruption_family": "brightness",
+      "parameter": 0.5,
+      "severity": "moderate",
+      "transformation_config_hash": "12b14849311e181211824a7c8b1b09d42dad7d2519acc016b933877fd1dccee2"
+    },
+    {
+      "condition_id": "brightness_severe",
+      "corruption_family": "brightness",
+      "parameter": 0.25,
+      "severity": "severe",
+      "transformation_config_hash": "78e4ab2ac6df7ce5510e30339eda1d7bb0308837941ec8f69dbeae38248f98b8"
+    },
+    {
+      "condition_id": "jpeg_mild",
+      "corruption_family": "jpeg",
+      "parameter": 75,
+      "severity": "mild",
+      "transformation_config_hash": "3f18da4fde10f478fc52a68c1d5030e79ece5b34d71010decfc207ab93257354"
+    },
+    {
+      "condition_id": "jpeg_moderate",
+      "corruption_family": "jpeg",
+      "parameter": 50,
+      "severity": "moderate",
+      "transformation_config_hash": "9ac4a7fb6214b698877b1dac9c26468447d4a8124f3868d6e83289679b21fb7b"
+    },
+    {
+      "condition_id": "jpeg_severe",
+      "corruption_family": "jpeg",
+      "parameter": 25,
+      "severity": "severe",
+      "transformation_config_hash": "7b1c7c2ace02bf9b25e3a7d468dcc21299bfdab98e6500cd4b957624b42c3057"
+    }
+  ],
+  "pillow_environment": {
+    "jpeg_library_version": "8.0",
+    "jpeg_support": true,
+    "pillow_version": "12.3.0"
+  }
+}

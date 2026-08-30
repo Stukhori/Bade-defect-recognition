@@ -1,0 +1,77 @@
+{
+  "checks": [
+    {
+      "instances": 162,
+      "logits_exact": null,
+      "method": "hog",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": null,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": null,
+      "method": "lbp",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": null,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "resnet18",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 17,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "resnet18",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 29,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "resnet18",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 43,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "mobilenet_v3_small",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 17,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "mobilenet_v3_small",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 29,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "mobilenet_v3_small",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 43,
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}

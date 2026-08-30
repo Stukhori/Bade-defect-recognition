@@ -1,0 +1,18 @@
+{
+  "all_outputs_224_rgb": true,
+  "clean_reference_count": 162,
+  "common_pixels_for_all_methods": true,
+  "corrupted_image_count": 1944,
+  "corruption_config_fingerprint": "a6a9e40c9c3de7130892df3cf49698f95718ce9241c8a963849016ce7adc1d57",
+  "dataset_version": "wtbd_robustness_v1",
+  "degraded_condition_count": 12,
+  "independent_clean_origin": true,
+  "phase3_processed_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+  "pillow_environment": {
+    "jpeg_library_version": "8.0",
+    "jpeg_support": true,
+    "pillow_version": "12.3.0"
+  },
+  "robustness_dataset_fingerprint": "da0eda8956adfef63e001d0d1614279a907c46feffc5e2f180c5acdbe89987db",
+  "status": "PASS"
+}

@@ -1,0 +1,185 @@
+{
+  "base_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+  "clean_reproduction": [
+    {
+      "instances": 162,
+      "logits_exact": null,
+      "method": "hog",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": null,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": null,
+      "method": "lbp",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": null,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "resnet18",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 17,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "resnet18",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 29,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "resnet18",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 43,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "mobilenet_v3_small",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 17,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "mobilenet_v3_small",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 29,
+      "status": "PASS"
+    },
+    {
+      "instances": 162,
+      "logits_exact": true,
+      "method": "mobilenet_v3_small",
+      "metrics_exact": true,
+      "predictions_exact": true,
+      "seed": 43,
+      "status": "PASS"
+    }
+  ],
+  "completed_utc": "2026-08-30T08:03:11.872716Z",
+  "corrupted_image_count": 1944,
+  "corruption_config_fingerprint": "a6a9e40c9c3de7130892df3cf49698f95718ce9241c8a963849016ce7adc1d57",
+  "degraded_conditions": 12,
+  "environment": {
+    "captured_utc": "2026-08-30T08:03:11.888443Z",
+    "cpu": "AMD64 Family 23 Model 24 Stepping 1, AuthenticAMD",
+    "cuda_available": false,
+    "cuda_device_count": 0,
+    "git_commit": "b2224355beee58f6a6ed49abcaa3074d03dfc1df",
+    "git_dirty": true,
+    "hostname": "LAPTOP-H1VSHD8M",
+    "logical_cpu_count": 8,
+    "operating_system": "Windows",
+    "operating_system_release": "10",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "project_version": "0.1.0",
+    "python_executable": "python.exe",
+    "python_implementation": "CPython",
+    "python_version": "3.11.15",
+    "pytorch_available": true,
+    "pytorch_version": "2.13.0+cpu",
+    "selected_device": "cpu",
+    "torchvision_version": "0.28.0"
+  },
+  "evaluation_entries": 104,
+  "figures": [
+    "figures/phase8/blur_robustness.png",
+    "figures/phase8/resolution_robustness.png",
+    "figures/phase8/brightness_robustness.png",
+    "figures/phase8/jpeg_robustness.png",
+    "figures/phase8/performance_retention_heatmap.png",
+    "figures/phase8/severe_condition_comparison.png",
+    "figures/phase8/mean_degraded_condition_macro_f1.png",
+    "figures/phase8/prediction_flip_rates.png",
+    "figures/phase8/per_class_severe_resnet18.png",
+    "figures/phase8/per_class_severe_mobilenet_v3_small.png",
+    "figures/phase8/confusion_matrices/hog_clean_mean_normalized.png",
+    "figures/phase8/confusion_matrices/hog_gaussian_blur_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/hog_resolution_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/hog_brightness_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/hog_jpeg_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/lbp_clean_mean_normalized.png",
+    "figures/phase8/confusion_matrices/lbp_gaussian_blur_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/lbp_resolution_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/lbp_brightness_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/lbp_jpeg_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/resnet18_clean_mean_normalized.png",
+    "figures/phase8/confusion_matrices/resnet18_gaussian_blur_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/resnet18_resolution_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/resnet18_brightness_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/resnet18_jpeg_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/mobilenet_v3_small_clean_mean_normalized.png",
+    "figures/phase8/confusion_matrices/mobilenet_v3_small_gaussian_blur_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/mobilenet_v3_small_resolution_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/mobilenet_v3_small_brightness_severe_mean_normalized.png",
+    "figures/phase8/confusion_matrices/mobilenet_v3_small_jpeg_severe_mean_normalized.png"
+  ],
+  "full_reproducibility": {
+    "checks": {
+      "all_1944_png_hashes_identical": true,
+      "all_predictions_metrics_aggregates_identical": true,
+      "robustness_dataset_fingerprint_identical": true,
+      "scientific_output_file_set_identical": true
+    },
+    "corrupted_png_count": 1944,
+    "passes": 2,
+    "scientific_file_count": 481,
+    "status": "PASS",
+    "timing_values_excluded": true
+  },
+  "model_training_count": 0,
+  "phase": 8,
+  "phase9_started": false,
+  "pillow_environment": {
+    "jpeg_library_version": "8.0",
+    "jpeg_support": true,
+    "pillow_version": "12.3.0"
+  },
+  "result_id": "phase8_robustness_v1",
+  "robustness_dataset_fingerprint": "da0eda8956adfef63e001d0d1614279a907c46feffc5e2f180c5acdbe89987db",
+  "status": "completed",
+  "svm_or_scaler_refit_count": 0,
+  "unique_conditions": 13,
+  "upstream_gate": {
+    "counts": {
+      "test": 162,
+      "test_sources": 109,
+      "total": 1065,
+      "train": 757,
+      "validation": 146
+    },
+    "frozen_artifact_count": 8,
+    "git": {
+      "checked": true,
+      "clean": true,
+      "head": "b2224355beee58f6a6ed49abcaa3074d03dfc1df",
+      "origin_main": "b2224355beee58f6a6ed49abcaa3074d03dfc1df",
+      "synchronized": true
+    },
+    "phase3": "PASS",
+    "phase4": "PASS",
+    "phase5": "PASS",
+    "phase6": "PASS",
+    "phase7": "PASS",
+    "processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+    "status": "PASS"
+  }
+}

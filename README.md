@@ -1,6 +1,6 @@
 # Robust Wind Turbine Blade Defect Recognition
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–7 are complete and frozen. Results include the Phase 4 handcrafted baselines, matched Phase 5/6 ResNet-18 and MobileNetV3-Small baselines, and the Phase 7 limited-labeled-data comparison. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–8 are complete and frozen. Results include the Phase 4 handcrafted baselines, matched Phase 5/6 ResNet-18 and MobileNetV3-Small baselines, the Phase 7 limited-labeled-data comparison, and the Phase 8 controlled image-degradation robustness experiment. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -98,6 +98,16 @@ uv run python scripts/run_data_efficiency.py --config configs/data_efficiency.ya
 
 Results are under `experiments/summaries/phase7_data_efficiency_v1/`, figures under `figures/phase7/`, and the complete record is [`docs/phase7_data_efficiency.md`](docs/phase7_data_efficiency.md).
 
+## Run the frozen robustness experiment
+
+The Phase 8 command verifies all upstream gates and frozen artifacts, exactly reproduces clean predictions, generates twelve deterministic test-image degradation conditions, evaluates only the frozen full-data models, and performs a second complete regeneration/evaluation pass:
+
+```bash
+uv run python scripts/run_robustness.py --config configs/robustness.yaml
+```
+
+Versioned results are under `experiments/summaries/phase8_robustness_v1/`, tracked dataset metadata under `data/processed/wtbd_robustness_v1/`, figures under `figures/phase8/`, and the complete record is [`docs/phase8_robustness.md`](docs/phase8_robustness.md). The 1,944 corrupted PNG payloads remain Git-ignored.
+
 ## Phase boundaries
 
-Phases 0–7 are complete and frozen. Phase 8 — Controlled Image-Degradation Robustness — has not been started.
+Phases 0–8 are complete and frozen. Phase 9 — Error Analysis and Model Interpretability — has not been started.

@@ -1,0 +1,124 @@
+corruptions:
+  brightness:
+    clean: 1.0
+    implementation: rgb_multiply_numpy_rint_clip_uint8
+    mild: 0.75
+    moderate: 0.5
+    severe: 0.25
+  gaussian_blur:
+    clean: 0.0
+    implementation: pillow_imagefilter_gaussianblur
+    mild: 0.75
+    moderate: 1.5
+    severe: 3.0
+  jpeg:
+    implementation: pillow_in_memory_round_trip
+    mild: 75
+    moderate: 50
+    optimize: false
+    progressive: false
+    severe: 25
+    subsampling: 2
+  order:
+  - gaussian_blur
+  - resolution
+  - brightness
+  - jpeg
+  resolution:
+    clean: 224
+    downsample: bilinear
+    final_size: 224
+    implementation: pillow_bilinear_down_and_up
+    mild: 168
+    moderate: 112
+    severe: 56
+    upsample: bilinear
+  severities:
+  - mild
+  - moderate
+  - severe
+dataset:
+  base_fingerprint: 4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991
+  base_manifest: data/processed/wtbd_crops_v1/manifest.csv
+  base_root: data/processed/wtbd_crops_v1
+  base_version: wtbd_crops_v1
+  expected_instances:
+    test: 162
+    train: 757
+    validation: 146
+  expected_test_sources: 109
+  name: WTBD
+  output_root: data/processed/wtbd_robustness_v1
+  output_version: wtbd_robustness_v1
+  split_id: wtbd_crops_v1_source_isolated_standard
+  version: wtbd_robustness_v1
+evaluation:
+  batch_size: 64
+  classes:
+  - craze
+  - corrosion
+  - surface_injure
+  - thunderstrike
+  - crack
+  - hide_craze
+  primary_metric: macro_f1
+  seeds:
+  - 17
+  - 29
+  - 43
+  split: test
+experiment:
+  name: phase8_controlled_image_degradation_robustness
+  output_root: experiments/summaries/phase8_robustness_v1
+  seed: 20260830
+method:
+  family: frozen_zero_shot_robustness
+  name: controlled_single_corruption_v1
+models:
+  hog:
+    config: configs/frozen/traditional_hog_svm.yaml
+    metrics: experiments/summaries/phase4_traditional_v1/hog/test_metrics.json
+    model: experiments/results/phase4_traditional_v1/hog/model.joblib
+    predictions: experiments/summaries/phase4_traditional_v1/hog/test_predictions.csv
+  lbp:
+    config: configs/frozen/traditional_lbp_svm.yaml
+    metrics: experiments/summaries/phase4_traditional_v1/lbp/test_metrics.json
+    model: experiments/results/phase4_traditional_v1/lbp/model.joblib
+    predictions: experiments/summaries/phase4_traditional_v1/lbp/test_predictions.csv
+  mobilenet_v3_small:
+    architecture: torchvision_mobilenet_v3_small
+    config: configs/frozen/mobilenet_v3_small.yaml
+    result_root: experiments/results/phase6_mobilenet_v3_small_v1/final
+    seeds:
+    - 17
+    - 29
+    - 43
+    summary_root: experiments/summaries/phase6_mobilenet_v3_small_v1/final
+  resnet18:
+    architecture: torchvision_resnet18
+    config: configs/frozen/resnet18.yaml
+    result_root: experiments/results/phase5_resnet18_v1/final
+    seeds:
+    - 17
+    - 29
+    - 43
+    summary_root: experiments/summaries/phase5_resnet18_v1/final
+phase8:
+  expected_corrupted_images: 1944
+  expected_degraded_conditions: 12
+  figures_root: figures/phase8
+  qc_root: figures/phase8/corruption_qc
+  result_id: phase8_robustness_v1
+  summary_root: experiments/summaries/phase8_robustness_v1
+project:
+  name: windblade
+  phase: 8
+runtime:
+  device: cpu
+training:
+  epochs: 0
+  train_fraction: 1.0
+upstream:
+  phase7_config: configs/data_efficiency.yaml
+  require_git_clean_for_science: true
+  require_origin_sync_for_science: true

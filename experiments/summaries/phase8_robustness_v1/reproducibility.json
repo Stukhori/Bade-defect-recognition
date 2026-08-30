@@ -1,0 +1,13 @@
+{
+  "checks": {
+    "all_1944_png_hashes_identical": true,
+    "all_predictions_metrics_aggregates_identical": true,
+    "robustness_dataset_fingerprint_identical": true,
+    "scientific_output_file_set_identical": true
+  },
+  "corrupted_png_count": 1944,
+  "passes": 2,
+  "scientific_file_count": 481,
+  "status": "PASS",
+  "timing_values_excluded": true
+}
