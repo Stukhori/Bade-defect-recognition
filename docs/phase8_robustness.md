@@ -90,22 +90,22 @@ The complete primary table also includes secondary metrics, absolute drop, reten
 
 ## 16. Per-class results
 
-All six classes, including thunderstrike, are retained in [`per_class_robustness.csv`](../experiments/summaries/phase8_robustness_v1/aggregate/per_class_robustness.csv). Severe-condition CNN mean F1 values are:
+All six classes, including thunderstrike, are retained in [`per_class_robustness.csv`](../experiments/summaries/phase8_robustness_v1/aggregate/per_class_robustness.csv). Severe-condition CNN F1 values are mean ± sample SD:
 
 | Model | Class | Blur | Resolution | Brightness | JPEG |
 |---|---|---:|---:|---:|---:|
-| ResNet-18 | craze | 0.593 | 0.643 | 0.527 | 0.802 |
-| ResNet-18 | corrosion | 0.408 | 0.587 | 0.554 | 0.812 |
-| ResNet-18 | surface_injure | 0.664 | 0.722 | 0.639 | 0.736 |
-| ResNet-18 | thunderstrike | 0.478 | 0.762 | 0.376 | 0.886 |
-| ResNet-18 | crack | 0.876 | 0.827 | 0.376 | 0.866 |
-| ResNet-18 | hide_craze | 0.783 | 0.799 | 0.686 | 0.832 |
-| MobileNetV3-Small | craze | 0.478 | 0.684 | 0.604 | 0.848 |
-| MobileNetV3-Small | corrosion | 0.609 | 0.642 | 0.680 | 0.722 |
-| MobileNetV3-Small | surface_injure | 0.690 | 0.683 | 0.674 | 0.779 |
-| MobileNetV3-Small | thunderstrike | 0.571 | 0.662 | 0.493 | 0.791 |
-| MobileNetV3-Small | crack | 0.791 | 0.864 | 0.714 | 0.864 |
-| MobileNetV3-Small | hide_craze | 0.786 | 0.865 | 0.789 | 0.818 |
+| ResNet-18 | craze | 0.593 ± 0.144 | 0.643 ± 0.075 | 0.527 ± 0.113 | 0.802 ± 0.090 |
+| ResNet-18 | corrosion | 0.408 ± 0.023 | 0.587 ± 0.059 | 0.554 ± 0.165 | 0.812 ± 0.027 |
+| ResNet-18 | surface_injure | 0.664 ± 0.051 | 0.722 ± 0.037 | 0.639 ± 0.023 | 0.736 ± 0.007 |
+| ResNet-18 | thunderstrike | 0.478 ± 0.106 | 0.762 ± 0.033 | 0.376 ± 0.157 | 0.886 ± 0.050 |
+| ResNet-18 | crack | 0.876 ± 0.043 | 0.827 ± 0.029 | 0.376 ± 0.140 | 0.866 ± 0.072 |
+| ResNet-18 | hide_craze | 0.783 ± 0.034 | 0.799 ± 0.016 | 0.686 ± 0.083 | 0.832 ± 0.011 |
+| MobileNetV3-Small | craze | 0.478 ± 0.151 | 0.684 ± 0.060 | 0.604 ± 0.029 | 0.848 ± 0.049 |
+| MobileNetV3-Small | corrosion | 0.609 ± 0.063 | 0.642 ± 0.023 | 0.680 ± 0.044 | 0.722 ± 0.018 |
+| MobileNetV3-Small | surface_injure | 0.690 ± 0.008 | 0.683 ± 0.036 | 0.674 ± 0.061 | 0.779 ± 0.029 |
+| MobileNetV3-Small | thunderstrike | 0.571 ± 0.124 | 0.662 ± 0.121 | 0.493 ± 0.126 | 0.791 ± 0.038 |
+| MobileNetV3-Small | crack | 0.791 ± 0.095 | 0.864 ± 0.071 | 0.714 ± 0.165 | 0.864 ± 0.056 |
+| MobileNetV3-Small | hide_craze | 0.786 ± 0.019 | 0.865 ± 0.035 | 0.789 ± 0.017 | 0.818 ± 0.020 |
 
 The rare thunderstrike class has small support, so class-specific patterns are descriptive and should not be overgeneralized. Detailed qualitative error interpretation is reserved for Phase 9.
 
