@@ -76,7 +76,7 @@ def render_result(namespace: str, model_input, result: Any) -> None:
         {"Category": HUMAN_LABELS[label], "Model score": result.scores[index]}
         for index, label in enumerate(CLASS_LABELS)
     ]
-    st.dataframe(rows, hide_index=True, use_container_width=True)
+    st.dataframe(rows, hide_index=True, width="stretch")
     st.vega_lite_chart(
         {"values": rows},
         {
@@ -88,7 +88,7 @@ def render_result(namespace: str, model_input, result: Any) -> None:
             },
             "height": 220,
         },
-        use_container_width=True,
+        width="stretch",
     )
     loaded = cached_model()
     status = model_status(loaded)
@@ -111,8 +111,8 @@ def render_result(namespace: str, model_input, result: Any) -> None:
             "It is not automatic defect localization, a causal explanation, or a safety assessment."
         )
         first, second = st.columns(2)
-        first.image(gradcam.heatmap, caption="Grad-CAM heatmap", use_container_width=True)
-        second.image(gradcam.overlay, caption="Overlay on the exact model input", use_container_width=True)
+        first.image(gradcam.heatmap, caption="Grad-CAM heatmap", width="stretch")
+        second.image(gradcam.overlay, caption="Overlay on the exact model input", width="stretch")
 
 
 with st.sidebar:
@@ -142,12 +142,12 @@ if mode == "Prepared visible defect crop":
             decoded = decode_upload(uploaded.getvalue(), uploaded.name)
             reset_for_upload("prepared", decoded.byte_sha256)
             original_col, input_col = st.columns(2)
-            original_col.image(decoded.image, caption="Uploaded region", use_container_width=True)
+            original_col.image(decoded.image, caption="Uploaded region", width="stretch")
             model_input = prepare_region(decoded.image)
             input_col.image(
                 model_input,
                 caption="Exact model input: RGB, bilinear resize to 224×224",
-                use_container_width=True,
+                width="stretch",
             )
             st.info("One manually identified visible region will be classified into the six frozen WTBD categories.")
             if st.button("Classify prepared region", type="primary"):
@@ -202,12 +202,12 @@ else:
             overview_col.image(
                 annotated_selection(decoded.image, crop),
                 caption="Orange: your region · Teal: frozen contextual square",
-                use_container_width=True,
+                width="stretch",
             )
             crop_col.image(
                 crop.model_input,
                 caption="Exact contextual crop sent to the model: RGB 224×224",
-                use_container_width=True,
+                width="stretch",
             )
             st.caption(
                 f"Context square: {crop.geometry.crop_side} original pixels; "

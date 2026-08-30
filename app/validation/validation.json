@@ -1,0 +1,83 @@
+{
+  "dependencies": {
+    "streamlit": "1.62.0",
+    "streamlit-cropper": "0.3.1"
+  },
+  "descriptive_local_timings_seconds": {
+    "manual_inference": 0.015335300005972385,
+    "manual_preprocessing": 0.0021919000428169966,
+    "model_load_recorded": 0.14527549990452826,
+    "model_load_wrapper": 0.1459628000156954,
+    "optional_gradcam": 0.11868169996887445,
+    "prepared_inference": 0.030429800041019917,
+    "prepared_preprocessing": 0.003404799965210259
+  },
+  "model": {
+    "checkpoint_file_sha256": "9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5",
+    "checkpoint_state_fingerprint": "3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757",
+    "device": "cpu",
+    "display_name": "MobileNetV3-Small \u2014 frozen Phase 6, full-data seed 17",
+    "evaluation_mode": true,
+    "expected_state_fingerprint": "3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757"
+  },
+  "optional_gradcam": {
+    "activation_shape": [
+      1,
+      576,
+      7,
+      7
+    ],
+    "parameters_unchanged": true,
+    "prediction_unchanged": true,
+    "status": "PASS"
+  },
+  "phase9a_review_forms": [
+    {
+      "blank": true,
+      "path": "experiments/summaries/phase9_error_analysis_v1/human_review_packet/pass_a/pass_a_review_form.csv",
+      "sha256": "44a5200e8b921b65f55cd391943abfbd4ca600e9723fcd8c70a36eb6cf2b7d58"
+    },
+    {
+      "blank": true,
+      "path": "experiments/summaries/phase9_error_analysis_v1/human_review_packet/pass_b/pass_b_review_form.csv",
+      "sha256": "7ae98fa0cb8c05edd57632460b1a08339c96f4f24b0a991fc1b7ac64ccdfa9e8"
+    }
+  ],
+  "prohibited_actions": {
+    "calibration": 0,
+    "external_service_calls": 0,
+    "fine_tuning": 0,
+    "permanent_upload_storage": 0,
+    "test_set_evaluation": 0,
+    "training": 0
+  },
+  "schema_version": "1.0",
+  "scientific_phase_status": "Phase 9A complete \u2014 awaiting human review; Phase 9 incomplete",
+  "scope": "non-scientific local demonstration validation",
+  "status": "PASS",
+  "validated_utc": "2026-08-30T09:47:32.057346+00:00",
+  "workflows": {
+    "manual_region": {
+      "context_side": 501,
+      "phase3_pixel_parity": true,
+      "reference_instance_id": "1_0",
+      "selected_original_box": [
+        780,
+        429,
+        931,
+        763
+      ],
+      "status": "PASS"
+    },
+    "prepared_crop": {
+      "input_shape": [
+        224,
+        224,
+        3
+      ],
+      "reference_instance_id": "1_0",
+      "score_count": 6,
+      "status": "PASS"
+    }
+  }
+}
