@@ -14,7 +14,7 @@ Phase 8 is complete. Phases 0–7 remain frozen. Phase 9 has not started.
 
 ### Status and frozen identity
 
-**COMPLETE.** Result `phase8_robustness_v1`; apparatus commit `b222435`; scientific-results commit `RESULT_COMMIT_TO_RECORD`. The Phase 3 fingerprint remains `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`.
+**COMPLETE.** Result `phase8_robustness_v1`; apparatus commit `b222435`; scientific-results commit `e9e7b07`. The Phase 3 fingerprint remains `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`.
 
 - Corruption config fingerprint: `a6a9e40c9c3de7130892df3cf49698f95718ce9241c8a963849016ce7adc1d57`.
 - Robustness dataset fingerprint: `da0eda8956adfef63e001d0d1614279a907c46feffc5e2f180c5acdbe89987db`.
