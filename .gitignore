@@ -31,6 +31,12 @@ data/processed/**
 !data/processed/wtbd_crops_v1/resolved_config.yaml
 !data/processed/wtbd_crops_v1/README.md
 data/processed/wtbd_crops_v1/images/**
+!data/processed/wtbd_robustness_v1/
+!data/processed/wtbd_robustness_v1/*.csv
+!data/processed/wtbd_robustness_v1/*.json
+!data/processed/wtbd_robustness_v1/resolved_config.yaml
+!data/processed/wtbd_robustness_v1/README.md
+data/processed/wtbd_robustness_v1/images/**
 
 # Large model artifacts
 *.ckpt
