@@ -282,7 +282,17 @@ def _review_form_status(
 
 
 def _forbidden_paths(root: Path) -> list[str]:
-    candidates = [root / "figures/phase10", root / "docs/phase10", root / "src/windblade/app", root / "scripts/run_yolo.py", root / "configs/yolo.yaml"]
+    # Phase 10 is an authorized downstream consumer once Phase 9 is frozen.
+    # Phase 9 validation must continue to pass after that aggregation phase,
+    # while optional localization/external-validation work remains forbidden.
+    candidates = [
+        root / "figures/phase11",
+        root / "figures/phase12",
+        root / "docs/phase11",
+        root / "docs/phase12",
+        root / "scripts/run_yolo.py",
+        root / "configs/yolo.yaml",
+    ]
     return [path.relative_to(root).as_posix() for path in candidates if path.exists()]
 
 
