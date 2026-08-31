@@ -1,0 +1,30 @@
+{
+  "automatic_localization_available": false,
+  "branch": "main",
+  "checkpoint": {
+    "bytes": 6219239,
+    "evaluation_mode": true,
+    "file_sha256": "9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5",
+    "loaded_on_cpu": true,
+    "path": "experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/best_state_dict.pt",
+    "state_fingerprint": "3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757"
+  },
+  "configuration_file": ".streamlit/config.toml",
+  "dependency_file": "app/requirements.txt",
+  "entrypoint": "app/app.py",
+  "external_downloads_at_runtime": 0,
+  "python_version": "3.11",
+  "repository": "Stukhori/Bade-defect-recognition",
+  "schema_version": "1.0",
+  "secrets_required": false,
+  "status": "PASS",
+  "target": "Streamlit Community Cloud",
+  "tracked_files": {
+    ".streamlit/config.toml": true,
+    "app/app.py": true,
+    "app/requirements.txt": true,
+    "experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/best_state_dict.json": true,
+    "experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/best_state_dict.pt": true
+  },
+  "validated_utc": "2026-08-31T09:36:44.861547+00:00"
+}

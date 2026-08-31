@@ -16,7 +16,7 @@ uv pip install -r requirements-app.txt
 uv run streamlit run app/app.py --server.address 127.0.0.1
 ```
 
-The frozen Phase 6 checkpoint and metadata must already exist at `experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/`. Once the environment and local artifacts are present, the app needs no network access. Streamlit telemetry is disabled in `.streamlit/config.toml`.
+The exact frozen Phase 6 checkpoint and metadata are tracked at `experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/` so a clean deployment clone is self-contained. The app needs no runtime network access. Streamlit telemetry is disabled in `.streamlit/config.toml`; Community Cloud preparation is documented in `docs/deployment.md`.
 
 ## Navigation and workflows
 

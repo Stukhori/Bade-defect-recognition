@@ -21,7 +21,9 @@ uv pip install -r requirements-app.txt
 uv run streamlit run app/app.py
 ```
 
-Application v2 supports prepared-crop classification, manual single- and multi-region analysis, session comparison, in-memory JSON/CSV/annotated-image exports, frozen Phase 10 research summaries, and frozen Phase 11A readiness reporting. It does not automatically detect defects or assess blade safety. The local frozen checkpoint must already be present; no training, tuning, calibration, or test-set evaluation occurs. See [`docs/app.md`](docs/app.md) for the exact model identity, crop parity, scope, limitations, and validation record.
+Application v2 supports prepared-crop classification, manual single- and multi-region analysis, session comparison, in-memory JSON/CSV/annotated-image exports, frozen Phase 10 research summaries, and frozen Phase 11A readiness reporting. It does not automatically detect defects or assess blade safety. The exact frozen inference checkpoint is included for clean-clone startup; no training, tuning, calibration, or test-set evaluation occurs. See [`docs/app.md`](docs/app.md) for the exact model identity, crop parity, scope, limitations, and validation record.
+
+For Streamlit Community Cloud, deploy branch `main` with entrypoint `app/app.py` and select Python 3.11. The app-local dependency manifest and exact frozen inference checkpoint are tracked, and no secrets are required. See [`docs/deployment.md`](docs/deployment.md) for the deployment checklist and validator.
 
 ## Run the local human-review interface
 

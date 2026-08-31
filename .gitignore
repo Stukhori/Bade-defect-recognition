@@ -48,6 +48,14 @@ data/processed/wtbd_robustness_v1/images/**
 # experiments/summaries/ and remain versionable.
 experiments/results/**
 !experiments/results/.gitkeep
+# The exact frozen Application v2 inference asset is intentionally versioned so
+# a clean Streamlit Community Cloud clone can run without external downloads.
+!experiments/results/phase6_mobilenet_v3_small_v1/
+!experiments/results/phase6_mobilenet_v3_small_v1/final/
+!experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/
+experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/**
+!experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/best_state_dict.pt
+!experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/best_state_dict.json
 experiments/cache/**
 
 # Logs outside ignored run directories

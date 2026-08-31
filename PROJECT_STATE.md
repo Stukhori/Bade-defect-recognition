@@ -27,6 +27,7 @@ Phases 0–10 remain complete and frozen. Phase 11A is complete and frozen. Phas
 - Dependencies remain Streamlit `1.62.0` and streamlit-cropper `0.3.1`; no detector runtime or detector-license implication was added.
 - Validation: focused Application v2 suite **37 passed**; complete repository suite **266 passed** with 11 unchanged scikit-learn future warnings; all read-only Phase 2–11A/app/review validators pass.
 - Local loopback health: HTTP 200 / `ok`, then the server was stopped. No external deployment occurred.
+- Streamlit deployment preparation: app-local pinned requirements, root Streamlit configuration, exact tracked 6.2 MB frozen checkpoint/metadata, deployment validator, and Community Cloud instructions. Deployment itself remains a user-controlled external action.
 - Full record: `docs/app.md`; machine validation: `app/validation/validation.json`.
 
 ## Phase 11A — full-image detection feasibility and annotation audit
@@ -106,7 +107,7 @@ Phases 0–10 remain complete and frozen. Phase 11A is complete and frozen. Phas
 - The manual workflow reuses the exact Phase 3 contextual-square geometry and the same RGB/bilinear 224×224 pixel policy; regression tests confirm pixel identity against multiple stored Phase 3 references.
 - App output: one of the six frozen WTBD categories plus all six model scores, explicitly labeled as not calibrated confidence estimates.
 - Optional Grad-CAM imports the unchanged Phase 9A primitive; model-state and prediction invariance pass.
-- App dependencies are pinned separately in `requirements-app.txt`; scientific dependency constraints are unchanged.
+- Local app dependencies remain in `requirements-app.txt`; Community Cloud uses the entrypoint-local, fully pinned `app/requirements.txt`. Scientific dependency constraints are unchanged.
 - Product features: session-only comparison, stable region IDs, optional Grad-CAM, in-memory JSON/CSV/annotated-PNG exports, frozen Phase 10 research dashboard, and frozen Phase 11A readiness dashboard.
 - Validation: all three UI workflows, pure session/export contracts, canonical dashboard sources, classifier invariance, and automatic-localization gate pass. Final suite and live-health results are recorded in the current Application v2 section.
 - Training, fine-tuning, calibration, ensembling, test-driven model/seed selection, new test-set evaluation, checkpoint mutation, external service calls, permanent upload storage, and tracked uploaded images: zero.

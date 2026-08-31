@@ -15,3 +15,5 @@
 - Live loopback health: HTTP 200 / `ok`; server stopped afterward.
 
 The app uses Streamlit's local test driver and a loopback-only live health check. No UI screenshot is committed.
+
+`deployment.json` separately validates the Streamlit Community Cloud contract: repository/branch/entrypoint, Python 3.11 selection, app-local pinned requirements, root configuration, tracked checkpoint and metadata, exact checkpoint SHA/state identity, CPU evaluation-mode loading, zero runtime artifact downloads, and no required secrets.
