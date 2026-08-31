@@ -1,0 +1,141 @@
+{
+  "affected_review_ids": [
+    "P9A-001",
+    "P9A-002",
+    "P9A-003",
+    "P9A-004",
+    "P9A-005",
+    "P9A-006",
+    "P9A-007",
+    "P9A-008",
+    "P9A-009",
+    "P9A-010",
+    "P9A-011",
+    "P9A-012",
+    "P9A-013",
+    "P9A-014",
+    "P9A-015",
+    "P9A-016",
+    "P9A-017",
+    "P9A-018",
+    "P9A-019",
+    "P9A-020",
+    "P9A-021",
+    "P9A-022",
+    "P9A-023",
+    "P9A-024",
+    "P9A-025",
+    "P9A-026",
+    "P9A-027",
+    "P9A-028",
+    "P9A-029",
+    "P9A-030",
+    "P9A-031",
+    "P9A-032",
+    "P9A-033",
+    "P9A-034",
+    "P9A-035",
+    "P9A-036",
+    "P9A-037",
+    "P9A-038",
+    "P9A-047",
+    "P9A-048",
+    "P9A-049",
+    "P9A-050",
+    "P9A-051",
+    "P9A-052",
+    "P9A-053",
+    "P9A-054",
+    "P9A-055",
+    "P9A-056",
+    "P9A-057",
+    "P9A-058",
+    "P9A-059",
+    "P9A-060"
+  ],
+  "audited_utc": "2026-08-30T18:20:34.005882+00:00",
+  "caption_mismatch_role_counts_before": {},
+  "caption_mismatches_before": 0,
+  "caption_only": false,
+  "gradcam_evidence_fingerprint_before": "84e0dd6c21a6ff0cd92602f83b99e6b0e08c2d175cdc5d10c6c6602abf20c321",
+  "gradcam_records": 507,
+  "incorrect_prediction_display_identities": 177,
+  "incorrect_prediction_review_cases": 52,
+  "incorrect_prediction_target_rows": 177,
+  "incorrect_prediction_unique_frozen_identities": 142,
+  "independent_array_recomputation": {
+    "array_or_logit_mismatches": [],
+    "arrays_or_figures_written": 0,
+    "checkpoint_checks": [
+      {
+        "method": "resnet18",
+        "parameters_unchanged": true,
+        "seed": 17,
+        "state_after": "e87ca88dad134833a54171674332ea76920f957e7d7e1df10b9ec308ebeff8d8",
+        "state_before": "e87ca88dad134833a54171674332ea76920f957e7d7e1df10b9ec308ebeff8d8"
+      },
+      {
+        "method": "resnet18",
+        "parameters_unchanged": true,
+        "seed": 29,
+        "state_after": "53c4dd81213f271aa6b0e00c71dff7bad172bae3f5a560ba112bd6dc761b2848",
+        "state_before": "53c4dd81213f271aa6b0e00c71dff7bad172bae3f5a560ba112bd6dc761b2848"
+      },
+      {
+        "method": "resnet18",
+        "parameters_unchanged": true,
+        "seed": 43,
+        "state_after": "320ce93b293e6b810c1c6e1c4e845a68443fcfaae24ca7875a0648c352c3e23f",
+        "state_before": "320ce93b293e6b810c1c6e1c4e845a68443fcfaae24ca7875a0648c352c3e23f"
+      },
+      {
+        "method": "mobilenet_v3_small",
+        "parameters_unchanged": true,
+        "seed": 17,
+        "state_after": "3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757",
+        "state_before": "3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757"
+      },
+      {
+        "method": "mobilenet_v3_small",
+        "parameters_unchanged": true,
+        "seed": 29,
+        "state_after": "9b7379911e193f8568bdfe4e6d7045eaeeb1d709b4c9f51b73b8d3eaaf28b49a",
+        "state_before": "9b7379911e193f8568bdfe4e6d7045eaeeb1d709b4c9f51b73b8d3eaaf28b49a"
+      },
+      {
+        "method": "mobilenet_v3_small",
+        "parameters_unchanged": true,
+        "seed": 43,
+        "state_after": "7dd6d8689dd85960dfc794033afbab9cdd9128b216a2ff5ac222e0e2c11cf068",
+        "state_before": "7dd6d8689dd85960dfc794033afbab9cdd9128b216a2ff5ac222e0e2c11cf068"
+      }
+    ],
+    "recomputed_records": 507,
+    "recomputed_role_counts": {
+      "predicted_class": 177,
+      "true_class": 330
+    },
+    "status": "PASS"
+  },
+  "pass_a_sha256_before": "3b6548d8e6a1240c224f156f9266c5025cc099816d73a8c81960173fe9c8423e",
+  "pass_b_required_answers_invalidated": 0,
+  "pass_b_sha256_before": "7ae98fa0cb8c05edd57632460b1a08339c96f4f24b0a991fc1b7ac64ccdfa9e8",
+  "phase9b_started": false,
+  "scope": "Phase 9A Grad-CAM target identity and Pass B reporting",
+  "status": "PASS",
+  "target_identity_mismatches": [],
+  "target_index_label_counts": {
+    "0:craze": 93,
+    "1:corrosion": 127,
+    "2:surface_injure": 118,
+    "3:thunderstrike": 30,
+    "4:crack": 42,
+    "5:hide_craze": 97
+  },
+  "target_role_counts": {
+    "predicted_class": 177,
+    "true_class": 330
+  },
+  "underlying_arrays_or_figures_regenerated": false,
+  "visual_interpretations_made": 0
+}

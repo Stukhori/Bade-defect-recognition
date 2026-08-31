@@ -1,0 +1,28 @@
+{
+  "automated_visual_interpretations": 0,
+  "derived_tables": [
+    "tables/joined_review_cases.csv",
+    "tables/joined_review_predictions.csv",
+    "tables/response_summary.csv",
+    "tables/case_crosstabs.csv",
+    "tables/prediction_crosstabs.csv"
+  ],
+  "figures": [
+    "pass_a_response_distributions.png",
+    "pass_b_response_distributions.png",
+    "activation_location_by_group.png",
+    "artifact_activation_by_corruption.png",
+    "seed_consistency_by_group.png"
+  ],
+  "human_reviewer_count": 1,
+  "joined_prediction_rows": 180,
+  "model_training_count": 0,
+  "phase": "9B",
+  "phase10_started": false,
+  "phase9_complete": true,
+  "phase9_frozen": true,
+  "reviewed_cases": 60,
+  "status": "PHASE 9 COMPLETE - VALIDATED AND FROZEN",
+  "svm_or_scaler_refit_count": 0,
+  "version": "phase9b_human_review_synthesis_v1"
+}

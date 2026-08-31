@@ -1,61 +1,61 @@
 review_id,defect_visible,corruption_obscures_diagnostic_detail,dataset_label_visually_plausible,visually_ambiguous_between_categories,possible_crop_or_background_problem,reviewer_notes
-P9A-001,,,,,,
-P9A-002,,,,,,
-P9A-003,,,,,,
-P9A-004,,,,,,
-P9A-005,,,,,,
-P9A-006,,,,,,
-P9A-007,,,,,,
-P9A-008,,,,,,
-P9A-009,,,,,,
-P9A-010,,,,,,
-P9A-011,,,,,,
-P9A-012,,,,,,
-P9A-013,,,,,,
-P9A-014,,,,,,
-P9A-015,,,,,,
-P9A-016,,,,,,
-P9A-017,,,,,,
-P9A-018,,,,,,
-P9A-019,,,,,,
-P9A-020,,,,,,
-P9A-021,,,,,,
-P9A-022,,,,,,
-P9A-023,,,,,,
-P9A-024,,,,,,
-P9A-025,,,,,,
-P9A-026,,,,,,
-P9A-027,,,,,,
-P9A-028,,,,,,
-P9A-029,,,,,,
-P9A-030,,,,,,
-P9A-031,,,,,,
-P9A-032,,,,,,
-P9A-033,,,,,,
-P9A-034,,,,,,
-P9A-035,,,,,,
-P9A-036,,,,,,
-P9A-037,,,,,,
-P9A-038,,,,,,
-P9A-039,,,,,,
-P9A-040,,,,,,
-P9A-041,,,,,,
-P9A-042,,,,,,
-P9A-043,,,,,,
-P9A-044,,,,,,
-P9A-045,,,,,,
-P9A-046,,,,,,
-P9A-047,,,,,,
-P9A-048,,,,,,
-P9A-049,,,,,,
-P9A-050,,,,,,
-P9A-051,,,,,,
-P9A-052,,,,,,
-P9A-053,,,,,,
-P9A-054,,,,,,
-P9A-055,,,,,,
-P9A-056,,,,,,
-P9A-057,,,,,,
-P9A-058,,,,,,
-P9A-059,,,,,,
-P9A-060,,,,,,
+P9A-001,yes,mild,yes,uncertain,no,
+P9A-002,yes,strong,yes,uncertain,yes,"Visible rough surface damage, but strong blur obscures diagnostic texture; the annotation may exclude part of the affected region. The rectangle misses some parts of the affected surface"
+P9A-003,yes,none,yes,no,no,"Crop is withing the area, correctly identified"
+P9A-004,yes,none,yes,no,no,
+P9A-005,yes,mild,yes,no,no,
+P9A-006,yes,mild,yes,no,no,
+P9A-007,partially,strong,yes,uncertain,no,"Image is very blurred which could affect detection, hard to tell wther it is corrosion or surface inhury due to low quality image"
+P9A-008,yes,mild,yes,no,no,
+P9A-009,partially,strong,yes,no,no,"Low quality image which makes the difficult detection,"
+P9A-010,yes,none,yes,no,no,
+P9A-011,yes,none,yes,no,no,
+P9A-012,yes,none,yes,no,no,
+P9A-013,yes,strong,yes,no,no,"For clean image everything is fine, for degraded image due to low quality its hard to identify injury"
+P9A-014,yes,strong,yes,no,no,"For clean image everything is fine, for degraded image due to low quality its hard to identify injury"
+P9A-015,yes,mild,yes,no,no,"For clean image everything is fine, for degraded image due to low quality its hard to identify injury"
+P9A-016,yes,mild,yes,no,no,"For clean image everything is fine, for degraded image due to low quality its hard to identify injury"
+P9A-017,yes,none,yes,no,no,"For clean image everything is fine, for degraded image due to low quality its hard to identify injury"
+P9A-018,yes,none,yes,no,uncertain,"For clean image everything is fine, for degraded image due to low quality its hard to identify injury, for background its unckear if its part of the turbine or not"
+P9A-019,yes,none,yes,no,no,"For clean image everything is fine, for degraded image due to low quality its hard to identify injury"
+P9A-020,yes,none,yes,no,no,
+P9A-021,partially,strong,uncertain,yes,uncertain,Its unclear due to low quality image and high magnification what type of berak is that
+P9A-022,yes,mild,yes,no,uncertain,"Looks like a blade broke, but again low quality miage"
+P9A-023,yes,mild,yes,no,no,
+P9A-024,yes,mild,uncertain,yes,uncertain,"Not sure wther it is surface injury or corrosion, maybe due to image quakity"
+P9A-025,yes,strong,uncertain,uncertain,no,"Not sure wther it is surface injury or corrosion, maybe due to image quakity"
+P9A-026,yes,none,yes,no,no,
+P9A-027,yes,none,yes,no,no,"Unclear for degrade image, for clear image everythin's fine"
+P9A-028,yes,none,yes,no,no,
+P9A-029,yes,none,no,no,no,
+P9A-030,yes,mild,yes,no,no,
+P9A-031,yes,none,yes,no,no,
+P9A-032,partially,mild,uncertain,yes,yes,"It could resemble corrosion or surface injury because the defining crack structure is unclear. 	The rectangle contains substantial dark/background surface, while part of the visibly irregular pale region lies outside it."
+P9A-033,partially,mild,uncertain,yes,yes,"It could resemble corrosion or surface injury because the defining crack structure is unclear. 	The rectangle contains substantial dark/background surface, while part of the visibly irregular pale region lies outside it."
+P9A-034,yes,none,yes,no,no,
+P9A-035,yes,mild,yes,yes,yes,"Long, thin coating-damage region remains visible, but the contextual crop contains substantial unrelated background."
+P9A-036,yes,none,yes,no,no,
+P9A-037,yes,none,yes,no,no,
+P9A-038,yes,none,yes,yes,no,Irregular weathered patch is compatible with corrosion but visually overlaps with coating damage.
+P9A-039,yes,none,yes,no,no,
+P9A-040,partially,none,yes,no,yes,It misses significant upper part of the craze
+P9A-041,partially,none,yes,no,yes,missess significant upepr part of the craze
+P9A-042,partially,none,uncertain,yes,yes,"Surface-injury label is plausible, but the annotation rectangle excludes most of the prominent damaged region and the dark area creates possible thunderstrike ambiguity."
+P9A-043,yes,none,yes,no,no,
+P9A-044,yes,none,yes,no,no,
+P9A-045,yes,none,yes,no,no,
+P9A-046,yes,none,yes,no,no,
+P9A-047,yes,none,yes,no,no,
+P9A-048,yes,mild,yes,yes,yes,"Long, thin coating-damage region remains visible, but the contextual crop contains substantial unrelated background."
+P9A-049,yes,mild,yes,yes,yes,"Long, thin coating-damage region remains visible, but the contextual crop contains substantial unrelated background."
+P9A-050,yes,none,yes,no,no,
+P9A-051,yes,mild,yes,no,no,
+P9A-052,yes,none,yes,yes,yes,Long weathered edge strip is compatible with corrosion but overlaps visually with coating damage; annotation covers only the middle portion.
+P9A-053,yes,none,yes,no,yes,Lots of unrelated background
+P9A-054,yes,none,yes,no,yes,Lots of unrelated background
+P9A-055,yes,none,yes,no,no,
+P9A-056,partially,strong,uncertain,yes,yes,"General damage is visible, but strong blur obscures identifiable crack structure; the craze label remains uncertain and the annotation may exclude part of the irregular region."
+P9A-057,partially,strong,uncertain,yes,yes,"General damage is visible, but strong blur obscures identifiable crack structure; the craze label remains uncertain and the annotation may exclude part of the irregular region."
+P9A-058,yes,none,yes,no,no,
+P9A-059,yes,none,yes,no,no,
+P9A-060,yes,none,yes,no,no,

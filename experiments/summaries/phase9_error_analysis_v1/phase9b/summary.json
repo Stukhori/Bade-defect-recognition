@@ -1,0 +1,224 @@
+{
+  "analysis_type": "single-reviewer post-hoc descriptive synthesis",
+  "cross_map_color_comparison_allowed": false,
+  "gradcam_causal_claims_allowed": false,
+  "hypothesis_tests_calculated": false,
+  "inter_rater_agreement_calculated": false,
+  "notes_systematically_coded": false,
+  "pass_a_nonempty_notes": 30,
+  "pass_a_required_answers": 300,
+  "pass_b_nonempty_notes": 60,
+  "pass_b_required_answers": 240,
+  "real_flight_generalization_allowed": false,
+  "response_distributions": {
+    "pass_a": {
+      "corruption_obscures_diagnostic_detail": {
+        "mild": {
+          "count": 16,
+          "denominator": 60,
+          "percentage": "26.666667"
+        },
+        "none": {
+          "count": 35,
+          "denominator": 60,
+          "percentage": "58.333333"
+        },
+        "strong": {
+          "count": 9,
+          "denominator": 60,
+          "percentage": "15.000000"
+        },
+        "uncertain": {
+          "count": 0,
+          "denominator": 60,
+          "percentage": "0.000000"
+        }
+      },
+      "dataset_label_visually_plausible": {
+        "no": {
+          "count": 1,
+          "denominator": 60,
+          "percentage": "1.666667"
+        },
+        "uncertain": {
+          "count": 8,
+          "denominator": 60,
+          "percentage": "13.333333"
+        },
+        "yes": {
+          "count": 51,
+          "denominator": 60,
+          "percentage": "85.000000"
+        }
+      },
+      "defect_visible": {
+        "no": {
+          "count": 0,
+          "denominator": 60,
+          "percentage": "0.000000"
+        },
+        "partially": {
+          "count": 10,
+          "denominator": 60,
+          "percentage": "16.666667"
+        },
+        "uncertain": {
+          "count": 0,
+          "denominator": 60,
+          "percentage": "0.000000"
+        },
+        "yes": {
+          "count": 50,
+          "denominator": 60,
+          "percentage": "83.333333"
+        }
+      },
+      "possible_crop_or_background_problem": {
+        "no": {
+          "count": 42,
+          "denominator": 60,
+          "percentage": "70.000000"
+        },
+        "uncertain": {
+          "count": 4,
+          "denominator": 60,
+          "percentage": "6.666667"
+        },
+        "yes": {
+          "count": 14,
+          "denominator": 60,
+          "percentage": "23.333333"
+        }
+      },
+      "reviewer_notes": {
+        "empty": {
+          "count": 30,
+          "denominator": 60,
+          "percentage": "50.000000"
+        },
+        "nonempty": {
+          "count": 30,
+          "denominator": 60,
+          "percentage": "50.000000"
+        }
+      },
+      "visually_ambiguous_between_categories": {
+        "no": {
+          "count": 44,
+          "denominator": 60,
+          "percentage": "73.333333"
+        },
+        "uncertain": {
+          "count": 4,
+          "denominator": 60,
+          "percentage": "6.666667"
+        },
+        "yes": {
+          "count": 12,
+          "denominator": 60,
+          "percentage": "20.000000"
+        }
+      }
+    },
+    "pass_b": {
+      "activation_concentrated_on_degradation_artifact": {
+        "no": {
+          "count": 45,
+          "denominator": 60,
+          "percentage": "75.000000"
+        },
+        "uncertain": {
+          "count": 15,
+          "denominator": 60,
+          "percentage": "25.000000"
+        },
+        "yes": {
+          "count": 0,
+          "denominator": 60,
+          "percentage": "0.000000"
+        }
+      },
+      "activation_primarily_inside_annotation": {
+        "diffuse": {
+          "count": 0,
+          "denominator": 60,
+          "percentage": "0.000000"
+        },
+        "inside": {
+          "count": 27,
+          "denominator": 60,
+          "percentage": "45.000000"
+        },
+        "outside": {
+          "count": 9,
+          "denominator": 60,
+          "percentage": "15.000000"
+        },
+        "partial": {
+          "count": 24,
+          "denominator": 60,
+          "percentage": "40.000000"
+        },
+        "uncertain": {
+          "count": 0,
+          "denominator": 60,
+          "percentage": "0.000000"
+        }
+      },
+      "pattern_consistent_across_cnn_seeds": {
+        "no": {
+          "count": 6,
+          "denominator": 60,
+          "percentage": "10.000000"
+        },
+        "partly": {
+          "count": 30,
+          "denominator": 60,
+          "percentage": "50.000000"
+        },
+        "uncertain": {
+          "count": 0,
+          "denominator": 60,
+          "percentage": "0.000000"
+        },
+        "yes": {
+          "count": 24,
+          "denominator": 60,
+          "percentage": "40.000000"
+        }
+      },
+      "prediction_visually_understandable_after_reveal": {
+        "no": {
+          "count": 0,
+          "denominator": 60,
+          "percentage": "0.000000"
+        },
+        "uncertain": {
+          "count": 3,
+          "denominator": 60,
+          "percentage": "5.000000"
+        },
+        "yes": {
+          "count": 57,
+          "denominator": 60,
+          "percentage": "95.000000"
+        }
+      },
+      "reviewer_notes": {
+        "empty": {
+          "count": 0,
+          "denominator": 60,
+          "percentage": "0.000000"
+        },
+        "nonempty": {
+          "count": 60,
+          "denominator": 60,
+          "percentage": "100.000000"
+        }
+      }
+    }
+  },
+  "reviewed_cases": 60,
+  "reviewer_count": 1,
+  "status": "PASS"
+}

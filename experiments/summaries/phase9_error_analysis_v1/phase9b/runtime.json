@@ -1,0 +1,14 @@
+{
+  "packages": {
+    "Pillow": "12.3.0",
+    "PyYAML": "6.0.3",
+    "matplotlib": "3.11.1",
+    "numpy": "2.4.6",
+    "scikit-learn": "1.9.0",
+    "torch": "2.13.0",
+    "torchvision": "0.28.0"
+  },
+  "platform": "Windows-10-10.0.26200-SP0",
+  "python": "3.11.15",
+  "python_implementation": "CPython"
+}
