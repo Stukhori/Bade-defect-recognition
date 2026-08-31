@@ -250,7 +250,7 @@ def _upstream_files(root: Path) -> list[Path]:
         "configs/crop_dataset.yaml", "configs/traditional_baselines.yaml", "configs/resnet18_baseline.yaml",
         "configs/mobilenet_v3_small_baseline.yaml", "configs/data_efficiency.yaml", "configs/robustness.yaml",
         "configs/error_analysis.yaml", "data/processed/wtbd_crops_v1/manifest.csv",
-        "data/processed/wtbd_crops_v1/checksum_manifest.csv", "data/splits/wtbd_crops_v1_split.csv",
+        "data/processed/wtbd_crops_v1/crop_checksum_manifest.csv", "data/splits/wtbd_crops_v1_split.csv",
         "data/processed/wtbd_robustness_v1/manifest.csv", "data/processed/wtbd_robustness_v1/corruption_checksum_manifest.csv",
         "data/processed/wtbd_robustness_v1/conditions.json", "data/processed/wtbd_robustness_v1/summary.json",
         "phase9a_corrected_pass_b_review_2026-08-31.zip",
