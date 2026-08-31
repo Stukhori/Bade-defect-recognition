@@ -4,7 +4,7 @@
   "cuda_available": false,
   "cuda_device_count": 0,
   "deterministic_cuda_operations_assessed": false,
-  "disk_free_gib_at_gate": 344.39,
+  "disk_free_gib_at_gate": 344.38,
   "disk_total_gib": 475.73,
   "estimated_storage_gib": 5,
   "gpu": null,

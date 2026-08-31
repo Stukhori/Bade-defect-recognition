@@ -8,7 +8,6 @@
     "application_immutability.json",
     "audit_summary.json",
     "class_mapping.json",
-    "compute_gate.json",
     "feasibility.json",
     "frozen_protocol.json",
     "phase10_immutability.json",
@@ -40,10 +39,12 @@
     "qc_packet/images/qc_26_source_721.jpg",
     "qc_packet/index.html",
     "tables/annotation_findings.csv",
+    "tables/class_split_counts.csv",
     "tables/detection_annotation_manifest.csv",
     "tables/detection_image_manifest.csv",
     "tables/detection_split_manifest.csv",
     "tables/duplicate_group_audit.csv",
+    "tables/geometry_summary.csv",
     "tables/qc_selection.csv"
   ],
   "phase": "11A",
@@ -53,8 +54,8 @@
   "phase12_started": false,
   "result_id": "phase11_detection_audit_v1",
   "schema_version": "1.0",
-  "scientific_file_count": 40,
-  "scientific_output_fingerprint": "03189c65bf9a160e06c501ce68b247275847d2fd0cfbb2689361adfaba864b29",
+  "scientific_file_count": 41,
+  "scientific_output_fingerprint": "3f46cbdc6c7a2e3cf6093ff177dd1948d113fa4c36fa9eb907d7c8621e800461",
   "split_fingerprint": "264f8460f203074374c2c098c8fd5d2e55fb7ee1f281a8d505e2dfb0de9a2bc3",
   "status": "complete"
 }

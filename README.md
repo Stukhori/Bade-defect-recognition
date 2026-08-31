@@ -1,6 +1,6 @@
 # Robust Wind Turbine Blade Defect Recognition
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–10 are complete, validated, and frozen; the core technical research project is complete. Results include the Phase 4 handcrafted baselines, matched Phase 5/6 ResNet-18 and MobileNetV3-Small baselines, the Phase 7 limited-labeled-data comparison, the Phase 8 controlled image-degradation robustness experiment, the Phase 9 post-hoc error analysis and single-reviewer descriptive synthesis, and the Phase 10 final statistical synthesis. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–10 are complete, validated, and frozen; the core classification research remains unchanged. Optional Phase 11A has completed a scientifically separate full-image annotation/feasibility audit and frozen a detection dataset/protocol, but Phase 11B training is blocked because the current environment has no CUDA device. Phase 12 has not started. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -157,6 +157,17 @@ Clean macro-F1 was HOG `0.477988`, LBP `0.592401`, ResNet `0.895314 ± 0.014118`
 
 Results are under `experiments/summaries/phase10_final_synthesis_v1/`, figures under `figures/phase10/`, and the full statistical, reproducibility, limitation, table, and figure record is [`docs/phase10_final_synthesis.md`](docs/phase10_final_synthesis.md).
 
+## Phase 11A: full-image detection feasibility audit
+
+Phase 11A validates the authoritative full images and primary PASCAL VOC boxes, preserves the human-reviewed Phase 2 source/duplicate curation, freezes a source-image-level 510/101/109 detection split, and generates a deterministic 26-image annotation-QC packet. The retained dataset has 720 defect-positive images and 1,065 boxes across six classes, with no invalid boxes or cross-split duplicate leakage—but no healthy/background-only controls.
+
+```powershell
+uv run python scripts/run_detection.py --config configs/detection.yaml --apparatus-check
+uv run python scripts/run_detection.py --config configs/detection.yaml --validate-only
+```
+
+Phase 11B was not started: this host has CPU-only PyTorch, no CUDA device, and no detector package or pretrained weight was acquired. The dataset/protocol, compute gate, QC packet, limitations, and handoff are documented in [`docs/phase11_detection.md`](docs/phase11_detection.md). The Streamlit application remains unchanged and manual-crop-only.
+
 ## Phase boundaries
 
-Phases 0–10 are complete, validated, and frozen. Phase 11 localization and Phase 12 external validation are optional and have not been started. The separate Streamlit application remains a non-scientific demonstration: it classifies manually selected visible regions, does not automatically detect defects, and does not assess structural safety.
+Phases 0–10 remain complete, validated, and frozen. Optional Phase 11A is complete; Phase 11B detector training is compute/dependency-blocked and has not started. Phase 12 external validation has not started. The separate Streamlit application remains a non-scientific manual-crop demonstration and does not automatically detect defects or assess structural safety.

@@ -2,14 +2,33 @@
 
 ## Current phase
 
-- **Phase:** Phase 10 — Final Statistical Synthesis and Reproducibility Freeze
-- **Status:** PHASE 10 COMPLETE — VALIDATED AND FROZEN
+- **Phase:** Phase 11A — Full-image Detection Feasibility and Annotation Audit
+- **Status:** PHASE 11A COMPLETE — DETECTION PROTOCOL FROZEN; PHASE 11B COMPUTE-BLOCKED
 - **Start date:** 2026-08-31
 - **Completion date:** 2026-08-31
-- **Previous phases:** Phases 0–9 — complete and frozen
-- **Next phase:** Optional Phase 11 localization or Phase 12 external validation — neither started
+- **Previous phases:** Phases 0–10 — complete and frozen
+- **Next phase:** Phase 11B training on a suitable pinned CUDA environment; Phase 12 not started
 
-Phases 0–10 are complete and frozen. The core technical research project is complete. Phases 11 and 12 have not been started.
+Phases 0–10 remain complete and frozen. Phase 11A is complete and its detection dataset/protocol is frozen. Phase 11B training was not started because CUDA and pinned detector dependencies/weights are unavailable in the current environment. Phase 12 has not started.
+
+## Phase 11A — full-image detection feasibility and annotation audit
+
+**COMPLETE AND FROZEN; PHASE 11B BLOCKED.** Audit-apparatus commit `39cf4c7`; initial generated audit commit `956975c`; the completed reporting/final-state commit is recorded in subsequent history.
+
+- Phase 10 immutability: PASS. The 3,008-file Phase 3–9 inventory, every Phase 10 scientific output/figure, and Phase 10 fingerprint `6064922c936a05c33c38068ba86fa68c6b9b7f931d28df4e37a5e880edd5dbf0` remain unchanged. The Streamlit application inventory also remains unchanged.
+- Phase 9A fingerprint transition is explained and validated: `a5938ec...` was superseded by `14e500...` only because 177 incorrect true-class display captions were corrected; arrays, predictions, checkpoints, labels, selected cases, and conclusions did not change.
+- Authoritative source: WTBD v1 primary PASCAL VOC XML and full JPEG images; one-based inclusive coordinates. Raw release: 1,065 images/1,584 boxes. Frozen curated detection set: 720 images/1,065 boxes.
+- Detection split: 510/101/109 images and 757/146/162 boxes in train/validation/test. All boxes remain with their source image; zero exact, confirmed-scene, or unresolved duplicate group crosses a split.
+- Class boxes: craze 169, corrosion 178, surface_injure 264, thunderstrike 60, crack 131, hide_craze 263. Every class occurs in every split.
+- Annotation gate: zero invalid boxes, duplicate annotations, orphan retained images/annotations, or retained exact-image groups. Diagnostic counts retained without repair: 162 boxes below 1% area, 9 above 50%, 33 with aspect ratio outside 0.10–10, and 24 nonzero-IoU within-image pairs.
+- Background/healthy images: zero. Class-agnostic localization and six-class detection are supported only with explicit limitations; healthy false-positive evaluation, arbitrary inspection claims, and app integration are unsupported.
+- Dataset fingerprint `ad4ab59c3e3c85c6cf0b85b148177bd6b79d24f372f49bdff0043609e6fefc97`; split fingerprint `264f8460f203074374c2c098c8fd5d2e55fb7ee1f281a8d505e2dfb0de9a2bc3`; configuration fingerprint `9f4a20ba4404c9a6072277a504c466a0756143b908e79c7168d2ccf91ff32057`; scientific-output fingerprint `3f46cbdc6c7a2e3cf6093ff177dd1948d113fa4c36fa9eb907d7c8621e800461`.
+- Exact two-pass audit/conversion/QC generation: PASS. QC packet: 26 deterministically selected, authoritatively boxed full images.
+- Validation: Phase 3–10 chain, Phase 11A validator, review-interface validator, and classifier-app validator all PASS. Focused Phase 11A suite: **21 passed, 0 failed**. Complete repository suite: **256 passed, 0 failed**, with 11 unchanged scikit-learn `SVC(probability=True)` future warnings.
+- Compute gate: AMD64 Family 23 Model 24, 8 logical CPUs, 13.95 GiB RAM, Python 3.11.15, PyTorch 2.13.0+cpu, CUDA devices 0, VRAM 0. Multi-seed CPU training is prohibited.
+- No detector dependency or pretrained weight was acquired; no detector version/checkpoint/prediction/metric exists. All Phase 11B metrics and hashes are `N/A`, not zero. A new pre-test apparatus commit on suitable CUDA hardware must pin the exact compact/nano detector package, license, weight source/hash, and resolved configuration before training.
+- Application readiness: **not eligible for integration**. The app remains unchanged and manual-crop-only. Phase 12 has not started.
+- Results: `experiments/summaries/phase11_detection_audit_v1/`; full record: `docs/phase11_detection.md`.
 
 ## Phase 10 — Final statistical synthesis and reproducibility freeze
 
@@ -671,4 +690,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phases 0–10 remain frozen unless the user explicitly requests a documented new version. Phase 11 localization and Phase 12 external validation have not been started and require separate explicit authorization. Documentation-only corrections may not change frozen numbers, statistical definitions, outputs, or conclusions.
+Completed Phases 0–10 remain frozen unless the user explicitly requests a documented new version. Phase 11A is complete and frozen; Phase 11B remains blocked and requires a new pre-test apparatus commit on suitable CUDA hardware. Phase 12 external validation has not started and requires separate explicit authorization. Documentation-only corrections may not change frozen numbers, statistical definitions, outputs, or conclusions.

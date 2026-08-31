@@ -17,6 +17,7 @@ from pathlib import Path
 from statistics import mean, median, stdev
 from typing import Any, Iterable, Mapping, Sequence
 
+import numpy as np
 from PIL import Image, ImageDraw
 
 from windblade.config import ResolvedConfig
@@ -562,6 +563,33 @@ def _generate(config: ResolvedConfig, repository: Path, destination: Path, audit
     _write_csv(destination / "tables/detection_split_manifest.csv", audit.splits, ["source_image_id", "split", "group_unit"])
     _write_csv(destination / "tables/annotation_findings.csv", audit.findings, ["severity", "finding", "count", "interpretation"])
     _write_csv(destination / "tables/duplicate_group_audit.csv", audit.duplicate_rows, ["kind", "fingerprint", "members", "splits", "cross_split"])
+    class_split_rows = []
+    for split in (*SPLITS, "all"):
+        selected = audit.annotations if split == "all" else [row for row in audit.annotations if row["split"] == split]
+        counts = Counter(row["class_name"] for row in selected)
+        for class_name in CLASSES:
+            class_split_rows.append({"split": split, "class_id": CLASSES.index(class_name), "class_name": class_name, "box_count": counts[class_name]})
+    _write_csv(destination / "tables/class_split_counts.csv", class_split_rows, ["split", "class_id", "class_name", "box_count"])
+    geometry_rows = []
+    geometry_sources = {
+        "bbox_width_pixels": [row["bbox_width"] for row in audit.annotations],
+        "bbox_height_pixels": [row["bbox_height"] for row in audit.annotations],
+        "bbox_area_pixels": [row["bbox_area_pixels"] for row in audit.annotations],
+        "bbox_area_fraction": [row["bbox_area_fraction"] for row in audit.annotations],
+        "bbox_aspect_ratio": [row["bbox_aspect_ratio"] for row in audit.annotations],
+        "image_width_pixels": [row["width"] for row in audit.images],
+        "image_height_pixels": [row["height"] for row in audit.images],
+        "boxes_per_image": [row["number_of_boxes"] for row in audit.images],
+    }
+    for metric, values in geometry_sources.items():
+        numbers = np.asarray(values, dtype=np.float64)
+        percentiles = np.percentile(numbers, [5, 25, 50, 75, 95])
+        geometry_rows.append({
+            "metric": metric, "count": len(numbers), "minimum": float(numbers.min()),
+            "p05": float(percentiles[0]), "p25": float(percentiles[1]), "median": float(percentiles[2]),
+            "p75": float(percentiles[3]), "p95": float(percentiles[4]), "maximum": float(numbers.max()),
+        })
+    _write_csv(destination / "tables/geometry_summary.csv", geometry_rows, ["metric", "count", "minimum", "p05", "p25", "median", "p75", "p95", "maximum"])
     registry = _draw_qc(repository, destination, audit, config)
     _write_csv(destination / "tables/qc_selection.csv", registry, ["qc_index", "source_image_id", "filename", "split", "box_count", "selection_reasons", "qc_asset", "sha256"])
     _write_json(destination / "class_mapping.json", {"multiclass": {name: index for index, name in enumerate(CLASSES)}, "class_agnostic": {"defect": 0}})
@@ -585,7 +613,7 @@ def _generate(config: ResolvedConfig, repository: Path, destination: Path, audit
         "dataset_fingerprint": audit.dataset_fingerprint, "split_fingerprint": audit.split_fingerprint,
         "config_fingerprint": _canonical_hash(config.as_dict()),
     }
-    inventory = _scientific_inventory(destination, excluded=("manifest.json", "reproducibility.json", "validation.json"))
+    inventory = _scientific_inventory(destination, excluded=("manifest.json", "reproducibility.json", "validation.json", "compute_gate.json"))
     output_fingerprint = _canonical_hash(inventory)
     manifest["expected_scientific_files"] = sorted(inventory)
     manifest["scientific_file_count"] = len(inventory)
@@ -655,7 +683,10 @@ def validate_audit(config: ResolvedConfig, root: str | Path, *, allow_missing_va
         raise DetectionAuditError("Phase 10 changed after Phase 11A generation")
     if reproduction.get("application_fingerprint") != app["fingerprint"]:
         raise DetectionAuditError("application changed after Phase 11A generation")
-    current = _scientific_inventory(output, excluded=("manifest.json", "reproducibility.json", "validation.json"))
+    gate = _json(output / "compute_gate.json")
+    if gate.get("training_authorized_here") is not False or gate.get("cuda_available") is not False:
+        raise DetectionAuditError("recorded Phase 11B compute block is invalid")
+    current = _scientific_inventory(output, excluded=("manifest.json", "reproducibility.json", "validation.json", "compute_gate.json"))
     recorded = reproduction.get("inventory", {})
     if current != recorded:
         raise DetectionAuditError("Phase 11A scientific output inventory changed")

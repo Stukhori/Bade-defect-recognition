@@ -6,7 +6,6 @@
     "application_immutability.json": "241d04d8d2ec8fb064b8c9a4ca8056862279d81cbc459c7aacdc26cb989fafa6",
     "audit_summary.json": "e96a4eedf002ed7354b5d2730d4dfa0100ef7da9714dd1b1f755b70acd34bc3a",
     "class_mapping.json": "b153b3386a6e25012227177b14cf60fff2929cf820d04996bbea36e1fc5d9d20",
-    "compute_gate.json": "a04a64924ac1a8c11698daaab50be9c6587e8eb536d4728488ff28fa386178b6",
     "feasibility.json": "b40f6391cfd22af67269965d8a7bbd4ed1fe2b54a3c63b99dbea0478eb0f8b1f",
     "frozen_protocol.json": "33b2dc68648855db1578719a69dd72422f35f9664fdb6e1fd05cc98989007ca8",
     "phase10_immutability.json": "eee5ccf51263be585039573a12a61488b0504b4bdb8f4e51ede1ed8846b2c851",
@@ -38,15 +37,17 @@
     "qc_packet/images/qc_26_source_721.jpg": "e5efae649e71bbfc4303cb9942ff55f697435e4dc21898f33b79f74fff560d90",
     "qc_packet/index.html": "defec72420e24690d35c46563b0313cb7f2e8fcb902281bfc7dd326c519a3c49",
     "tables/annotation_findings.csv": "0de245eeff350ff872375400c609d2b9a4779cdfd7708d70ca9d844c462aeb07",
+    "tables/class_split_counts.csv": "70720c5f5a78b26f33db3d0367eb76a798cb511cbfe60188c0666c948197c60f",
     "tables/detection_annotation_manifest.csv": "28b348b2ffb9cd6f491d2e4d6017095369bac2365ed8de20f38df28865b6d610",
     "tables/detection_image_manifest.csv": "1192550c71fe7bc801c3b7d96b3551187a3d86c344f52d49e842901c303a3ce7",
     "tables/detection_split_manifest.csv": "059c448813a6c27a32c57f97eaeb2cc235ebdeb8949d421809aef434e3e3e35e",
     "tables/duplicate_group_audit.csv": "9655aa61b6a1a54857a16c94c59a31707f538c91af4671c30f7b73c2335ba122",
+    "tables/geometry_summary.csv": "2d78cea17c023ea7b88967dbec44d562f28189c1f0a7c069a5572456363aaa64",
     "tables/qc_selection.csv": "efc5e7c7776bc15e1b687c77ffba1f2bf6ec984a316303043e73babd1c264581"
   },
   "phase10_files_fingerprint": "5019a458e6358dde8d8cbc784a0040d79d0991794cf8593eeb4ce2d93218a4b5",
-  "scientific_file_count": 40,
-  "scientific_output_fingerprint": "03189c65bf9a160e06c501ce68b247275847d2fd0cfbb2689361adfaba864b29",
+  "scientific_file_count": 41,
+  "scientific_output_fingerprint": "3f46cbdc6c7a2e3cf6093ff177dd1948d113fa4c36fa9eb907d7c8621e800461",
   "split_fingerprint": "264f8460f203074374c2c098c8fd5d2e55fb7ee1f281a8d505e2dfb0de9a2bc3",
   "status": "PASS"
 }

@@ -192,4 +192,4 @@ Documentation-only corrections may be made only if numbers, statistical definiti
 
 `PHASE 10 COMPLETE — VALIDATED AND FROZEN`
 
-The core technical research project is complete. Phases 11 and 12 have not been started.
+The core technical classification research project is complete. At the Phase 10 freeze, Phases 11 and 12 had not started. Optional Phase 11A subsequently began as a scientifically separate annotation/feasibility audit without changing any Phase 10 artifact; Phase 12 remains unstarted.
