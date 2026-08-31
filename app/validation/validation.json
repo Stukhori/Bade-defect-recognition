@@ -4,13 +4,13 @@
     "streamlit-cropper": "0.3.1"
   },
   "descriptive_local_timings_seconds": {
-    "manual_inference": 0.015335300005972385,
-    "manual_preprocessing": 0.0021919000428169966,
-    "model_load_recorded": 0.14527549990452826,
-    "model_load_wrapper": 0.1459628000156954,
-    "optional_gradcam": 0.11868169996887445,
-    "prepared_inference": 0.030429800041019917,
-    "prepared_preprocessing": 0.003404799965210259
+    "manual_inference": 0.01564120000693947,
+    "manual_preprocessing": 0.002323900000192225,
+    "model_load_recorded": 0.14498909993562847,
+    "model_load_wrapper": 0.14531900000292808,
+    "optional_gradcam": 0.11271580005995929,
+    "prepared_inference": 0.02891380002256483,
+    "prepared_preprocessing": 0.003945700009353459
   },
   "model": {
     "checkpoint_file_sha256": "9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5",
@@ -33,14 +33,22 @@
   },
   "phase9a_review_forms": [
     {
-      "blank": true,
+      "answered_required": 300,
+      "blank": false,
+      "complete": true,
+      "pass_name": "pass_a",
       "path": "experiments/summaries/phase9_error_analysis_v1/human_review_packet/pass_a/pass_a_review_form.csv",
-      "sha256": "44a5200e8b921b65f55cd391943abfbd4ca600e9723fcd8c70a36eb6cf2b7d58"
+      "sha256": "3b6548d8e6a1240c224f156f9266c5025cc099816d73a8c81960173fe9c8423e",
+      "total_required": 300
     },
     {
-      "blank": true,
+      "answered_required": 240,
+      "blank": false,
+      "complete": true,
+      "pass_name": "pass_b",
       "path": "experiments/summaries/phase9_error_analysis_v1/human_review_packet/pass_b/pass_b_review_form.csv",
-      "sha256": "7ae98fa0cb8c05edd57632460b1a08339c96f4f24b0a991fc1b7ac64ccdfa9e8"
+      "sha256": "0f5258e06a4e854d338705bcf1d38ced048f0652a99ccc4639b18c3baae1cd96",
+      "total_required": 240
     }
   ],
   "prohibited_actions": {
@@ -52,10 +60,10 @@
     "training": 0
   },
   "schema_version": "1.0",
-  "scientific_phase_status": "Phase 9A complete \u2014 awaiting human review; Phase 9 incomplete",
+  "scientific_phase_status": "Phase 10 complete and frozen; core technical research project complete; Phases 11 and 12 not started",
   "scope": "non-scientific local demonstration validation",
   "status": "PASS",
-  "validated_utc": "2026-08-30T09:47:32.057346+00:00",
+  "validated_utc": "2026-08-31T04:49:59.568961+00:00",
   "workflows": {
     "manual_region": {
       "context_side": 501,

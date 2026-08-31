@@ -1,6 +1,6 @@
 # Robust Wind Turbine Blade Defect Recognition
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–9 are complete and frozen; Phase 10 has not started. Results include the Phase 4 handcrafted baselines, matched Phase 5/6 ResNet-18 and MobileNetV3-Small baselines, the Phase 7 limited-labeled-data comparison, the Phase 8 controlled image-degradation robustness experiment, and the Phase 9 post-hoc error analysis and single-reviewer descriptive synthesis. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–10 are complete, validated, and frozen; the core technical research project is complete. Results include the Phase 4 handcrafted baselines, matched Phase 5/6 ResNet-18 and MobileNetV3-Small baselines, the Phase 7 limited-labeled-data comparison, the Phase 8 controlled image-degradation robustness experiment, the Phase 9 post-hoc error analysis and single-reviewer descriptive synthesis, and the Phase 10 final statistical synthesis. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -144,6 +144,19 @@ Across the 60 reviewed cases, the dataset label was judged visually plausible in
 
 Versioned results are under `experiments/summaries/phase8_robustness_v1/`, tracked dataset metadata under `data/processed/wtbd_robustness_v1/`, figures under `figures/phase8/`, and the complete record is [`docs/phase8_robustness.md`](docs/phase8_robustness.md). The 1,944 corrupted PNG payloads remain Git-ignored.
 
+## Phase 10: final statistical synthesis and reproducibility freeze
+
+Phase 10 reads frozen Phase 3–9 artifacts only. It consolidates the final clean, data-efficiency, robustness, error-analysis, and human-review results; computes 5,000 paired true-class-stratified bootstrap resamples for clean-test uncertainty; and produces ten canonical CSV/JSON tables and seven figures. All three CNN seeds are retained within every resample, deterministic-method seed SD is `N/A`, and no p-values or model-selection decisions are introduced.
+
+```powershell
+uv run python scripts/run_final_synthesis.py --config configs/final_synthesis.yaml --apparatus-check
+uv run python scripts/run_final_synthesis.py --config configs/final_synthesis.yaml --validate-only
+```
+
+Clean macro-F1 was HOG `0.477988`, LBP `0.592401`, ResNet `0.895314 ± 0.014118`, and MobileNet `0.895321 ± 0.005977`. The paired MobileNet-minus-ResNet interval was `[-0.036869, 0.035522]`, so the negligible observed mean difference is not presented as superiority or equivalence. MobileNet had the highest observed mean performance/retention across the declared synthetic degradation grid, while ResNet had the highest normalized data-efficiency area. The synthesis preserves these as separate trade-offs rather than constructing a composite winner.
+
+Results are under `experiments/summaries/phase10_final_synthesis_v1/`, figures under `figures/phase10/`, and the full statistical, reproducibility, limitation, table, and figure record is [`docs/phase10_final_synthesis.md`](docs/phase10_final_synthesis.md).
+
 ## Phase boundaries
 
-Phases 0–9 are complete, validated, and frozen. Phase 10 has not started.
+Phases 0–10 are complete, validated, and frozen. Phase 11 localization and Phase 12 external validation are optional and have not been started. The separate Streamlit application remains a non-scientific demonstration: it classifies manually selected visible regions, does not automatically detect defects, and does not assess structural safety.

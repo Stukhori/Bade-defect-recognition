@@ -123,12 +123,22 @@ def validate(root: Path) -> dict[str, Any]:
     if review_records[1]["complete"] and not review_records[0]["complete"]:
         raise RuntimeError("Pass B cannot be complete unless Pass A is complete.")
     phase9b_manifest = root / "experiments/summaries/phase9_error_analysis_v1/phase9b/manifest.json"
-    scientific_status = (
-        "Phase 9 complete and frozen; Phase 10 not started"
-        if phase9b_manifest.is_file()
-        and json.loads(phase9b_manifest.read_text(encoding="utf-8")).get("phase9_complete")
-        else "Phase 9A complete; Phase 9 incomplete"
-    )
+    phase10_manifest = root / "experiments/summaries/phase10_final_synthesis_v1/manifest.json"
+    phase9_complete = phase9b_manifest.is_file() and json.loads(
+        phase9b_manifest.read_text(encoding="utf-8")
+    ).get("phase9_complete")
+    phase10_complete = phase10_manifest.is_file() and json.loads(
+        phase10_manifest.read_text(encoding="utf-8")
+    ).get("core_technical_project_complete")
+    if phase10_complete:
+        scientific_status = (
+            "Phase 10 complete and frozen; core technical research project complete; "
+            "Phases 11 and 12 not started"
+        )
+    elif phase9_complete:
+        scientific_status = "Phase 9 complete and frozen; Phase 10 not started"
+    else:
+        scientific_status = "Phase 9A complete; Phase 9 incomplete"
 
     return {
         "schema_version": "1.0",

@@ -2,14 +2,32 @@
 
 ## Current phase
 
-- **Phase:** Phase 9 — Post-hoc Error Analysis and Human-Review Synthesis
-- **Status:** PHASE 9 COMPLETE — VALIDATED AND FROZEN
-- **Start date:** 2026-08-30
+- **Phase:** Phase 10 — Final Statistical Synthesis and Reproducibility Freeze
+- **Status:** PHASE 10 COMPLETE — VALIDATED AND FROZEN
+- **Start date:** 2026-08-31
 - **Completion date:** 2026-08-31
-- **Previous phases:** Phases 0–8 — complete and frozen
-- **Next phase:** Phase 10 — not started; requires separate explicit authorization
+- **Previous phases:** Phases 0–9 — complete and frozen
+- **Next phase:** Optional Phase 11 localization or Phase 12 external validation — neither started
 
-Phases 0–9 are complete and frozen. Phase 10 has not started.
+Phases 0–10 are complete and frozen. The core technical research project is complete. Phases 11 and 12 have not been started.
+
+## Phase 10 — Final statistical synthesis and reproducibility freeze
+
+**COMPLETE, VALIDATED, AND FROZEN.** Statistical-plan/apparatus commit `0956dd0`; inventory-path correction commit `9567862`; scientific-results commit `e8135f6`. The final documentation/push commit is recorded in subsequent repository history.
+
+- Frozen starting point: Phase 9 freeze commit `89e18d48ef2dd7c2cef35e9b7a4fa6fe72c92ea9`, clean and synchronized before Phase 10 apparatus creation.
+- Statistical plan: macro-F1 primary; accuracy, balanced accuracy, macro precision/recall, and per-class precision/recall/F1 secondary; 162 paired test instances; 5,000 true-class-stratified percentile-bootstrap resamples; seed `20260831`; 95% pointwise intervals; all three CNN seeds averaged at the metric level within every resample; HOG/LBP seed SD `N/A`; six predeclared clean pairs; no p-values or multiplicity-controlled significance claims.
+- Configuration fingerprint: `0691d82dc6addc200806c26a42382db3ebd70cc5ef1cd6065c306a30a7ed2951`.
+- Complete frozen Phase 3–9 upstream inventory: 3,008 files, fingerprint `20d917d5cbe08f579382575218a62aa8f0162841197a5d5d98d4eec7e4d0f9a2`.
+- Clean macro-F1: HOG `0.477988`, LBP `0.592401`, ResNet `0.895314 ± 0.014118`, MobileNet `0.895321 ± 0.005977`. ResNet and MobileNet differ by only `0.0000063`; paired MobileNet-minus-ResNet 95% interval `[-0.036869, 0.035522]`.
+- Data efficiency: normalized learning-curve AUC HOG `0.422570`, LBP `0.521776`, ResNet `0.854719`, MobileNet `0.825631`; the fixed grid first reached 95% of full-data performance at 100/100/50/75%, respectively.
+- Robustness: mean degraded-condition macro-F1/retention HOG `0.410073/85.79%`, LBP `0.381959/64.48%`, ResNet `0.799174/89.28%`, MobileNet `0.814903/91.02%`. These are descriptive summaries of twelve fixed synthetic design points.
+- Phase 9 synthesis remains descriptive: 10 strict-consensus clean failures shared by all four families; single-reviewer label plausibility 51/60; activation inside/partial 51/60; seed pattern yes/partly 54/60.
+- Canonical assets: ten tables with exact CSV/JSON counterparts, seven figures with source hashes/captions, seed-specific and mean confusion matrices, stored bootstrap positions, a complete result registry, runtime record, upstream inventory/validation, and reproducibility manifest.
+- Exact two-pass reproduction: **PASS** for 37 scientific files. Bootstrap-index SHA-256 `e20254004fe3be1af1c5a45788cedb967021f7dce8e0aff829f9f29f8eb0f2a6`. Phase 10 output fingerprint `6064922c936a05c33c38068ba86fa68c6b9b7f931d28df4e37a5e880edd5dbf0`.
+- All Phase 3–10 validators pass; table/JSON consistency, figure/source consistency, formula checks, stored class stratification, generated inventory, and upstream immutability pass. Focused Phase 10 tests: **13 passed, 0 failed**. Complete repository suite: **235 passed, 0 failed**, with 11 unchanged scikit-learn `SVC(probability=True)` future warnings.
+- Predictions, logits, checkpoints, splits, labels, mappings, review inputs, and prior Phase 3–9 scientific outputs remained unchanged. Training, tuning, refitting, downloading, external research, automatic localization, Phase 11, and Phase 12 work: zero.
+- Full record: `docs/phase10_final_synthesis.md`; results: `experiments/summaries/phase10_final_synthesis_v1/`; figures: `figures/phase10/`.
 
 ## Phase 9B — Human-review incorporation and descriptive synthesis
 
@@ -39,7 +57,7 @@ Phases 0–9 are complete and frozen. Phase 10 has not started.
 - The interface performs no model or LLM inference, applies no heuristic or automated rule, supplies no judgments or answer suggestions, makes no external service call, and stores only the required CSV responses plus transient in-memory state.
 - Validation used temporary copied forms only. Focused review-interface suite: **22 passed, 0 failed**. Complete repository suite: **213 passed, 0 failed**, with 11 unchanged scikit-learn deprecation warnings. Phase 9A and classifier-app validators remain `PASS`; local-only live health returned HTTP 200/`ok` and the server was stopped.
 - At the interface-validation commit, both canonical forms were blank. They are now complete and frozen: Pass A SHA-256 `3b6548d8e6a1240c224f156f9266c5025cc099816d73a8c81960173fe9c8423e`; Pass B SHA-256 `0f5258e06a4e854d338705bcf1d38ced048f0652a99ccc4639b18c3baae1cd96`.
-- The interface changed no mapping entry, packet image/HTML, checkpoint, prediction, quantitative output, or other scientific artifact. Phase 9B subsequently incorporated the returned forms through the separately validated deterministic pipeline. Phase 9 is complete; Phase 10 remains unstarted.
+- The interface changed no mapping entry, packet image/HTML, checkpoint, prediction, quantitative output, or other scientific artifact. Phase 9B subsequently incorporated the returned forms through the separately validated deterministic pipeline. At this Phase 9B completion point, Phase 10 was unstarted; it subsequently completed without changing any interface or Phase 9 artifact.
 
 ## Separate non-scientific demonstration
 
@@ -54,7 +72,7 @@ Phases 0–9 are complete and frozen. Phase 10 has not started.
 - App dependencies are pinned separately in `requirements-app.txt`; scientific dependency constraints are unchanged.
 - Validation: both complete UI workflows pass; focused app suite 27 passed; complete suite 191 passed with 11 existing scikit-learn warnings; live server health returned HTTP 200/`ok`; frozen Phase 9A validator remains `PASS`.
 - Training, fine-tuning, calibration, ensembling, test-driven model/seed selection, new test-set evaluation, checkpoint mutation, external service calls, permanent upload storage, and tracked uploaded images: zero.
-- Scientific status is **PHASE 9 COMPLETE — VALIDATED AND FROZEN**. Phase 10 has not started. Phase 11 and Phase 12 remain optional and unstarted.
+- Scientific status is **PHASE 10 COMPLETE — VALIDATED AND FROZEN**. The core technical research project is complete. Phase 11 and Phase 12 remain optional and unstarted.
 
 The application classifies a manually identified visible surface-defect region. It does not automatically detect or localize defects, assess blade safety or condition, detect hidden/internal damage, estimate severity or remaining life, replace inspection professionals, or establish real-time target-hardware deployment.
 
@@ -653,4 +671,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phases 0–9 remain frozen unless the user explicitly requests a documented revision. Phase 10 has not started and requires separate explicit authorization.
+Completed Phases 0–10 remain frozen unless the user explicitly requests a documented new version. Phase 11 localization and Phase 12 external validation have not been started and require separate explicit authorization. Documentation-only corrections may not change frozen numbers, statistical definitions, outputs, or conclusions.
