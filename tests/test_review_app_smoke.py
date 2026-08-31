@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 from pathlib import Path
 import shutil
 
@@ -22,6 +23,24 @@ def copied_forms(tmp_path: Path) -> Path:
     (forms / "pass_b").mkdir(parents=True)
     shutil.copy2(PACKET / "pass_a/pass_a_review_form.csv", forms / "pass_a/pass_a_review_form.csv")
     shutil.copy2(PACKET / "pass_b/pass_b_review_form.csv", forms / "pass_b/pass_b_review_form.csv")
+    for path in (
+        forms / "pass_a/pass_a_review_form.csv",
+        forms / "pass_b/pass_b_review_form.csv",
+    ):
+        with path.open("r", encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            headers = list(reader.fieldnames or ())
+            rows = list(reader)
+        with path.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=headers, lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(
+                {
+                    field: row["review_id"] if field == "review_id" else ""
+                    for field in headers
+                }
+                for row in rows
+            )
     return forms
 
 

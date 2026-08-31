@@ -133,6 +133,24 @@ review_packet:
     reviewer_notes: free_text
   human_fields_must_be_blank: true
 
+phase9b:
+  version: phase9b_human_review_synthesis_v1
+  reviewer_attestation: I completed and saved every Pass A judgment before opening or completing Pass B. Both forms contain my own visual judgments. No review fields were filled automatically.
+  reviewer_attestation_confirmed: true
+  reviewer_confirmed_corrected_pass_b: true
+  incorporated_utc: '2026-08-31T03:47:39.398973Z'
+  source_commit: c9f273339afb374391b52f0a3452c5495cf05e16
+  corrected_pass_b:
+    archive: phase9a_corrected_pass_b_review_2026-08-31.zip
+    archive_sha256: fbfe1985e8a1809884c0df57a0e9a8eb265815988ad66583a8d9c5a3e84dcaf5
+    blank_form_sha256: 7ae98fa0cb8c05edd57632460b1a08339c96f4f24b0a991fc1b7ac64ccdfa9e8
+    index_sha256: ed8f3ef20449603e8e55647f3d917dbefbf2803d05ed696532859dde92201f29
+    mapping_sha256: 46b19248797997e8aa7236b9c3fbf17f972977f2cdb2c3a958bd12513f25210b
+  outputs:
+    derived_root: experiments/summaries/phase9_error_analysis_v1/phase9b
+    figures_root: figures/phase9/human_review
+    reproduction_scratch_root: experiments/cache/phase9b_reproduction
+
 outputs:
   schema_version: '1.0'
   result_id: phase9_error_analysis_v1

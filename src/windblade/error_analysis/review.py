@@ -43,6 +43,89 @@ def _contact_sheets(review_root: Path, selected: Sequence[Mapping[str, Any]], as
     return outputs
 
 
+def render_pass_b_index(
+    mapping_rows: Sequence[Mapping[str, Any]],
+    gradcam_rows: Sequence[Mapping[str, Any]],
+    root: Path,
+    review_root: Path,
+) -> tuple[str, dict[str, list[Path]]]:
+    """Render Pass B captions from the explicit Grad-CAM target identity."""
+
+    grad_by_review: dict[str, list[Mapping[str, Any]]] = {}
+    for row in gradcam_rows:
+        grad_by_review.setdefault(str(row["review_id"]), []).append(row)
+    body = "<p>Open only after Pass A is complete. Maps are independently normalized: color intensity is not quantitatively comparable across maps. Grad-CAM is descriptive and does not prove causal reasoning.</p>"
+    pass_b_assets: dict[str, list[Path]] = {}
+    for row in mapping_rows:
+        review_id = str(row["review_id"])
+        evidence = sorted(
+            grad_by_review.get(review_id, []),
+            key=lambda item: (
+                int(item["seed"]),
+                str(item["input_state"]),
+                str(item["target_role"]),
+            ),
+        )
+        links: list[str] = []
+        assets: list[Path] = []
+        for item in evidence:
+            path = root / str(item["overlay_path"])
+            assets.append(path)
+            relative = Path(os.path.relpath(path, review_root / "pass_b"))
+            links.append(
+                f'<div>seed {item["seed"]}, {html.escape(str(item["input_state"]))}, '
+                f'{html.escape(str(item["target_role"]))}: {html.escape(str(item["target_label"]))}'
+                f'<br><img src="{html.escape(relative.as_posix())}"></div>'
+            )
+        pass_b_assets[review_id] = assets
+        body += (
+            f'<section class="case"><h2>{review_id}</h2><p>Model: '
+            f'{html.escape(str(row["method"]))}; condition: {html.escape(str(row["condition_id"]))}; '
+            f'event: {html.escape(str(row["selection_event"]))}; rule: '
+            f'{html.escape(str(row["eligibility_rule"]))}; true label: '
+            f'{html.escape(str(row["true_label"]))}</p>{"".join(links)}</section>'
+        )
+    return _page("Phase 9A Pass B — model-evidence review", body), pass_b_assets
+
+
+def pass_b_caption_mismatches(
+    page_text: str,
+    gradcam_rows: Sequence[Mapping[str, Any]],
+    root: Path,
+    review_root: Path,
+) -> list[dict[str, str]]:
+    """Return any evidence row whose rendered caption is not its target label."""
+
+    mismatches: list[dict[str, str]] = []
+    for item in gradcam_rows:
+        review_id = str(item["review_id"])
+        marker = f'<section class="case"><h2>{review_id}</h2>'
+        start = page_text.find(marker)
+        end = page_text.find("</section>", start)
+        if start < 0 or end < 0:
+            mismatches.append({"review_id": review_id, "reason": "case_missing"})
+            continue
+        section = page_text[start:end]
+        path = root / str(item["overlay_path"])
+        relative = Path(os.path.relpath(path, review_root / "pass_b")).as_posix()
+        expected = (
+            f'{html.escape(str(item["target_role"]))}: '
+            f'{html.escape(str(item["target_label"]))}<br><img src="{html.escape(relative)}">'
+        )
+        if expected not in section:
+            mismatches.append(
+                {
+                    "review_id": review_id,
+                    "seed": str(item["seed"]),
+                    "input_state": str(item["input_state"]),
+                    "target_role": str(item["target_role"]),
+                    "target_label": str(item["target_label"]),
+                    "reason": "caption_or_asset_mismatch",
+                }
+            )
+    return mismatches
+
+
 def create_review_packet(
     config: Mapping[str, Any], root: Path, selected: Sequence[Mapping[str, Any]], geometry: Mapping[str, Mapping[str, Any]],
     corrupted_paths: Mapping[tuple[str, str], str], gradcam_rows: Sequence[Mapping[str, Any]], figures_root: Path, summary_root: Path,
@@ -77,23 +160,11 @@ def create_review_packet(
     (review_root / "pass_a").mkdir(parents=True, exist_ok=True)
     (review_root / "pass_a" / "index.html").write_text(_page("Phase 9A Pass A — visual-quality review", pass_a_body), encoding="utf-8")
 
-    grad_by_review: dict[str, list[Mapping[str, Any]]] = {}
-    for row in gradcam_rows: grad_by_review.setdefault(str(row["review_id"]), []).append(row)
-    pass_b_body = "<p>Open only after Pass A is complete. Maps are independently normalized: color intensity is not quantitatively comparable across maps. Grad-CAM is descriptive and does not prove causal reasoning.</p>"
-    pass_b_assets: dict[str, list[Path]] = {}
-    for row in mapping_rows:
-        rid = row["review_id"]
-        evidence = sorted(grad_by_review.get(rid, []), key=lambda item: (int(item["seed"]), str(item["input_state"]), str(item["target_role"])))
-        links = []
-        assets = []
-        for item in evidence:
-            path = root / str(item["overlay_path"]); assets.append(path)
-            relative = Path(os.path.relpath(path, review_root / "pass_b"))
-            links.append(f'<div>seed {item["seed"]}, {html.escape(str(item["input_state"]))}, {html.escape(str(item["target_role"]))}: {html.escape(str(item["predicted_label"]))}<br><img src="{html.escape(relative.as_posix())}"></div>')
-        pass_b_assets[rid] = assets
-        pass_b_body += f'<section class="case"><h2>{rid}</h2><p>Model: {html.escape(str(row["method"]))}; condition: {html.escape(str(row["condition_id"]))}; event: {html.escape(str(row["selection_event"]))}; rule: {html.escape(str(row["eligibility_rule"]))}; true label: {html.escape(str(row["true_label"]))}</p>{"".join(links)}</section>'
+    pass_b_page, pass_b_assets = render_pass_b_index(
+        mapping_rows, gradcam_rows, root, review_root
+    )
     (review_root / "pass_b").mkdir(parents=True, exist_ok=True)
-    (review_root / "pass_b" / "index.html").write_text(_page("Phase 9A Pass B — model-evidence review", pass_b_body), encoding="utf-8")
+    (review_root / "pass_b" / "index.html").write_text(pass_b_page, encoding="utf-8")
 
     pass_a_fields = ["review_id", *config["review_packet"]["pass_a_fields"].keys()]
     pass_b_fields = ["review_id", *config["review_packet"]["pass_b_fields"].keys()]

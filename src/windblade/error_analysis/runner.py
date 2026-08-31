@@ -20,13 +20,15 @@ from windblade.error_analysis.core import (
     load_prediction_sets, natural_instance_key, select_exemplars, test_geometry,
     transition_tables, tree_hashes,
 )
-from windblade.error_analysis.gradcam import generate_gradcams
+from windblade.error_analysis.gradcam import generate_gradcams, validate_target_identity
 from windblade.error_analysis.plots import create_figures
-from windblade.error_analysis.review import create_review_packet
+from windblade.error_analysis.review import create_review_packet, pass_b_caption_mismatches
 from windblade.mobilenet_experiment import validate_mobilenet_results
 from windblade.resnet_experiment import validate_resnet18_results
 from windblade.robustness.runner import validate_robustness_results
 from windblade.traditional import validate_traditional_results
+from windblade_review.schema import load_pass_schema
+from windblade_review.store import ReviewDataError, ReviewStore
 
 
 ERROR_MANIFEST_FIELDS = (
@@ -205,10 +207,28 @@ def _generated_hashes(repository: Path, summary_root: Path, figures_root: Path) 
     return result
 
 
+def _completed_review_data_exist(summary_root: Path) -> bool:
+    for relative in (
+        "human_review_packet/pass_a/pass_a_review_form.csv",
+        "human_review_packet/pass_b/pass_b_review_form.csv",
+    ):
+        path = summary_root / relative
+        if path.is_file() and any(
+            any(str(value).strip() for key, value in row.items() if key != "review_id")
+            for row in read_csv(path)
+        ):
+            return True
+    return False
+
+
 def run_error_analysis(config: ResolvedConfig, root: str | Path) -> dict[str, Any]:
     repository = Path(root).resolve(); data = config.as_dict()
     gate = preflight(config, repository, require_clean=True)
     summary_root, figures_root = repository / data["outputs"]["summary_root"], repository / data["outputs"]["figures_root"]
+    if _completed_review_data_exist(summary_root):
+        raise ErrorAnalysisError(
+            "refusing Phase 9A regeneration because completed human-review inputs exist"
+        )
     _safe_clear(summary_root, repository, "phase9_error_analysis_v1", repository / "experiments" / "summaries")
     _safe_clear(figures_root, repository, "phase9", repository / "figures")
     _generate_once(config, repository, gate)
@@ -226,11 +246,39 @@ def run_error_analysis(config: ResolvedConfig, root: str | Path) -> dict[str, An
     return {**manifest, "reproducibility": reproduction["status"], "output_fingerprint": reproduction["output_fingerprint"], "validation": validation["status"]}
 
 
-def _forms_are_blank(summary_root: Path) -> bool:
-    for relative in ("human_review_packet/pass_a/pass_a_review_form.csv", "human_review_packet/pass_b/pass_b_review_form.csv"):
-        rows = read_csv(summary_root / relative)
-        if any(any(str(value).strip() for key, value in row.items() if key != "review_id") for row in rows): return False
-    return True
+def _review_form_status(
+    repository: Path,
+    summary_root: Path,
+    expected_ids: tuple[str, ...],
+) -> dict[str, Any]:
+    statuses: dict[str, Any] = {}
+    for pass_name, total in (("pass_a", 300), ("pass_b", 240)):
+        schema = load_pass_schema(repository / "configs/error_analysis.yaml", pass_name)
+        filename = f"{pass_name}_review_form.csv"
+        store = ReviewStore(
+            summary_root / "human_review_packet" / pass_name / filename,
+            schema,
+            expected_ids,
+        )
+        try:
+            snapshot = store.load()
+        except ReviewDataError as exc:
+            raise ErrorAnalysisError(f"invalid {pass_name} human-review form: {exc}") from exc
+        if snapshot.total_required != total:
+            raise ErrorAnalysisError(f"unexpected {pass_name} required-answer count")
+        statuses[pass_name] = {
+            "answered_required": snapshot.answered_required,
+            "total_required": snapshot.total_required,
+            "complete": snapshot.complete,
+            "sha256": store.sha256(),
+        }
+    if statuses["pass_a"]["answered_required"] not in {0, 300}:
+        raise ErrorAnalysisError("Pass A must be either pristine or complete at this validation gate")
+    if statuses["pass_b"]["answered_required"] not in {0, 240}:
+        raise ErrorAnalysisError("Pass B must be either pristine or complete at this validation gate")
+    if statuses["pass_b"]["complete"] and not statuses["pass_a"]["complete"]:
+        raise ErrorAnalysisError("Pass B cannot be complete unless Pass A is complete")
+    return statuses
 
 
 def _forbidden_paths(root: Path) -> list[str]:
@@ -273,11 +321,52 @@ def validate_error_analysis(config: ResolvedConfig, root: str | Path) -> dict[st
     mapping = read_csv(summary_root / "human_review_packet/id_mapping/review_id_mapping.csv")
     if len(mapping) != len(selected_observed) or {row["review_id"] for row in mapping} != {row["review_id"] for row in selected_observed}:
         raise ErrorAnalysisError("human-review mapping mismatch")
-    if not _forms_are_blank(summary_root): raise ErrorAnalysisError("human-review form contains non-human prefill")
     gradcam = read_csv(summary_root / "gradcam/gradcam_manifest.csv")
     if not gradcam or any(row["finite"] != "True" or len(row["array_sha256"]) != 64 for row in gradcam): raise ErrorAnalysisError("invalid Grad-CAM evidence")
+    gradcam_groups: dict[tuple[str, str, str, str, str, str], list[Mapping[str, str]]] = defaultdict(list)
+    for row in gradcam:
+        key = (row["method"], row["seed"], row["input_condition_id"], row["instance_id"])
+        if key not in expected_index:
+            raise ErrorAnalysisError(f"unknown Grad-CAM prediction identity: {key}")
+        expected = expected_index[key]
+        for field in ("true_label", "predicted_label"):
+            if row[field] != str(expected[field]):
+                raise ErrorAnalysisError(f"Grad-CAM frozen metadata mismatch: {key}/{field}")
+        validate_target_identity(
+            row["target_role"], int(row["target_class_id"]), row["target_label"], expected
+        )
+        expected_token = f'{row["target_role"]}_{row["target_label"]}'
+        if expected_token not in Path(row["heatmap_path"]).stem or expected_token not in Path(row["overlay_path"]).stem:
+            raise ErrorAnalysisError(f"Grad-CAM target filename mismatch: {key}/{row['target_role']}")
+        group_key = (
+            row["review_id"], row["method"], row["seed"], row["input_condition_id"],
+            row["instance_id"], row["input_state"],
+        )
+        gradcam_groups[group_key].append(row)
+    for group_key, rows in gradcam_groups.items():
+        key = (group_key[1], group_key[2], group_key[3], group_key[4])
+        expected = expected_index[key]
+        roles = [row["target_role"] for row in rows]
+        expected_roles = ["true_class"]
+        if str(expected["predicted_label"]) != str(expected["true_label"]):
+            expected_roles.append("predicted_class")
+        if sorted(roles) != sorted(expected_roles):
+            raise ErrorAnalysisError(f"Grad-CAM target-role coverage mismatch: {group_key}")
     if any(not (repository / row[path_field]).is_file() for row in gradcam for path_field in ("input_path", "annotation_path", "heatmap_path", "overlay_path")):
         raise ErrorAnalysisError("missing Grad-CAM render")
+    pass_b_path = summary_root / "human_review_packet/pass_b/index.html"
+    caption_mismatches = pass_b_caption_mismatches(
+        pass_b_path.read_text(encoding="utf-8"),
+        gradcam,
+        repository,
+        summary_root / "human_review_packet",
+    )
+    if caption_mismatches:
+        raise ErrorAnalysisError(
+            f"Pass B Grad-CAM caption mismatch: {caption_mismatches[0]}"
+        )
+    review_ids = tuple(row["review_id"] for row in selected_observed)
+    form_status = _review_form_status(repository, summary_root, review_ids)
     integrity = json.loads((summary_root / "gradcam/model_integrity.json").read_text(encoding="utf-8"))
     if any(not row["parameters_unchanged"] or row["state_dict_before"] != row["state_dict_after"] for row in integrity["checks"]):
         raise ErrorAnalysisError("Grad-CAM checkpoint-integrity failure")
@@ -289,4 +378,4 @@ def validate_error_analysis(config: ResolvedConfig, root: str | Path) -> dict[st
     if reproduction is not None and reproduction.get("status") != "PASS": raise ErrorAnalysisError("two-pass reproduction did not pass")
     forbidden = _forbidden_paths(repository)
     if forbidden: raise ErrorAnalysisError(f"forbidden Phase 10/app paths exist: {forbidden}")
-    return {"status": "PASS", "error_manifest_rows": len(observed), "prediction_sets": len(matrix_groups), "transition_rows": len(transition_rows), "selected_exemplars": len(selected_observed), "selection_shortfalls": selection_summary["shortfalls"], "gradcam_records": len(gradcam), "review_forms_blank": True, "checkpoints_unchanged": True, "predictions_unchanged": True, "input_fingerprints_unchanged": True, "two_pass_reproduction": reproduction["status"] if reproduction else "PENDING", "phase10_or_app_paths": 0}
+    return {"status": "PASS", "error_manifest_rows": len(observed), "prediction_sets": len(matrix_groups), "transition_rows": len(transition_rows), "selected_exemplars": len(selected_observed), "selection_shortfalls": selection_summary["shortfalls"], "gradcam_records": len(gradcam), "gradcam_target_identities": "PASS", "pass_b_captions": "PASS", "review_forms_blank": all(status["answered_required"] == 0 for status in form_status.values()), "review_forms_complete": all(status["complete"] for status in form_status.values()), "review_forms": form_status, "checkpoints_unchanged": True, "predictions_unchanged": True, "input_fingerprints_unchanged": True, "two_pass_reproduction": reproduction["status"] if reproduction else "PENDING", "phase10_or_app_paths": 0}

@@ -20,6 +20,35 @@ from windblade.error_analysis.core import ErrorAnalysisError, SEEDS
 from windblade.robustness.evaluation import load_frozen_cnn
 
 
+def validate_target_identity(
+    target_role: str,
+    target_class_id: int,
+    target_label: str,
+    prediction: Mapping[str, Any],
+) -> None:
+    """Require a Grad-CAM target to match its frozen semantic role."""
+
+    if target_role == "true_class":
+        expected_id = int(prediction["true_class_id"])
+        expected_label = str(prediction["true_label"])
+    elif target_role == "predicted_class":
+        expected_id = int(prediction["predicted_class_id"])
+        expected_label = str(prediction["predicted_label"])
+    else:
+        raise ErrorAnalysisError(f"unknown Grad-CAM target role: {target_role}")
+    if not 0 <= int(target_class_id) < len(LABELS):
+        raise ErrorAnalysisError(f"Grad-CAM target index is out of range: {target_class_id}")
+    if LABELS[int(target_class_id)] != str(target_label):
+        raise ErrorAnalysisError(
+            f"Grad-CAM target index/label mismatch: {target_class_id}/{target_label}"
+        )
+    if int(target_class_id) != expected_id or str(target_label) != expected_label:
+        raise ErrorAnalysisError(
+            f"Grad-CAM {target_role} target does not match frozen prediction identity: "
+            f"observed={target_class_id}/{target_label}, expected={expected_id}/{expected_label}"
+        )
+
+
 def resolve_module(model: torch.nn.Module, path: str) -> torch.nn.Module:
     modules = dict(model.named_modules())
     if path not in modules:
@@ -145,6 +174,10 @@ def generate_gradcams(
                     _save_png(image, state_root / "input_rgb.png")
                     _save_png(render_annotation(image, box), state_root / "annotation_overlay.png")
                     for target_role, target_id in targets:
+                        target_label = LABELS[target_id]
+                        validate_target_identity(
+                            target_role, target_id, target_label, prediction
+                        )
                         first, shape, logits = gradcam_map(model, target_layer, tensor.clone(), target_id)
                         second, shape_second, logits_second = gradcam_map(model, target_layer, tensor.clone(), target_id)
                         if shape != shape_second or not np.array_equal(first, second) or not np.array_equal(logits, logits_second):
@@ -154,14 +187,14 @@ def generate_gradcams(
                             raise ErrorAnalysisError(f"unexpected {method} Grad-CAM activation shape: {shape}")
                         activation_shapes.add(shape)
                         heatmap = render_heatmap(first)
-                        heatmap_path = state_root / f"{target_role}_{LABELS[target_id]}_heatmap.png"
-                        overlay_path = state_root / f"{target_role}_{LABELS[target_id]}_overlay.png"
+                        heatmap_path = state_root / f"{target_role}_{target_label}_heatmap.png"
+                        overlay_path = state_root / f"{target_role}_{target_label}_overlay.png"
                         _save_png(heatmap, heatmap_path)
                         _save_png(render_overlay(image, heatmap, float(config["gradcam"]["alpha"]), box), overlay_path)
                         manifest.append({
                             "review_id": case["review_id"], "instance_id": instance_id, "method": method, "seed": seed,
                             "condition_id": condition_id, "input_state": input_state, "input_condition_id": state_condition,
-                            "target_role": target_role, "target_class_id": target_id, "target_label": LABELS[target_id],
+                            "target_role": target_role, "target_class_id": target_id, "target_label": target_label,
                             "predicted_label": prediction["predicted_label"], "true_label": prediction["true_label"],
                             "target_module_path": target_path, "activation_shape": "x".join(map(str, shape)),
                             "checkpoint_sha256": sha256_file(checkpoint), "checkpoint_fingerprint": before,

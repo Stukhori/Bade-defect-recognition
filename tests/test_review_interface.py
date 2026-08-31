@@ -20,8 +20,10 @@ PACKET = ROOT / "experiments/summaries/phase9_error_analysis_v1/human_review_pac
 PASS_A_FORM = PACKET / "pass_a/pass_a_review_form.csv"
 PASS_B_FORM = PACKET / "pass_b/pass_b_review_form.csv"
 MAPPING = PACKET / "id_mapping/review_id_mapping.csv"
-PASS_A_HASH = "44a5200e8b921b65f55cd391943abfbd4ca600e9723fcd8c70a36eb6cf2b7d58"
-PASS_B_HASH = "7ae98fa0cb8c05edd57632460b1a08339c96f4f24b0a991fc1b7ac64ccdfa9e8"
+BLANK_PASS_A_HASH = "44a5200e8b921b65f55cd391943abfbd4ca600e9723fcd8c70a36eb6cf2b7d58"
+COMPLETED_PASS_A_HASH = "3b6548d8e6a1240c224f156f9266c5025cc099816d73a8c81960173fe9c8423e"
+BLANK_PASS_B_HASH = "7ae98fa0cb8c05edd57632460b1a08339c96f4f24b0a991fc1b7ac64ccdfa9e8"
+COMPLETED_PASS_B_HASH = "0f5258e06a4e854d338705bcf1d38ced048f0652a99ccc4639b18c3baae1cd96"
 
 
 def sha256(path: Path) -> str:
@@ -54,6 +56,24 @@ def copied_forms(tmp_path: Path) -> Path:
     (root / "pass_b").mkdir(parents=True)
     shutil.copy2(PASS_A_FORM, root / "pass_a/pass_a_review_form.csv")
     shutil.copy2(PASS_B_FORM, root / "pass_b/pass_b_review_form.csv")
+    for path in (
+        root / "pass_a/pass_a_review_form.csv",
+        root / "pass_b/pass_b_review_form.csv",
+    ):
+        with path.open("r", encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            headers = list(reader.fieldnames or ())
+            rows = list(reader)
+        with path.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=headers, lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(
+                {
+                    field: row["review_id"] if field == "review_id" else ""
+                    for field in headers
+                }
+                for row in rows
+            )
     return root
 
 
@@ -102,16 +122,20 @@ def test_exact_frozen_schemas_and_choice_spellings(pass_a_schema, pass_b_schema)
     )
 
 
-def test_canonical_blank_forms_have_exact_hashes_rows_and_headers(
+def test_canonical_forms_preserve_completed_pass_a_and_completed_pass_b(
     pass_a_schema, pass_b_schema, pass_a_packet, pass_b_packet
 ):
     a = ReviewStore(PASS_A_FORM, pass_a_schema, pass_a_packet.review_ids).load()
     b = ReviewStore(PASS_B_FORM, pass_b_schema, pass_b_packet.review_ids).load()
     assert len(a.rows) == len(b.rows) == 60
-    assert a.answered_required == 0 and a.total_required == 300
-    assert b.answered_required == 0 and b.total_required == 240
-    assert sha256(PASS_A_FORM) == PASS_A_HASH
-    assert sha256(PASS_B_FORM) == PASS_B_HASH
+    assert a.total_required == 300 and a.answered_required in {0, 300}
+    if a.answered_required == 0:
+        assert sha256(PASS_A_FORM) == BLANK_PASS_A_HASH
+    else:
+        assert a.complete
+        assert sha256(PASS_A_FORM) == COMPLETED_PASS_A_HASH
+    assert b.answered_required == 240 and b.total_required == 240 and b.complete
+    assert sha256(PASS_B_FORM) == COMPLETED_PASS_B_HASH
 
 
 def test_packet_ids_are_exact_and_ordered(pass_a_packet, pass_b_packet):
@@ -260,7 +284,7 @@ def test_saving_one_pass_does_not_change_the_other(
     before = sha256(other)
     store = ReviewStore(forms / "pass_a/pass_a_review_form.csv", pass_a_schema, pass_a_packet.review_ids)
     store.save_case(pass_a_packet.review_ids[0], {"defect_visible": "yes"})
-    assert sha256(other) == before == PASS_B_HASH
+    assert sha256(other) == before == BLANK_PASS_B_HASH
 
 
 def test_incomplete_invalid_or_unattested_pass_a_cannot_lock(
