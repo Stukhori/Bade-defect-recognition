@@ -107,9 +107,11 @@ def test_table_csv_json_consistency(tmp_path: Path) -> None:
     assert csv_rows == [{field: core._cell(row.get(field)) for field in payload["fields"]} for row in payload["rows"]]
 
 
-def test_phase11_or_phase12_path_is_rejected(tmp_path: Path) -> None:
+def test_phase11_is_allowed_downstream_but_phase12_is_rejected(tmp_path: Path) -> None:
     (tmp_path / "figures/phase11").mkdir(parents=True)
-    with pytest.raises(core.FinalSynthesisError, match="Phase 11/12"):
+    core._assert_no_optional_phase_paths(tmp_path)
+    (tmp_path / "figures/phase12").mkdir(parents=True)
+    with pytest.raises(core.FinalSynthesisError, match="Phase 12"):
         core._assert_no_optional_phase_paths(tmp_path)
 
 

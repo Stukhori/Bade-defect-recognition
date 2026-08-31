@@ -1025,15 +1025,11 @@ def validate_phase9b(
     if len(manifest.get("figures", [])) != 5:
         raise ErrorAnalysisError("Phase 9B figure inventory changed")
     forbidden = [
-        repository / "figures/phase11",
         repository / "figures/phase12",
-        repository / "docs/phase11",
         repository / "docs/phase12",
-        repository / "scripts/run_yolo.py",
-        repository / "configs/yolo.yaml",
     ]
     if any(path.exists() for path in forbidden):
-        raise ErrorAnalysisError("forbidden optional Phase 11/12 output exists")
+        raise ErrorAnalysisError("forbidden Phase 12 output exists")
     phase9a_status = "NOT_RUN"
     if validate_phase9a:
         from windblade.error_analysis.runner import validate_error_analysis

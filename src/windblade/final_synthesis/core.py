@@ -294,7 +294,10 @@ def collect_upstream_inventory(root: Path) -> dict[str, Any]:
 
 
 def _assert_no_optional_phase_paths(root: Path) -> None:
-    forbidden_tokens = ("phase11", "phase_11", "phase12", "phase_12", "yolo")
+    # Phase 11 is an authorized, scientifically separate downstream experiment
+    # once the Phase 10 freeze exists. Historical Phase 10 validation therefore
+    # rejects only still-unauthorized Phase 12 work.
+    forbidden_tokens = ("phase12", "phase_12")
     offending = [
         path.relative_to(root).as_posix()
         for path in root.rglob("*")
@@ -304,7 +307,7 @@ def _assert_no_optional_phase_paths(root: Path) -> None:
         and "cache" not in path.relative_to(root).parts
     ]
     if offending:
-        raise FinalSynthesisError("forbidden Phase 11/12 or YOLO paths exist: " + ", ".join(offending[:5]))
+        raise FinalSynthesisError("forbidden Phase 12 paths exist: " + ", ".join(offending[:5]))
 
 
 def _validate_upstream_identity(config: ResolvedConfig, root: Path) -> dict[str, Any]:

@@ -1,0 +1,84 @@
+extends: base.yaml
+
+project:
+  phase: 11
+
+experiment:
+  name: phase11_full_image_detection_audit
+  seed: 20260831
+  output_root: experiments/summaries/phase11_detection_audit_v1
+
+phase11a:
+  result_id: phase11_detection_audit_v1
+  status: audit_and_protocol_only
+  annotation_source: primary_pascal_voc_v1
+  coordinate_convention: pascal_voc_inclusive_integer_pixels
+  curated_dataset_version: wtbd-curation-v1
+  source_dataset_fingerprint: 568c00e99f5ca8d205c5b48b3c058ca8f3b93d2e4de9986ec7d01af75b33babb
+  class_order: [craze, corrosion, surface_injure, thunderstrike, crack, hide_craze]
+  primary_task: class_agnostic_defect_localization
+  secondary_task: six_class_object_detection
+  split_policy: frozen_phase2_curated_source_image_split
+  small_area_fraction: 0.01
+  almost_full_area_fraction: 0.50
+  elongated_aspect_ratio_low: 0.10
+  elongated_aspect_ratio_high: 10.0
+  qc_per_extreme: 4
+  qc_max_images: 32
+
+phase11b_protocol:
+  status: blocked_before_dependency_or_weight_acquisition
+  reason: cuda_unavailable_in_current_environment
+  detector_family: compact_one_stage_yolo_family
+  detector_variant: compact_nano_variant_to_be_pinned_in_a_new_pretest_apparatus_commit
+  seeds: [17, 29, 43]
+  primary_metric: class_agnostic_map_50_95
+  checkpoint_selection: validation_map_50_95_only
+  threshold_policy: validation_only_maximum_class_agnostic_f1_then_freeze
+  nms_policy: one_frozen_configuration_for_validation_and_test
+  test_firewall: no_test_evaluation_before_all_training_and_validation_decisions_are_locked
+  required_device: cuda_gpu
+  minimum_vram_gib: 8
+  planned_run_count: 3
+  estimated_checkpoint_and_log_storage_gib: 5
+
+inputs:
+  raw_images: data/raw/wtbd/WT blade defect dataset/JPEGImages
+  raw_annotations: data/raw/wtbd/WT blade defect dataset/Annotations
+  raw_archive: data/raw/wtbd/WT blade defect dataset.zip
+  source_record: data/metadata/wtbd/source.json
+  raw_audit: data/metadata/wtbd/audit_summary.json
+  images_manifest: data/metadata/wtbd/images.csv
+  instances_manifest: data/metadata/wtbd/instances.csv
+  curation_manifest: data/metadata/wtbd/curation_manifest.csv
+  curated_instances: data/metadata/wtbd/curated_instances.csv
+  curated_split: data/metadata/wtbd/curated_split_membership.csv
+  curation_summary: data/metadata/wtbd/curation_summary.json
+  near_duplicate_decisions: data/metadata/wtbd/near_duplicate_review_decisions.csv
+  phase9_review_cases: experiments/summaries/phase9_error_analysis_v1/phase9b/tables/joined_review_cases.csv
+  phase10_manifest: experiments/summaries/phase10_final_synthesis_v1/manifest.json
+  phase10_reproducibility: experiments/summaries/phase10_final_synthesis_v1/reproducibility.json
+  phase10_upstream_inventory: experiments/summaries/phase10_final_synthesis_v1/upstream_inventory.json
+
+upstream:
+  phase10_freeze_commit: b801716c52119f308d8a8620af3f8fbf2b27bdd7
+  phase10_config_fingerprint: 0691d82dc6addc200806c26a42382db3ebd70cc5ef1cd6065c306a30a7ed2951
+  phase10_output_fingerprint: 6064922c936a05c33c38068ba86fa68c6b9b7f931d28df4e37a5e880edd5dbf0
+  phase10_upstream_inventory_fingerprint: 20d917d5cbe08f579382575218a62aa8f0162841197a5d5d98d4eec7e4d0f9a2
+  phase9a_initial_output_fingerprint: a5938ec22a0f496c6fd9ce3acd7d999cad56e8c13a85d9be4b4d59860aecd74b
+  phase9a_corrected_output_fingerprint: 14e500fd94fa871bbe1e6bee6494d3158fe003c3799e0ccfbcab8e549adf80fa
+  phase9a_transition: caption_only_pass_b_true_class_display_correction
+
+outputs:
+  summary_root: experiments/summaries/phase11_detection_audit_v1
+  reproduction_scratch_root: experiments/cache/phase11a_reproduction
+
+prohibited:
+  phase10_mutation: true
+  application_mutation: true
+  phase12_generation: true
+  detector_training_in_phase11a: true
+  dependency_installation_in_phase11a: true
+  pretrained_weight_download_in_phase11a: true
+  automatic_annotation_repair: true
+  screenshot_or_gradcam_box_reconstruction: true

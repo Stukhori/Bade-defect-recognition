@@ -282,16 +282,11 @@ def _review_form_status(
 
 
 def _forbidden_paths(root: Path) -> list[str]:
-    # Phase 10 is an authorized downstream consumer once Phase 9 is frozen.
-    # Phase 9 validation must continue to pass after that aggregation phase,
-    # while optional localization/external-validation work remains forbidden.
+    # Phases 10 and 11 are authorized downstream consumers once Phase 9 is
+    # frozen. Historical validation continues to reject Phase 12 work.
     candidates = [
-        root / "figures/phase11",
         root / "figures/phase12",
-        root / "docs/phase11",
         root / "docs/phase12",
-        root / "scripts/run_yolo.py",
-        root / "configs/yolo.yaml",
     ]
     return [path.relative_to(root).as_posix() for path in candidates if path.exists()]
 
