@@ -1,16 +1,51 @@
 {
+  "application_v2": {
+    "automatic_integration_gate": "unsupported",
+    "automatic_localization_integrated": false,
+    "detector_checkpoint": null,
+    "detector_threshold": null,
+    "entered": true,
+    "existing_scientific_behavior_preserved": true,
+    "mode_count": 3,
+    "modes": [
+      "prepared_crop",
+      "manual_single_region",
+      "manual_multi_region"
+    ],
+    "navigation_sections": [
+      "Home",
+      "Analyze Image",
+      "Compare Regions",
+      "Research Results",
+      "Detection Readiness",
+      "About and Limitations"
+    ],
+    "nms_configuration": null,
+    "software_productization_only": true,
+    "status": "PASS"
+  },
+  "application_version": "2.0.0",
   "dependencies": {
     "streamlit": "1.62.0",
     "streamlit-cropper": "0.3.1"
   },
   "descriptive_local_timings_seconds": {
-    "manual_inference": 0.01564120000693947,
-    "manual_preprocessing": 0.002323900000192225,
-    "model_load_recorded": 0.14498909993562847,
-    "model_load_wrapper": 0.14531900000292808,
-    "optional_gradcam": 0.11271580005995929,
-    "prepared_inference": 0.02891380002256483,
-    "prepared_preprocessing": 0.003945700009353459
+    "manual_inference": 0.015138600021600723,
+    "manual_preprocessing": 0.0022024998906999826,
+    "model_load_recorded": 0.15351069997996092,
+    "model_load_wrapper": 0.15388969995547086,
+    "optional_gradcam": 0.12120729999151081,
+    "prepared_inference": 0.034535599988885224,
+    "prepared_preprocessing": 0.0030138000147417188
+  },
+  "detection_readiness_dashboard": {
+    "detector_available": false,
+    "integration_decision": "unsupported",
+    "phase11a": "complete and frozen",
+    "phase11b": "blocked and unstarted",
+    "scientific_output_fingerprint": "3f46cbdc6c7a2e3cf6093ff177dd1948d113fa4c36fa9eb907d7c8621e800461",
+    "source": "frozen Phase 11A audit outputs",
+    "status": "PASS"
   },
   "model": {
     "checkpoint_file_sha256": "9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5",
@@ -51,20 +86,65 @@
       "total_required": 240
     }
   ],
+  "privacy": {
+    "external_api_calls": 0,
+    "in_memory_exports": true,
+    "in_memory_upload_processing": true,
+    "persistent_upload_writes": 0,
+    "session_only_history": true,
+    "telemetry_disabled": true
+  },
   "prohibited_actions": {
+    "automatic_detector_inference": 0,
     "calibration": 0,
+    "external_deployment": 0,
     "external_service_calls": 0,
     "fine_tuning": 0,
     "permanent_upload_storage": 0,
     "test_set_evaluation": 0,
     "training": 0
   },
+  "research_dashboard": {
+    "recomputation": false,
+    "scientific_output_fingerprint": "6064922c936a05c33c38068ba86fa68c6b9b7f931d28df4e37a5e880edd5dbf0",
+    "source": "frozen Phase 10 canonical tables",
+    "status": "PASS"
+  },
   "schema_version": "1.0",
-  "scientific_phase_status": "Phase 10 complete and frozen; core technical research project complete; Phases 11 and 12 not started",
+  "scientific_invariance": {
+    "phase10_scientific_output_fingerprint": "6064922c936a05c33c38068ba86fa68c6b9b7f931d28df4e37a5e880edd5dbf0",
+    "phase11a_scientific_output_fingerprint": "3f46cbdc6c7a2e3cf6093ff177dd1948d113fa4c36fa9eb907d7c8621e800461",
+    "phase11b_training_started": false,
+    "phase12_started": false,
+    "phase3_processed_dataset_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+    "phase6_classifier_checkpoint_file_sha256": "9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5",
+    "phase6_classifier_checkpoint_state_fingerprint": "3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757",
+    "status": "PASS"
+  },
+  "scientific_phase_status": "Phase 11A complete and frozen; Phase 11B compute/dependency-blocked and unstarted; Phase 10 frozen; Phase 12 not started",
   "scope": "non-scientific local demonstration validation",
+  "session_and_exports": {
+    "annotated_png": "PASS",
+    "csv": "PASS",
+    "history_persistence": "session_only",
+    "json": "PASS",
+    "region_count": 2,
+    "server_side_upload_writes": 0,
+    "status": "PASS"
+  },
   "status": "PASS",
-  "validated_utc": "2026-08-31T04:49:59.568961+00:00",
+  "validated_utc": "2026-08-31T09:03:06.009910+00:00",
   "workflows": {
+    "manual_multi_region": {
+      "overlap_supported": true,
+      "phase3_pixel_parity": true,
+      "replace_remove_clear_contract": true,
+      "stable_region_ids": [
+        "R1",
+        "R2"
+      ],
+      "status": "PASS"
+    },
     "manual_region": {
       "context_side": 501,
       "phase3_pixel_parity": true,

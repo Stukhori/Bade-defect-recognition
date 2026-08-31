@@ -1,69 +1,67 @@
-"""Streamlit entry point for the non-scientific frozen-classifier demo."""
+"""Application v2: local analysis workspace around frozen scientific assets."""
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import streamlit as st
 from streamlit_cropper import st_cropper
 
-from windblade_demo.constants import CLASS_LABELS, HUMAN_LABELS, MAX_UPLOAD_BYTES, MODEL_DISPLAY_NAME
-from windblade_demo.crops import (
-    ContextualCrop,
-    SelectionValidationError,
-    annotated_selection,
-    contextual_crop,
-    display_image,
-    map_display_box,
-    prepare_region,
+from windblade_demo.constants import (
+    APPLICATION_VERSION, CHECKPOINT_STATE_FINGERPRINT, CLASS_DESCRIPTIONS,
+    CLASS_LABELS, HUMAN_LABELS, MODEL_DISPLAY_NAME, PREPROCESSING_CONTRACT,
 )
+from windblade_demo.crops import (
+    SelectionValidationError, annotated_selection, contextual_crop, display_image,
+    map_display_box, prepare_region,
+)
+from windblade_demo.detection_status import DetectorUnavailableError, load_detection_status
 from windblade_demo.explain import generate_gradcam
-from windblade_demo.inference import FrozenModelError, infer, load_frozen_model, model_status
+from windblade_demo.exports import annotated_image_export, csv_export, json_export
+from windblade_demo.inference import FrozenModelError, infer, load_frozen_model
 from windblade_demo.inputs import UploadValidationError, decode_upload
+from windblade_demo.research import FrozenResearchError, load_phase10
+from windblade_demo.session import (
+    RegionRecord, make_region_record, remove_region, replace_region, with_gradcam,
+)
+from windblade_demo.visualization import annotate_regions
 
+
+ROOT = Path(__file__).resolve().parents[1]
+NAVIGATION = (
+    "Home", "Analyze Image", "Compare Regions", "Research Results",
+    "Detection Readiness", "About and Limitations",
+)
+ANALYSIS_MODES = ("Prepared crop", "Manual single region", "Manual multi-region")
 
 st.set_page_config(
-    page_title="Blade Image Research Demo",
-    page_icon="🔎",
-    layout="wide",
+    page_title="Blade Image Research Workspace", page_icon="🔎", layout="wide",
     initial_sidebar_state="expanded",
 )
-
 st.markdown(
     """
     <style>
-    .stApp { background: #f5f8fa; }
-    .block-container { max-width: 1220px; padding-top: 1.4rem; padding-bottom: 3rem; }
-    .hero { padding: 1.55rem 1.7rem; border-radius: 20px; color: white;
-            background: linear-gradient(125deg, #12344d 0%, #0b7a75 72%, #15958d 100%);
+    .stApp { background: #f4f7f8; color: #173342; }
+    .block-container { max-width: 1280px; padding-top: 1.2rem; padding-bottom: 3rem; }
+    .hero { padding: 1.65rem 1.8rem; border-radius: 22px; color: white;
+            background: linear-gradient(125deg, #12344d 0%, #08766f 72%, #0d9488 100%);
             box-shadow: 0 14px 34px rgba(18,52,77,.18); margin-bottom: 1rem; }
-    .hero h1 { margin: .2rem 0 0; font-size: clamp(1.8rem, 4vw, 2.55rem); line-height: 1.1; }
-    .hero p { margin: .65rem 0 0; max-width: 780px; opacity: .94; font-size: 1.02rem; }
+    .hero h1 { margin: .2rem 0 0; font-size: clamp(1.85rem, 4vw, 2.6rem); line-height: 1.1; }
+    .hero p { margin: .65rem 0 0; max-width: 840px; opacity: .94; font-size: 1.02rem; }
     .badge { display: inline-block; padding: .28rem .58rem; margin: 0 .32rem .3rem 0;
              border-radius: 999px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28);
              font-size: .72rem; font-weight: 750; letter-spacing: .055em; }
-    .scope { border-left: 5px solid #e69f00; background: #fff8e6; padding: .9rem 1rem;
-             border-radius: 10px; margin: .75rem 0 1.2rem; color: #332700; }
-    .result-card { background: white; border: 1px solid #d9e6e8; border-radius: 14px;
-                   padding: 1rem 1.2rem; box-shadow: 0 5px 18px rgba(18,52,77,.08); }
-    .eyebrow { color: #0b7a75; font-size: .78rem; font-weight: 700; letter-spacing: .08em; }
-    .workflow-head { display:flex; gap:.65rem; align-items:center; margin:.25rem 0 .75rem; }
-    .step-number { display:inline-grid; place-items:center; width:1.75rem; height:1.75rem;
-                   border-radius:50%; background:#0b7a75; color:white; font-weight:800; }
-    .muted-panel { background:#eaf2f4; border:1px solid #d0e0e4; border-radius:12px;
-                   padding:.85rem 1rem; color:#294656; }
-    div[data-testid="stMetric"] { background:white; border:1px solid #d9e6e8; padding:.7rem;
-                                  border-radius:12px; }
-    div[data-testid="stFileUploader"] { background:white; border:1px solid #d9e6e8;
-                                         border-radius:14px; padding:.6rem .85rem; }
+    .notice { border-left: 5px solid #e69f00; background: #fff8e6; padding: .9rem 1rem;
+              border-radius: 10px; margin: .75rem 0 1.2rem; color: #332700; }
+    .card { background: white; border: 1px solid #d9e6e8; border-radius: 15px;
+            padding: 1rem 1.15rem; box-shadow: 0 5px 18px rgba(18,52,77,.07); }
+    .eyebrow { color: #08766f; font-size: .76rem; font-weight: 800; letter-spacing: .08em; }
+    .status-ok { border-left: 4px solid #0d9488; background: #eaf8f6; padding: .8rem 1rem; border-radius: 10px; }
+    div[data-testid="stMetric"] { background:white; border:1px solid #d9e6e8; padding:.7rem; border-radius:12px; }
+    div[data-testid="stFileUploader"] { background:white; border:1px solid #d9e6e8; border-radius:14px; padding:.55rem .8rem; }
     @media (max-width: 700px) { .hero { padding:1.15rem; border-radius:14px; } }
     </style>
-    <div class="hero">
-      <div><span class="badge">LOCAL PROCESSING</span><span class="badge">FROZEN MODEL</span><span class="badge">MANUAL REGION INPUT</span></div>
-      <h1>Blade image research demo</h1>
-      <p>Classify one visible defect region with the frozen six-category MobileNet model—either from a prepared crop or a region you select.</p>
-    </div>
-    <div class="scope"><strong>Experimental-use notice:</strong> Automatic localization is unavailable because Phase 11B detector training and evaluation are incomplete. This demo classifies only a region supplied or selected by you.</div>
     """,
     unsafe_allow_html=True,
 )
@@ -71,228 +69,505 @@ st.markdown(
 
 @st.cache_resource(show_spinner="Verifying and loading the frozen checkpoint…")
 def cached_model():
-    return load_frozen_model()
+    return load_frozen_model(ROOT)
 
 
-def reset_for_upload(namespace: str, fingerprint: str) -> None:
-    identity_key = f"{namespace}_upload_identity"
-    if st.session_state.get(identity_key) != fingerprint:
-        for suffix in ("result", "model_input", "gradcam", "selection"):
-            st.session_state.pop(f"{namespace}_{suffix}", None)
-        st.session_state[identity_key] = fingerprint
+@st.cache_data(show_spinner=False)
+def cached_research():
+    return load_phase10(ROOT)
 
 
-def clear_workflow(namespace: str) -> None:
-    for key in list(st.session_state):
-        if key.startswith(f"{namespace}_"):
-            del st.session_state[key]
+@st.cache_data(show_spinner=False)
+def cached_detection_status():
+    return load_detection_status(ROOT)
 
 
-def step_heading(number: int, title: str) -> None:
+def initialize_session() -> None:
+    st.session_state.setdefault("analysis_records", [])
+    st.session_state.setdefault("source_images", {})
+    st.session_state.setdefault("multi_uploader_nonce", 0)
+    st.session_state.setdefault("next_region_number", 1)
+
+
+def records() -> list[RegionRecord]:
+    return st.session_state["analysis_records"]
+
+
+def save_source(decoded: Any) -> None:
+    st.session_state["source_images"][decoded.byte_sha256] = decoded.image.copy()
+
+
+def add_record(record: RegionRecord) -> None:
+    st.session_state["analysis_records"] = [*records(), record]
+
+
+def score_rows(record: RegionRecord) -> list[dict[str, Any]]:
+    return [
+        {"Category": HUMAN_LABELS[label], "Model score": record.scores[index]}
+        for index, label in enumerate(CLASS_LABELS)
+    ]
+
+
+def render_scores(record: RegionRecord, *, key: str) -> None:
+    rows = score_rows(record)
+    st.subheader(HUMAN_LABELS[record.predicted_label])
+    st.caption(f"{record.region_id} · model scores, not calibrated confidence estimates")
+    st.vega_lite_chart(
+        {"values": rows},
+        {"mark": {"type": "bar", "cornerRadiusEnd": 4, "color": "#08766f"},
+         "encoding": {
+             "x": {"field": "Model score", "type": "quantitative", "scale": {"domain": [0, 1]}},
+             "y": {"field": "Category", "type": "nominal", "sort": "-x"},
+             "tooltip": ["Category", {"field": "Model score", "format": ".6f"}]},
+         "height": 210},
+        width="stretch", key=f"scores_{key}",
+    )
+
+
+def classify_record(
+    *, mode: str, decoded: Any, model_input,
+    selected_box: tuple[int, int, int, int] | None = None,
+    contextual_box: tuple[int, int, int, int] | None = None,
+    replacement_id: str | None = None,
+) -> RegionRecord:
+    result = infer(cached_model(), model_input)
+    chosen_id = replacement_id
+    if chosen_id is None:
+        chosen_id = f"R{st.session_state['next_region_number']}"
+    record = make_region_record(
+        records=records(), mode=mode, source_name=decoded.filename,
+        source_sha256=decoded.byte_sha256, source_size=decoded.image.size,
+        model_input=model_input, result=result, selected_box=selected_box,
+        contextual_box=contextual_box, region_id=chosen_id,
+    )
+    if replacement_id is None:
+        st.session_state["next_region_number"] += 1
+    return record
+
+
+def render_hero(title: str, description: str) -> None:
     st.markdown(
-        f'<div class="workflow-head"><span class="step-number">{number}</span><strong>{title}</strong></div>',
+        f'<div class="hero"><div><span class="badge">APPLICATION v{APPLICATION_VERSION}</span>'
+        '<span class="badge">LOCAL PROCESSING</span><span class="badge">FROZEN CLASSIFIER</span></div>'
+        f'<h1>{title}</h1><p>{description}</p></div>', unsafe_allow_html=True,
+    )
+
+
+def render_scope_notice() -> None:
+    st.markdown(
+        '<div class="notice"><strong>Automatic localization is unavailable.</strong> '
+        'Phase 11B detector training and evaluation have not been completed. Every active analysis '
+        'workflow therefore classifies only a crop or rectangle supplied by you.</div>',
         unsafe_allow_html=True,
     )
 
 
-def render_result(namespace: str, model_input, result: Any, show_explanation: bool) -> None:
-    st.markdown('<div class="result-card">', unsafe_allow_html=True)
-    st.markdown('<div class="eyebrow">CLASSIFICATION RESULT</div>', unsafe_allow_html=True)
-    st.subheader(HUMAN_LABELS[result.predicted_label])
-    st.caption("Model scores — not calibrated confidence estimates")
+def go_to(page: str) -> None:
+    st.session_state["navigation"] = page
+
+
+def go_to_analysis(mode: str) -> None:
+    st.session_state["analysis_mode"] = mode
+    st.session_state["navigation"] = "Analyze Image"
+
+
+def render_home() -> None:
+    render_hero(
+        "Blade image research workspace",
+        "Explore a frozen six-category crop classifier, compare your own regions, export this browser session, and inspect the project's frozen research evidence.",
+    )
+    render_scope_notice()
+    st.markdown("### Start an analysis workflow")
+    first, second, third = st.columns(3)
+    with first:
+        st.markdown('<div class="card"><div class="eyebrow">PREPARED</div><h3>Classify a crop</h3><p>Use an image already centered on one visible region.</p></div>', unsafe_allow_html=True)
+        st.button("Analyze prepared crop", type="primary", width="stretch", on_click=go_to_analysis, args=("Prepared crop",))
+    with second:
+        st.markdown('<div class="card"><div class="eyebrow">SINGLE</div><h3>Draw one region</h3><p>Select and classify one rectangle on a larger image.</p></div>', unsafe_allow_html=True)
+        st.button("Analyze one manual region", width="stretch", on_click=go_to_analysis, args=("Manual single region",))
+    with third:
+        st.markdown('<div class="card"><div class="eyebrow">MULTI</div><h3>Build a region set</h3><p>Add, replace, compare, and export multiple manual regions.</p></div>', unsafe_allow_html=True)
+        st.button("Analyze multiple regions", width="stretch", on_click=go_to_analysis, args=("Manual multi-region",))
+    action_a, action_b, action_c = st.columns(3)
+    action_a.button("Compare saved regions", width="stretch", on_click=go_to, args=("Compare Regions",))
+    action_b.button("Open research results", width="stretch", on_click=go_to, args=("Research Results",))
+    action_c.button("Check detection readiness", width="stretch", on_click=go_to, args=("Detection Readiness",))
+    st.markdown("### Current apparatus")
+    a, b, c, d = st.columns(4)
+    a.metric("Classifier", "Frozen")
+    b.metric("Active input modes", "3")
+    c.metric("Saved regions", str(len(records())))
+    d.metric("Automatic detector", "Unavailable")
+
+
+def render_prepared() -> None:
+    st.subheader("Prepared crop classification")
+    st.caption("Upload a crop already centered on one visible region. The app does not verify that a defect is present.")
+    uploaded = st.file_uploader("Choose a prepared PNG, JPG, or JPEG", type=["png", "jpg", "jpeg"], key="prepared_v2")
+    if uploaded is None:
+        return
+    decoded = decode_upload(uploaded.getvalue(), uploaded.name)
+    save_source(decoded)
+    model_input = prepare_region(decoded.image)
+    left, right = st.columns(2)
+    left.image(decoded.image, caption="Uploaded crop", width="stretch")
+    right.image(model_input, caption="Exact RGB 224×224 model input", width="stretch")
+    if st.button("Classify and add prepared crop", type="primary", key="prepared_classify"):
+        with st.spinner("Running the frozen model on CPU…"):
+            record = classify_record(mode="prepared_crop", decoded=decoded, model_input=model_input)
+            add_record(record)
+            st.session_state["latest_region_id"] = record.region_id
+    latest = next((item for item in reversed(records()) if item.region_id == st.session_state.get("latest_region_id")), None)
+    if latest and latest.source_sha256 == decoded.byte_sha256:
+        render_scores(latest, key=f"prepared_{latest.region_id}")
+
+
+def manual_selection(decoded: Any, *, key: str):
+    displayed = display_image(decoded.image)
+    rectangle = st_cropper(
+        displayed, realtime_update=True, box_color="#F59E0B", aspect_ratio=None,
+        return_type="box", should_resize_image=False, stroke_width=3, key=key,
+    )
+    selected = map_display_box(rectangle, display_size=displayed.size, original_size=decoded.image.size)
+    crop = contextual_crop(decoded.image, selected)
+    st.caption(
+        f"Display {displayed.width}×{displayed.height} → original {decoded.image.width}×{decoded.image.height}; "
+        f"selected original box {selected.as_tuple()}."
+    )
+    return selected, crop
+
+
+def render_manual_single() -> None:
+    st.subheader("Manual single-region classification")
+    st.caption("Upload a larger image and draw one rectangle around a visible region.")
+    uploaded = st.file_uploader("Choose a larger PNG, JPG, or JPEG", type=["png", "jpg", "jpeg"], key="single_v2")
+    if uploaded is None:
+        return
+    decoded = decode_upload(uploaded.getvalue(), uploaded.name)
+    save_source(decoded)
+    selected, crop = manual_selection(decoded, key=f"single_cropper_{decoded.byte_sha256[:12]}")
+    left, right = st.columns([1.35, 1])
+    left.image(annotated_selection(decoded.image, crop), caption="Orange: your rectangle · Teal: contextual crop", width="stretch")
+    right.image(crop.model_input, caption="Exact contextual RGB 224×224 model input", width="stretch")
+    if st.button("Classify and add selected region", type="primary", key="single_classify"):
+        with st.spinner("Running the frozen model on CPU…"):
+            geometry = crop.geometry
+            record = classify_record(
+                mode="manual_single_region", decoded=decoded, model_input=crop.model_input,
+                selected_box=selected.as_tuple(),
+                contextual_box=(geometry.crop_xmin, geometry.crop_ymin, geometry.crop_xmax, geometry.crop_ymax),
+            )
+            add_record(record)
+            st.session_state["latest_region_id"] = record.region_id
+    latest = next((item for item in reversed(records()) if item.region_id == st.session_state.get("latest_region_id")), None)
+    if latest and latest.source_sha256 == decoded.byte_sha256 and latest.selected_box == selected.as_tuple():
+        render_scores(latest, key=f"single_{latest.region_id}")
+
+
+def render_manual_multi() -> None:
+    st.subheader("Manual multi-region analysis")
+    st.caption("Draw one rectangle at a time. Saved regions receive stable IDs (R1, R2, …), may overlap, and are classified independently.")
+    top_left, top_right = st.columns([3, 1])
+    with top_right:
+        if st.button("New image", width="stretch", key="multi_new_image"):
+            st.session_state["multi_uploader_nonce"] += 1
+            st.session_state.pop("multi_active_hash", None)
+            st.rerun()
+    with top_left:
+        uploaded = st.file_uploader(
+            "Choose one source image", type=["png", "jpg", "jpeg"],
+            key=f"multi_v2_{st.session_state['multi_uploader_nonce']}",
+        )
+    if uploaded is None:
+        return
+    decoded = decode_upload(uploaded.getvalue(), uploaded.name)
+    save_source(decoded)
+    st.session_state["multi_active_hash"] = decoded.byte_sha256
+    source_records = [item for item in records() if item.source_sha256 == decoded.byte_sha256 and item.mode == "manual_multi_region"]
+    if source_records:
+        st.image(annotate_regions(decoded.image, source_records), caption=f"Saved manual regions: {len(source_records)}", width="stretch")
+    selected, crop = manual_selection(decoded, key=f"multi_cropper_{decoded.byte_sha256[:12]}")
+    preview_left, preview_right = st.columns([1.4, 1])
+    preview_left.image(annotated_selection(decoded.image, crop), caption="Current unsaved rectangle and contextual crop", width="stretch")
+    preview_right.image(crop.model_input, caption="Current exact model input", width="stretch")
+    geometry = crop.geometry
+    contextual_box = (geometry.crop_xmin, geometry.crop_ymin, geometry.crop_xmax, geometry.crop_ymax)
+    action_left, action_mid, action_right = st.columns(3)
+    if action_left.button("Add and classify region", type="primary", width="stretch", key="multi_add"):
+        with st.spinner("Classifying and saving this region…"):
+            record = classify_record(
+                mode="manual_multi_region", decoded=decoded, model_input=crop.model_input,
+                selected_box=selected.as_tuple(), contextual_box=contextual_box,
+            )
+            add_record(record)
+            st.session_state["latest_region_id"] = record.region_id
+            st.rerun()
+    selected_id = action_mid.selectbox(
+        "Saved region", [item.region_id for item in source_records], disabled=not source_records,
+        key=f"multi_selected_{decoded.byte_sha256[:8]}",
+    ) if source_records else None
+    if action_right.button("Replace with current rectangle", width="stretch", disabled=not selected_id, key="multi_replace"):
+        with st.spinner("Reclassifying the replacement region…"):
+            replacement = classify_record(
+                mode="manual_multi_region", decoded=decoded, model_input=crop.model_input,
+                selected_box=selected.as_tuple(), contextual_box=contextual_box, replacement_id=selected_id,
+            )
+            st.session_state["analysis_records"] = replace_region(records(), replacement)
+            st.session_state["latest_region_id"] = replacement.region_id
+            st.rerun()
+    remove_left, clear_right = st.columns(2)
+    if remove_left.button("Remove selected region", disabled=not selected_id, width="stretch", key="multi_remove"):
+        st.session_state["analysis_records"] = remove_region(records(), selected_id)
+        st.rerun()
+    if clear_right.button("Clear regions for this image", disabled=not source_records, width="stretch", key="multi_clear"):
+        st.session_state["analysis_records"] = [
+            item for item in records()
+            if not (item.source_sha256 == decoded.byte_sha256 and item.mode == "manual_multi_region")
+        ]
+        st.rerun()
+
+
+def render_analyze() -> None:
+    render_hero("Analyze image", "Choose exactly how you will supply each visible region to the frozen crop classifier.")
+    render_scope_notice()
+    mode = st.radio("Analysis mode", ANALYSIS_MODES, horizontal=True, key="analysis_mode")
+    try:
+        if mode == "Prepared crop":
+            render_prepared()
+        elif mode == "Manual single region":
+            render_manual_single()
+        else:
+            render_manual_multi()
+    except (UploadValidationError, SelectionValidationError, FrozenModelError, RuntimeError) as exc:
+        st.error(str(exc))
+
+
+def render_compare() -> None:
+    render_hero("Compare regions", "Inspect every region saved in this browser session and export reproducible metadata without server-side persistence.")
+    items = records()
+    if not items:
+        st.info("No regions are saved yet. Open Analyze Image and classify a user-supplied region first.")
+        st.button("Go to Analyze Image", type="primary", on_click=go_to, args=("Analyze Image",))
+        return
+    sort_by = st.selectbox("Sort comparison", ("Region ID", "Top score", "Prediction"), key="compare_sort")
+    if sort_by == "Top score":
+        items = sorted(items, key=lambda item: max(item.scores), reverse=True)
+    elif sort_by == "Prediction":
+        items = sorted(items, key=lambda item: (HUMAN_LABELS[item.predicted_label], int(item.region_id[1:])))
+    else:
+        items = sorted(items, key=lambda item: int(item.region_id[1:]))
     rows = [
-        {"Category": HUMAN_LABELS[label], "Model score": result.scores[index]}
-        for index, label in enumerate(CLASS_LABELS)
+        {"Region": item.region_id, "Mode": item.mode.replace("_", " "), "Source": item.source_name,
+         "Prediction": HUMAN_LABELS[item.predicted_label], "Top score": max(item.scores),
+         "Grad-CAM": item.gradcam_status}
+        for item in items
     ]
     st.dataframe(rows, hide_index=True, width="stretch")
+    chart_rows = [
+        {"Region": item.region_id, "Category": HUMAN_LABELS[label], "Model score": item.scores[index]}
+        for item in items for index, label in enumerate(CLASS_LABELS)
+    ]
     st.vega_lite_chart(
-        {"values": rows},
-        {
-            "mark": {"type": "bar", "cornerRadiusEnd": 4, "color": "#0B7A75"},
-            "encoding": {
-                "x": {"field": "Model score", "type": "quantitative", "scale": {"domain": [0, 1]}},
-                "y": {"field": "Category", "type": "nominal", "sort": "-x"},
-                "tooltip": ["Category", {"field": "Model score", "format": ".6f"}],
-            },
-            "height": 220,
-        },
-        width="stretch",
+        {"values": chart_rows},
+        {"mark": "bar", "encoding": {
+            "x": {"field": "Region", "type": "nominal"},
+            "y": {"field": "Model score", "type": "quantitative"},
+            "color": {"field": "Category", "type": "nominal"},
+            "xOffset": {"field": "Category"},
+            "tooltip": ["Region", "Category", {"field": "Model score", "format": ".6f"}]},
+         "height": 300}, width="stretch",
     )
-    loaded = cached_model()
-    status = model_status(loaded)
-    left, middle, right = st.columns(3)
-    left.metric("Request inference", f"{result.inference_seconds * 1000:.1f} ms")
-    middle.metric("Preprocessing", f"{result.preprocessing_seconds * 1000:.1f} ms")
-    right.metric("One-time model load", f"{loaded.load_seconds:.2f} s")
-    st.caption(f"{status['model']} · {status['status']}")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    if show_explanation and st.button("Generate optional Grad-CAM visualization", key=f"{namespace}_gradcam_button"):
-        with st.spinner("Generating the optional activation visualization…"):
-            st.session_state[f"{namespace}_gradcam"] = generate_gradcam(
-                loaded, model_input, result.predicted_class_id
-            )
-    gradcam = st.session_state.get(f"{namespace}_gradcam") if show_explanation else None
-    if gradcam is not None:
-        st.warning(
-            "Grad-CAM is an activation visualization for the selected class score. "
-            "It is not automatic defect localization, a causal explanation, or a safety assessment."
+    selected_id = st.selectbox("Inspect region", [item.region_id for item in items], key="compare_selected")
+    selected = next(item for item in items if item.region_id == selected_id)
+    image_col, scores_col = st.columns([1, 1.7])
+    image_col.image(selected.thumbnail, caption=f"{selected.region_id} exact model input", width="stretch")
+    with scores_col:
+        render_scores(selected, key=f"compare_{selected.region_id}")
+    st.caption(f"Selected box: {selected.selected_box or 'prepared crop'} · contextual box: {selected.contextual_box or 'not applicable'}")
+    if st.button("Generate Grad-CAM for selected region", key="compare_gradcam"):
+        with st.spinner("Generating a read-only activation visualization…"):
+            visual = generate_gradcam(cached_model(), selected.model_input, selected.predicted_class_id)
+            st.session_state["analysis_records"] = replace_region(items, with_gradcam(selected, visual.overlay))
+            st.rerun()
+    if selected.gradcam_overlay is not None:
+        st.warning("Grad-CAM is a crop-classifier activation visualization—not detector evidence, a causal explanation, or a safety assessment.")
+        st.image(selected.gradcam_overlay, caption=f"{selected.region_id} Grad-CAM overlay", width=420)
+    st.markdown("### Session exports")
+    st.caption("Exports are generated in memory when requested. Uploaded images and analysis records are not written to the server.")
+    export_a, export_b, export_c = st.columns(3)
+    export_a.download_button("Download JSON", json_export(items), "blade-session.json", "application/json", width="stretch")
+    export_b.download_button("Download CSV", csv_export(items), "blade-session.csv", "text/csv", width="stretch")
+    manual_sources = sorted({item.source_sha256 for item in items if item.selected_box is not None})
+    if manual_sources:
+        source_hash = export_c.selectbox(
+            "Annotated source", manual_sources,
+            format_func=lambda value: next(item.source_name for item in items if item.source_sha256 == value),
+            key="export_source",
         )
-        first, second = st.columns(2)
-        first.image(gradcam.heatmap, caption="Grad-CAM heatmap", width="stretch")
-        second.image(gradcam.overlay, caption="Overlay on the exact model input", width="stretch")
-
-
-with st.sidebar:
-    st.markdown("## Workflow")
-    mode = st.radio(
-        "Choose how to supply a visible region",
-        ("Prepared visible defect crop", "Larger image — manually select a region"),
-        captions=("Upload a crop already centered on a defect.", "Draw one rectangle on a larger image."),
-    )
-    show_explanation = st.toggle("Offer optional Grad-CAM", value=True)
-    namespace = "prepared" if mode == "Prepared visible defect crop" else "manual"
-    if st.button("Reset current workflow", width="stretch"):
-        clear_workflow(namespace)
+        matching = [item for item in items if item.source_sha256 == source_hash and item.selected_box is not None]
+        image = st.session_state["source_images"].get(source_hash)
+        if image is not None:
+            export_c.download_button(
+                "Download annotated PNG", annotated_image_export(image, matching),
+                "blade-manual-regions.png", "image/png", width="stretch",
+            )
+    controls_a, controls_b = st.columns(2)
+    if controls_a.button("Remove inspected region", width="stretch"):
+        st.session_state["analysis_records"] = remove_region(items, selected_id)
         st.rerun()
-    st.divider()
+    if controls_b.button("Clear session", width="stretch"):
+        st.session_state["analysis_records"] = []
+        st.session_state["source_images"] = {}
+        st.session_state["next_region_number"] = 1
+        st.rerun()
+
+
+def render_research() -> None:
+    render_hero("Frozen research results", "A read-only dashboard over canonical Phase 10 tables. Values are loaded from verified artifacts and are never recomputed in the app.")
+    try:
+        research = cached_research()
+    except FrozenResearchError as exc:
+        st.error(str(exc))
+        return
+    st.markdown('<div class="status-ok"><strong>Phase 10 complete and frozen.</strong> Canonical source fingerprint verified.</div>', unsafe_allow_html=True)
+    clean = research["tables"]["clean_method_comparison"]
+    summary = research["summary"]
+    a, b, c, d = st.columns(4)
+    a.metric("Test instances", clean[0]["test_instances"])
+    b.metric("Test source images", clean[0]["test_sources"])
+    c.metric("Methods compared", str(len(clean)))
+    d.metric("Bootstrap resamples", str(summary["bootstrap_resamples"]))
+    st.markdown("### Clean held-out performance")
+    clean_view = [
+        {"Method": row["method_name"], "Macro F1": float(row["macro_f1"]),
+         "95% bootstrap CI low": float(row["macro_f1_bootstrap_ci_low"]),
+         "95% bootstrap CI high": float(row["macro_f1_bootstrap_ci_high"]),
+         "Accuracy": float(row["accuracy"]), "Balanced accuracy": float(row["balanced_accuracy"])}
+        for row in clean
+    ]
+    st.dataframe(clean_view, hide_index=True, width="stretch")
+    st.bar_chart(clean_view, x="Method", y="Macro F1", horizontal=True)
+    st.markdown("### Data efficiency")
+    efficiency_view = [
+        {"Method": row["method_name"], "Training fraction": float(row["training_fraction"]),
+         "Macro F1": float(row["macro_f1_mean"])}
+        for row in research["tables"]["data_efficiency_summary"]
+    ]
+    st.line_chart(efficiency_view, x="Training fraction", y="Macro F1", color="Method")
+    st.markdown("### Robustness retention")
+    robust_view = [
+        {"Method": row["method_name"], "Condition": row["condition_id"],
+         "Retention (%)": float(row["retention_percent"])}
+        for row in research["tables"]["robustness_retention_summary"] if row["condition_id"] != "clean"
+    ]
+    st.dataframe(robust_view, hide_index=True, width="stretch")
+    st.markdown("### Error and human-review summary")
+    st.dataframe(research["tables"]["error_human_review_summary"], hide_index=True, width="stretch")
+    st.info("These are descriptive frozen research summaries, not live estimates for the uploaded image. Intervals and seed variability retain the exact Phase 10 definitions.")
+    st.caption(f"Canonical source: experiments/summaries/phase10_final_synthesis_v1 · fingerprint {research['scientific_output_fingerprint']}")
+
+
+def render_detection() -> None:
+    render_hero("Detection readiness", "Read-only Phase 11A audit evidence and the explicit gate that keeps automatic localization unavailable.")
+    try:
+        status = cached_detection_status()
+    except DetectorUnavailableError as exc:
+        st.error(str(exc))
+        return
+    render_scope_notice()
+    a, b, c = st.columns(3)
+    a.metric("Phase 11A", status.phase11a_status)
+    b.metric("Phase 11B", status.phase11b_status)
+    c.metric("App integration", status.integration_decision)
+    st.markdown("### Frozen dataset audit")
+    audit = status.audit
+    first, second, third, fourth = st.columns(4)
+    first.metric("Curated images", audit["curated_image_count"])
+    second.metric("Curated boxes", audit["curated_box_count"])
+    third.metric("Multi-box images", audit["images_with_multiple_boxes"])
+    fourth.metric("Healthy/background images", audit["background_or_healthy_images"])
+    split_rows = [
+        {"Split": split.title(), "Images": audit["split_image_counts"][split], "Boxes": audit["split_box_counts"][split]}
+        for split in ("train", "validation", "test")
+    ]
+    st.dataframe(split_rows, hide_index=True, width="stretch")
+    class_rows = [{"Class": HUMAN_LABELS.get(label, label), "Boxes": count} for label, count in audit["classes"].items()]
+    st.bar_chart(class_rows, x="Class", y="Boxes", horizontal=True)
+    duplicate_a, duplicate_b, duplicate_c = st.columns(3)
+    duplicate_a.metric("Cross-split duplicate/related pairs", audit["cross_split_duplicate_or_related_pair_count"])
+    duplicate_b.metric("Retained exact-duplicate groups", audit["retained_exact_duplicate_groups"])
+    duplicate_c.metric("Invalid boxes", audit["suspicious_geometry"]["invalid_boxes"])
+    provenance = audit["annotation_provenance"]
+    st.caption(
+        f"Annotation format: {audit['annotation_format']} · source: {provenance['dataset_name']} v{provenance['dataset_version']} · "
+        f"license {provenance['license']} · dataset DOI {provenance['versioned_dataset_doi']}"
+    )
+    st.markdown("### Feasibility decisions")
+    st.dataframe(
+        [{"Capability": key.replace("_", " "), "Decision": value["decision"], "Basis": value["basis"]}
+         for key, value in status.feasibility.items()], hide_index=True, width="stretch",
+    )
+    st.warning(status.block_reason)
+    st.info("Future path: complete the frozen Phase 11B training/evaluation protocol on suitable pinned CUDA hardware, review background false-positive evidence and the validation-selected operating point, then make a separate integration decision.")
+    st.caption(f"Frozen Phase 11A scientific fingerprint: {status.scientific_output_fingerprint}")
+
+
+def render_about() -> None:
+    render_hero("About and limitations", "What this local research application does, what it deliberately withholds, and how to interpret its outputs.")
     st.markdown("### Frozen apparatus")
-    st.caption(MODEL_DISPLAY_NAME)
-    st.success("Checkpoint verified at load. No training, tuning, calibration, or model selection.")
-    st.markdown("### Upload privacy")
-    st.caption("PNG/JPG/JPEG · maximum 15 MB · decoded and processed in memory")
-    st.caption("No upload persistence, external API, image transmission, or telemetry.")
+    st.write(MODEL_DISPLAY_NAME)
+    st.code(f"Checkpoint state fingerprint: {CHECKPOINT_STATE_FINGERPRINT}\nPreprocessing: {PREPROCESSING_CONTRACT}")
+    st.markdown("### Six output categories")
+    st.dataframe(
+        [{"Category": HUMAN_LABELS[label], "Brief dataset-label guide": CLASS_DESCRIPTIONS[label]} for label in CLASS_LABELS],
+        hide_index=True, width="stretch",
+    )
+    st.caption("These descriptions are plain-language guides to the supplied dataset labels, not new diagnoses or a physical severity taxonomy.")
+    st.markdown("### Required interpretation limits")
+    st.markdown(
+        "- It does **not automatically locate defects**, establish that a defect is present, or establish that an image is defect-free.\n"
+        "- Model scores are **not calibrated confidence estimates**.\n"
+        "- The crop classifier was not externally validated for arbitrary drone imagery or healthy-blade screening.\n"
+        "- Grad-CAM describes crop-classifier activations; it is not detector evidence or a causal explanation.\n"
+        "- Outputs do not assess structural integrity, defect severity, remaining service life, or operational safety."
+    )
+    st.markdown("### Privacy and persistence")
+    st.info("Uploads, crops, session history, visualizations, and exports remain in process memory for the active session. The app makes no external API calls and does not persist uploads or analysis history.")
+    st.markdown("### Scientific state")
+    st.write("Phase 10 and Phase 11A are frozen. Phase 11B detector training is blocked and unstarted. Phase 12 has not started.")
 
-st.markdown(
-    '<div class="muted-panel"><strong>Two manual workflows are available.</strong> '
-    'A frozen automatic detector does not exist, so the application does not offer automatic localization.</div>',
-    unsafe_allow_html=True,
-)
 
-if mode == "Prepared visible defect crop":
-    st.header("Classify a prepared defect crop")
-    st.caption("Use this when one visible defect region has already been identified and cropped.")
-    step_heading(1, "Upload one prepared region")
-    with st.container(border=True):
-        uploaded = st.file_uploader(
-            "Choose a PNG, JPG, or JPEG", type=["png", "jpg", "jpeg"], key="prepared_uploader"
-        )
-    if uploaded is not None:
-        try:
-            decoded = decode_upload(uploaded.getvalue(), uploaded.name)
-            reset_for_upload("prepared", decoded.byte_sha256)
-            step_heading(2, "Review the exact classifier input")
-            original_col, input_col = st.columns(2)
-            original_col.image(decoded.image, caption="Uploaded region", width="stretch")
-            model_input = prepare_region(decoded.image)
-            input_col.image(
-                model_input,
-                caption="Exact model input: RGB, bilinear resize to 224×224",
-                width="stretch",
-            )
-            st.info("The supplied region will be classified into the six frozen WTBD categories. The app does not verify that a defect is present.")
-            step_heading(3, "Run the frozen classifier")
-            if st.button("Classify prepared region", type="primary"):
-                with st.spinner("Running the frozen model on CPU…"):
-                    loaded = cached_model()
-                    st.session_state["prepared_result"] = infer(loaded, model_input)
-                    st.session_state["prepared_model_input"] = model_input
-                    st.session_state.pop("prepared_gradcam", None)
-            if st.session_state.get("prepared_result") is not None:
-                render_result(
-                    "prepared",
-                    st.session_state["prepared_model_input"],
-                    st.session_state["prepared_result"],
-                    show_explanation,
-                )
-        except (UploadValidationError, FrozenModelError, RuntimeError) as exc:
-            st.error(str(exc))
+initialize_session()
+with st.sidebar:
+    st.markdown("## Blade research app")
+    page = st.radio("Navigation", NAVIGATION, key="navigation")
+    st.caption(f"Application v{APPLICATION_VERSION}")
+    st.divider()
+    st.metric("Session regions", len(records()))
+    st.success("Frozen classifier · CPU · local processing")
+    st.warning("Automatic localization unavailable")
+    if st.button("Clear all session data", width="stretch", disabled=not records()):
+        st.session_state["analysis_records"] = []
+        st.session_state["source_images"] = {}
+        st.session_state["next_region_number"] = 1
+        st.rerun()
+    st.caption("PNG/JPG/JPEG · max 15 MB · no upload persistence or telemetry")
+
+if page == "Home":
+    render_home()
+elif page == "Analyze Image":
+    render_analyze()
+elif page == "Compare Regions":
+    render_compare()
+elif page == "Research Results":
+    render_research()
+elif page == "Detection Readiness":
+    render_detection()
 else:
-    st.header("Manually select a defect region")
-    st.caption("Upload a larger image, then draw one rectangle around a visible region you want classified.")
-    step_heading(1, "Upload one larger image")
-    with st.container(border=True):
-        uploaded = st.file_uploader(
-            "Choose a PNG, JPG, or JPEG", type=["png", "jpg", "jpeg"], key="manual_uploader"
-        )
-    if uploaded is not None:
-        try:
-            decoded = decode_upload(uploaded.getvalue(), uploaded.name)
-            reset_for_upload("manual", decoded.byte_sha256)
-            step_heading(2, "Draw and verify one region")
-            displayed = display_image(decoded.image)
-            rectangle = st_cropper(
-                displayed,
-                realtime_update=True,
-                box_color="#F59E0B",
-                aspect_ratio=None,
-                return_type="box",
-                should_resize_image=False,
-                stroke_width=3,
-                key=f"manual_cropper_{decoded.byte_sha256[:12]}",
-            )
-            selected = map_display_box(
-                rectangle,
-                display_size=displayed.size,
-                original_size=decoded.image.size,
-            )
-            crop = contextual_crop(decoded.image, selected)
-            st.caption(
-                f"Display {displayed.width}×{displayed.height} → original {decoded.image.width}×{decoded.image.height}; "
-                f"selected original box (left, top, right, bottom) = {selected.as_tuple()}."
-            )
-            overview_col, crop_col = st.columns([1.4, 1])
-            overview_col.image(
-                annotated_selection(decoded.image, crop),
-                caption="Orange: your region · Teal: frozen contextual square",
-                width="stretch",
-            )
-            crop_col.image(
-                crop.model_input,
-                caption="Exact contextual crop sent to the model: RGB 224×224",
-                width="stretch",
-            )
-            st.caption(
-                f"Context square: {crop.geometry.crop_side} original pixels; "
-                f"minimum-side applied={crop.geometry.minimum_side_applied}; "
-                f"boundary-shifted={crop.geometry.boundary_shifted}; no padding."
-            )
-            selection_identity = (decoded.byte_sha256, selected.as_tuple())
-            if st.session_state.get("manual_selection") != selection_identity:
-                st.session_state["manual_selection"] = selection_identity
-                st.session_state.pop("manual_result", None)
-                st.session_state.pop("manual_model_input", None)
-                st.session_state.pop("manual_gradcam", None)
-            step_heading(3, "Run the frozen classifier")
-            if st.button("Classify selected region", type="primary"):
-                with st.spinner("Running the frozen model on CPU…"):
-                    loaded = cached_model()
-                    st.session_state["manual_result"] = infer(loaded, crop.model_input)
-                    st.session_state["manual_model_input"] = crop.model_input
-                    st.session_state.pop("manual_gradcam", None)
-            if st.session_state.get("manual_result") is not None:
-                render_result(
-                    "manual",
-                    st.session_state["manual_model_input"],
-                    st.session_state["manual_result"],
-                    show_explanation,
-                )
-        except (UploadValidationError, SelectionValidationError, FrozenModelError, RuntimeError) as exc:
-            st.error(str(exc))
+    render_about()
 
 st.divider()
-with st.expander("Limits of this research demonstration", expanded=False):
-    st.markdown(
-        "- It does **not automatically locate defects** or establish that an image is defect-free.\n"
-        "- Model scores are **not calibrated confidence estimates**.\n"
-        "- It was not externally validated for arbitrary drone imagery or healthy-blade screening.\n"
-        "- Grad-CAM describes crop-classifier activations; it is not detector evidence or a causal explanation."
-    )
-    st.warning(
-        "This research demonstration identifies and classifies visible image patterns. "
-        "It does not assess structural integrity, defect severity, remaining service life, or operational safety."
-    )
 st.caption(
-    "UI-only refresh · frozen Phase 6 crop classifier · Phase 11B detector unavailable · "
-    "Phase 10 and Phase 11A scientific results unchanged · Phase 12 not started."
+    "Application v2 · prepared crop + manual single/multi-region classification · session-only history and exports · "
+    "automatic localization unavailable · Phase 10 and Phase 11A frozen · Phase 12 not started."
 )

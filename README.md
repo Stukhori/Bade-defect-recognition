@@ -1,6 +1,6 @@
 # Robust Wind Turbine Blade Defect Recognition
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–10 are complete, validated, and frozen; the core classification research remains unchanged. Optional Phase 11A has completed a scientifically separate full-image annotation/feasibility audit and frozen a detection dataset/protocol, but Phase 11B training is blocked because the current environment has no CUDA device. Phase 12 has not started. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–10 are complete, validated, and frozen; the core classification research remains unchanged. Optional Phase 11A completed a separate full-image annotation/feasibility audit, while Phase 11B training remains compute/dependency-blocked. Application v2 productizes only the current frozen assets; automatic localization remains unavailable. Phase 12 has not started. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -21,7 +21,7 @@ uv pip install -r requirements-app.txt
 uv run streamlit run app/app.py
 ```
 
-It accepts a prepared visible-defect crop or a larger image with a manually selected region. It does not automatically detect defects or assess blade safety. The local frozen checkpoint must already be present; no training, tuning, calibration, or test-set evaluation occurs. See [`docs/app.md`](docs/app.md) for the exact model identity, crop parity, scope, limitations, and validation record.
+Application v2 supports prepared-crop classification, manual single- and multi-region analysis, session comparison, in-memory JSON/CSV/annotated-image exports, frozen Phase 10 research summaries, and frozen Phase 11A readiness reporting. It does not automatically detect defects or assess blade safety. The local frozen checkpoint must already be present; no training, tuning, calibration, or test-set evaluation occurs. See [`docs/app.md`](docs/app.md) for the exact model identity, crop parity, scope, limitations, and validation record.
 
 ## Run the local human-review interface
 
@@ -166,8 +166,8 @@ uv run python scripts/run_detection.py --config configs/detection.yaml --apparat
 uv run python scripts/run_detection.py --config configs/detection.yaml --validate-only
 ```
 
-Phase 11B was not started: this host has CPU-only PyTorch, no CUDA device, and no detector package or pretrained weight was acquired. The dataset/protocol, compute gate, QC packet, limitations, and handoff are documented in [`docs/phase11_detection.md`](docs/phase11_detection.md). The Streamlit application remains unchanged and manual-crop-only.
+Phase 11B was not started: this host has CPU-only PyTorch, no CUDA device, and no detector package or pretrained weight was acquired. The dataset/protocol, compute gate, QC packet, limitations, and handoff are documented in [`docs/phase11_detection.md`](docs/phase11_detection.md). Application v2 subsequently added product workflows around the frozen assets while retaining the user-supplied-region boundary; see [`docs/app.md`](docs/app.md).
 
 ## Phase boundaries
 
-Phases 0–10 remain complete, validated, and frozen. Optional Phase 11A is complete; Phase 11B detector training is compute/dependency-blocked and has not started. Phase 12 external validation has not started. The separate Streamlit application remains a non-scientific manual-crop demonstration and does not automatically detect defects or assess structural safety.
+Phases 0–10 remain complete, validated, and frozen. Optional Phase 11A is complete and frozen; Phase 11B detector training is compute/dependency-blocked and unstarted. Application v2 is complete without automatic localization. Phase 12 external validation has not started. The Streamlit application remains non-scientific and does not automatically detect defects or assess structural safety.

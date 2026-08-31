@@ -2,20 +2,38 @@
 
 ## Current phase
 
-- **Phase:** Phase 11A — Full-image Detection Feasibility and Annotation Audit
-- **Status:** PHASE 11A COMPLETE — DETECTION PROTOCOL FROZEN; PHASE 11B COMPUTE-BLOCKED
+- **Phase:** Application v2 productization on frozen assets
+- **Status:** COMPLETE AND VALIDATED; AUTOMATIC LOCALIZATION UNAVAILABLE
 - **Start date:** 2026-08-31
 - **Completion date:** 2026-08-31
 - **Previous phases:** Phases 0–10 — complete and frozen
 - **Next phase:** Phase 11B training on a suitable pinned CUDA environment; Phase 12 not started
 
-Phases 0–10 remain complete and frozen. Phase 11A is complete and its detection dataset/protocol is frozen. Phase 11B training was not started because CUDA and pinned detector dependencies/weights are unavailable in the current environment. Phase 12 has not started.
+Phases 0–10 remain complete and frozen. Phase 11A is complete and frozen. Phase 11B training is compute/dependency-blocked and unstarted. Application v2 productizes only the current frozen classifier and summary assets; it does not alter scientific behavior or integrate a detector. Phase 12 has not started.
+
+## Application v2 — frozen-asset productization
+
+**COMPLETE AND VALIDATED; AUTOMATIC LOCALIZATION UNAVAILABLE.** The initial interface-refresh commit is `1f6a6fe`; Application v2 implementation/validation commits are recorded in subsequent history.
+
+- Gate: Phase 11A application readiness is `unsupported`; Phase 11B has no detector dependency, license record, checkpoint, validation-selected threshold, NMS configuration, predictions, metrics, or reproducible inference. Phase 11C automatic localization was therefore not entered.
+- Navigation: Home, Analyze Image, Compare Regions, Research Results, Detection Readiness, and About and Limitations.
+- Active modes: prepared crop, manual single region, and manual multi-region. Multi-region work supports stable IDs, overlap, replace, remove, clear, and new-image actions.
+- Session product features: thumbnails, score comparison, selected-region Grad-CAM, and in-memory JSON/CSV/annotated-PNG downloads. Session data and uploads are not persisted.
+- Evidence dashboards: verified read-only Phase 10 canonical tables and Phase 11A audit/readiness outputs; no metric recomputation or hard-coded substitute values.
+- Future detector contract: explicit unavailable exception and typed box/result boundary; no detector dependency, weights, predictions, or fabricated boxes.
+- Scientific behavior: Phase 3 pixel parity, Phase 6 checkpoint/state/reference logits, six scores, CPU inference, and Grad-CAM prediction/parameter invariance remain unchanged. Phase 8–11A scientific outputs remain unchanged.
+- Frozen classifier checkpoint SHA-256 `9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5`; state fingerprint `3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757`. Detector checkpoint, threshold, NMS, detector latency, and detector parity: `N/A`.
+- Privacy: local in-memory uploads, telemetry disabled, no persistent upload writes, no external service/API, no tracked upload, and no global caching of user images.
+- Dependencies remain Streamlit `1.62.0` and streamlit-cropper `0.3.1`; no detector runtime or detector-license implication was added.
+- Validation: focused Application v2 suite **37 passed**; complete repository suite **266 passed** with 11 unchanged scikit-learn future warnings; all read-only Phase 2–11A/app/review validators pass.
+- Local loopback health: HTTP 200 / `ok`, then the server was stopped. No external deployment occurred.
+- Full record: `docs/app.md`; machine validation: `app/validation/validation.json`.
 
 ## Phase 11A — full-image detection feasibility and annotation audit
 
 **COMPLETE AND FROZEN; PHASE 11B BLOCKED.** Audit-apparatus commit `39cf4c7`; initial generated audit commit `956975c`; the completed reporting/final-state commit is recorded in subsequent history.
 
-- Phase 10 immutability: PASS. The 3,008-file Phase 3–9 inventory, every Phase 10 scientific output/figure, and Phase 10 fingerprint `6064922c936a05c33c38068ba86fa68c6b9b7f931d28df4e37a5e880edd5dbf0` remain unchanged. The Streamlit application inventory also remains unchanged.
+- Phase 10 immutability: PASS. The 3,008-file Phase 3–9 inventory, every Phase 10 scientific output/figure, and Phase 10 fingerprint `6064922c936a05c33c38068ba86fa68c6b9b7f931d28df4e37a5e880edd5dbf0` remain unchanged. The Streamlit application inventory was unchanged at the Phase 11A freeze; later Application v2 productization is separately validated.
 - Phase 9A fingerprint transition is explained and validated: `a5938ec...` was superseded by `14e500...` only because 177 incorrect true-class display captions were corrected; arrays, predictions, checkpoints, labels, selected cases, and conclusions did not change.
 - Authoritative source: WTBD v1 primary PASCAL VOC XML and full JPEG images; one-based inclusive coordinates. Raw release: 1,065 images/1,584 boxes. Frozen curated detection set: 720 images/1,065 boxes.
 - Detection split: 510/101/109 images and 757/146/162 boxes in train/validation/test. All boxes remain with their source image; zero exact, confirmed-scene, or unresolved duplicate group crosses a split.
@@ -27,7 +45,7 @@ Phases 0–10 remain complete and frozen. Phase 11A is complete and its detectio
 - Validation: Phase 3–10 chain, Phase 11A validator, review-interface validator, and classifier-app validator all PASS. Focused Phase 11A suite: **21 passed, 0 failed**. Complete repository suite: **256 passed, 0 failed**, with 11 unchanged scikit-learn `SVC(probability=True)` future warnings.
 - Compute gate: AMD64 Family 23 Model 24, 8 logical CPUs, 13.95 GiB RAM, Python 3.11.15, PyTorch 2.13.0+cpu, CUDA devices 0, VRAM 0. Multi-seed CPU training is prohibited.
 - No detector dependency or pretrained weight was acquired; no detector version/checkpoint/prediction/metric exists. All Phase 11B metrics and hashes are `N/A`, not zero. A new pre-test apparatus commit on suitable CUDA hardware must pin the exact compact/nano detector package, license, weight source/hash, and resolved configuration before training.
-- Application readiness: **not eligible for integration**. The app remains unchanged and manual-crop-only. Phase 12 has not started.
+- Automatic-localization readiness: **not eligible for integration**. Application v2 reads the frozen readiness evidence but every analysis path still requires a user-supplied crop or rectangle. Phase 12 has not started.
 - Results: `experiments/summaries/phase11_detection_audit_v1/`; full record: `docs/phase11_detection.md`.
 
 ## Phase 10 — Final statistical synthesis and reproducibility freeze
@@ -78,20 +96,21 @@ Phases 0–10 remain complete and frozen. Phase 11A is complete and its detectio
 - At the interface-validation commit, both canonical forms were blank. They are now complete and frozen: Pass A SHA-256 `3b6548d8e6a1240c224f156f9266c5025cc099816d73a8c81960173fe9c8423e`; Pass B SHA-256 `0f5258e06a4e854d338705bcf1d38ced048f0652a99ccc4639b18c3baae1cd96`.
 - The interface changed no mapping entry, packet image/HTML, checkpoint, prediction, quantitative output, or other scientific artifact. Phase 9B subsequently incorporated the returned forms through the separately validated deterministic pipeline. At this Phase 9B completion point, Phase 10 was unstarted; it subsequently completed without changing any interface or Phase 9 artifact.
 
-## Separate non-scientific demonstration
+## Separate non-scientific Application v2
 
 **Status: COMPLETE AND VALIDATED; does not change the scientific phase.** The local Streamlit application is an engineering demonstration of the already frozen classifier, not a scientific experiment or a Phase 10 deliverable.
 
 - Entry point: `app/app.py`; operating record: `docs/app.md`; app-only validation: `app/validation/`.
 - Frozen model: Phase 6 full-data MobileNetV3-Small seed 17, used because 17 is the predeclared canonical seed rather than because of a best-result comparison.
-- Input modes: an already prepared visible-defect crop, or a larger image with one region manually selected by the user.
+- Input modes: prepared crop, larger image with one manually selected region, or larger image with multiple manually selected regions.
 - The manual workflow reuses the exact Phase 3 contextual-square geometry and the same RGB/bilinear 224×224 pixel policy; regression tests confirm pixel identity against multiple stored Phase 3 references.
 - App output: one of the six frozen WTBD categories plus all six model scores, explicitly labeled as not calibrated confidence estimates.
 - Optional Grad-CAM imports the unchanged Phase 9A primitive; model-state and prediction invariance pass.
 - App dependencies are pinned separately in `requirements-app.txt`; scientific dependency constraints are unchanged.
-- Validation: both complete UI workflows pass; focused app suite 27 passed; complete suite 191 passed with 11 existing scikit-learn warnings; live server health returned HTTP 200/`ok`; frozen Phase 9A validator remains `PASS`.
+- Product features: session-only comparison, stable region IDs, optional Grad-CAM, in-memory JSON/CSV/annotated-PNG exports, frozen Phase 10 research dashboard, and frozen Phase 11A readiness dashboard.
+- Validation: all three UI workflows, pure session/export contracts, canonical dashboard sources, classifier invariance, and automatic-localization gate pass. Final suite and live-health results are recorded in the current Application v2 section.
 - Training, fine-tuning, calibration, ensembling, test-driven model/seed selection, new test-set evaluation, checkpoint mutation, external service calls, permanent upload storage, and tracked uploaded images: zero.
-- Scientific status is **PHASE 10 COMPLETE — VALIDATED AND FROZEN**. The core technical research project is complete. Phase 11 and Phase 12 remain optional and unstarted.
+- Scientific status remains **PHASE 10 COMPLETE — VALIDATED AND FROZEN** with **PHASE 11A COMPLETE AND FROZEN**. Phase 11B is blocked and unstarted; Phase 12 has not started.
 
 The application classifies a manually identified visible surface-defect region. It does not automatically detect or localize defects, assess blade safety or condition, detect hidden/internal damage, estimate severity or remaining life, replace inspection professionals, or establish real-time target-hardware deployment.
 

@@ -1,16 +1,17 @@
-# App validation record
+# Application validation record
 
-Validation completed locally on 2026-08-30. This directory is intentionally separate from the scientific result and summary paths.
+`validation.json` is the machine-readable Application v2 validation record, kept outside scientific result paths.
 
-- Machine-readable two-workflow record: `validation.json` — `PASS`.
-- Prepared-region UI flow: upload, exact model-input preview, explicit classification, six scores, zero Streamlit errors — `PASS`.
-- Manual-region UI flow: larger-image upload, rectangle component, display/original coordinate handling, contextual preview, explicit classification, six scores, zero Streamlit errors — `PASS`.
-- Frozen training-reference parity: manual contextual crop pixels exactly equal the stored Phase 3 crop — `PASS`.
-- Optional Grad-CAM: expected activation shape, unchanged model state, unchanged prediction — `PASS`.
-- Focused app suite: 27 passed, 0 failed.
-- Complete repository suite: 191 passed, 0 failed; 11 unchanged scikit-learn deprecation warnings.
-- Phase 9A validator: `PASS`; checkpoints, predictions, and input fingerprints unchanged; both review forms blank.
-- Live server: `http://127.0.0.1:8501/_stcore/health` returned HTTP 200 and body `ok`; server stopped afterward.
-- External service calls, training, fine-tuning, calibration, test-set evaluation, permanent upload storage, and tracked uploaded files: zero.
+- Prepared-crop, manual single-region, and manual multi-region workflows: `PASS`.
+- Stable region IDs and replace/remove/clear/new-image contracts: `PASS`.
+- Session-only comparison plus in-memory JSON, CSV, and annotated-PNG export: `PASS`.
+- Frozen Phase 3 contextual-crop pixel parity: `PASS`.
+- Phase 6 checkpoint/state identity, six-score inference, and optional Grad-CAM parameter/prediction invariance: `PASS`.
+- Frozen Phase 10 canonical-table identity and no-recomputation dashboard: `PASS`.
+- Frozen Phase 11A readiness identity and `unsupported` automatic-integration gate: `PASS`.
+- Automatic detector inference, training, tuning, calibration, test-set evaluation, external service calls, upload persistence, and tracked uploads: zero.
+- Phase 10 and Phase 11A scientific-output fingerprints: unchanged.
+- Focused Application v2 suite: 37 passed; complete repository suite: 266 passed with 11 unchanged scikit-learn future warnings.
+- Live loopback health: HTTP 200 / `ok`; server stopped afterward.
 
-No screenshots were generated or committed; the UI checks use Streamlit's supported local test driver plus a live server health check.
+The app uses Streamlit's local test driver and a loopback-only live health check. No UI screenshot is committed.

@@ -4,7 +4,7 @@
 
 `PHASE 11A COMPLETE — DETECTION PROTOCOL FROZEN; PHASE 11B COMPUTE-BLOCKED`
 
-Phase 11 is an optional result line separate from the frozen crop-classification study. Phase 11A audits the authoritative full-image annotations and freezes a detection-specific manifest and source-image split. It changes no Phase 3–10 dataset, split, crop, label, checkpoint, prediction, logit, metric, table, figure, bootstrap index, review judgment, or conclusion. It also changes no Streamlit application file.
+Phase 11 is an optional result line separate from the frozen crop-classification study. Phase 11A audits the authoritative full-image annotations and freezes a detection-specific manifest and source-image split. At its freeze point it changed no Streamlit application file, and it changes no Phase 3–10 dataset, split, crop, label, checkpoint, prediction, logit, metric, table, figure, bootstrap index, review judgment, or conclusion. Application v2 was added afterward as validated non-scientific productization; it reads this audit but does not modify it or integrate a detector.
 
 Phase 11B training was not started. The current environment has CPU-only PyTorch and no CUDA device, so the declared three-seed compact-detector plan cannot be completed safely here. No detector dependency was installed, no pretrained weight was downloaded, no checkpoint or prediction was created, and the test set was not evaluated. Phase 12 was not started.
 
@@ -112,7 +112,7 @@ The Phase 3–10 validation chain, Phase 11A validator, review-interface validat
 
 The data are defect-positive, mostly 1024 × 1024 images from one dataset release. They cannot measure false positives on healthy blades, represent arbitrary drone flights, establish operational domain coverage, validate rare-class reliability, estimate structural safety, severity, progression, or remaining life, or support fleet-level uncertainty. Geometry diagnostics and the single-reviewer Phase 9 concerns are not objective annotation errors.
 
-Application readiness is **not eligible for integration**. The existing Streamlit application remains manual-crop-only and unchanged. A future checkpoint alone would be insufficient: integration would require reviewed Phase 11B test precision/recall, a validation-selected operating point, background false-positive evidence, license/dependency review, checkpoint availability, and a separate application decision.
+Automatic-localization readiness is **not eligible for integration**. Application v2 respects that decision: all three active analysis modes still require a user-supplied crop or rectangle, and the detection interface explicitly reports unavailable. A future checkpoint alone would be insufficient: integration would require reviewed Phase 11B test precision/recall, a validation-selected operating point, background false-positive evidence, license/dependency review, checkpoint availability, and a separate application decision.
 
 Phase 10 remains frozen and unchanged. Phase 12 has not started.
 

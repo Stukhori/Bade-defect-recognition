@@ -15,6 +15,14 @@ HUMAN_LABELS = {
     "crack": "Crack",
     "hide_craze": "Hide craze",
 }
+CLASS_DESCRIPTIONS = {
+    "craze": "Fine, network-like surface cracking under the source dataset label.",
+    "corrosion": "A region labeled for visible corrosion or oxidation-like surface change.",
+    "surface_injure": "A region labeled for visible surface injury or abrasion-like damage.",
+    "thunderstrike": "The source dataset category for visible lightning-strike-related damage.",
+    "crack": "A region labeled for a visible crack pattern.",
+    "hide_craze": "The source dataset's label for a subtler or less exposed craze pattern.",
+}
 
 MODEL_DISPLAY_NAME = "MobileNetV3-Small — frozen Phase 6, full-data seed 17"
 DATASET_FINGERPRINT = "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991"
@@ -26,6 +34,13 @@ CHECKPOINT_RELATIVE_PATH = Path(
 EXPECTED_ARCHITECTURE = "torchvision_mobilenet_v3_small"
 EXPECTED_SEED = 17
 MODEL_INPUT_SIZE = (224, 224)
+
+APPLICATION_VERSION = "2.0.0"
+PREPROCESSING_CONTRACT = (
+    "RGB conversion; prepared regions use bilinear resize to 224x224; manual regions "
+    "reuse the frozen Phase 3 1.5x contextual square, 64-pixel minimum side, boundary "
+    "shift without padding, then bilinear resize to 224x224; ImageNet normalization at inference"
+)
 
 MAX_UPLOAD_BYTES = 15 * 1024 * 1024
 MAX_IMAGE_PIXELS = 50_000_000

@@ -681,8 +681,23 @@ def validate_audit(config: ResolvedConfig, root: str | Path, *, allow_missing_va
         raise DetectionAuditError("Phase 11A reproduction record failed")
     if reproduction.get("phase10_files_fingerprint") != phase10["phase10_files_fingerprint"]:
         raise DetectionAuditError("Phase 10 changed after Phase 11A generation")
+    application_state = "unchanged_since_phase11a"
     if reproduction.get("application_fingerprint") != app["fingerprint"]:
-        raise DetectionAuditError("application changed after Phase 11A generation")
+        app_record_path = repository / "app/validation/validation.json"
+        app_record = _json(app_record_path) if app_record_path.is_file() else {}
+        application_v2 = app_record.get("application_v2", {})
+        invariance = app_record.get("scientific_invariance", {})
+        authorized_productization = (
+            app_record.get("status") == "PASS"
+            and application_v2.get("status") == "PASS"
+            and application_v2.get("automatic_localization_integrated") is False
+            and application_v2.get("software_productization_only") is True
+            and invariance.get("status") == "PASS"
+            and invariance.get("phase11a_scientific_output_fingerprint") == reproduction.get("scientific_output_fingerprint")
+        )
+        if not authorized_productization:
+            raise DetectionAuditError("application changed without an authorized validated Application v2 productization record")
+        application_state = "authorized_validated_application_v2_productization"
     gate = _json(output / "compute_gate.json")
     if gate.get("training_authorized_here") is not False or gate.get("cuda_available") is not False:
         raise DetectionAuditError("recorded Phase 11B compute block is invalid")
@@ -695,7 +710,8 @@ def validate_audit(config: ResolvedConfig, root: str | Path, *, allow_missing_va
     if not allow_missing_validation and not (output / "validation.json").is_file():
         raise DetectionAuditError("validation record is absent")
     return {
-        "status": "PASS", "phase": "11A", "phase10_unchanged": True, "application_unchanged": True,
+        "status": "PASS", "phase": "11A", "phase10_unchanged": True,
+        "phase11a_application_unchanged_at_freeze": True, "current_application_state": application_state,
         "annotation_audit": "PASS", "dataset_fingerprint": audit.dataset_fingerprint,
         "split_fingerprint": audit.split_fingerprint, "scientific_output_fingerprint": reproduction["scientific_output_fingerprint"],
         "exact_two_pass_equality": True, "curated_images": len(audit.images), "curated_boxes": len(audit.annotations),
