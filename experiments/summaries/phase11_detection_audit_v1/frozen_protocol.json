@@ -1,0 +1,27 @@
+{
+  "checkpoint_selection": "validation_map_50_95_only",
+  "dataset_fingerprint": "ad4ab59c3e3c85c6cf0b85b148177bd6b79d24f372f49bdff0043609e6fefc97",
+  "dependency_installed": false,
+  "detector_family": "compact_one_stage_yolo_family",
+  "detector_variant": "compact_nano_variant_to_be_pinned_in_a_new_pretest_apparatus_commit",
+  "estimated_checkpoint_and_log_storage_gib": 5,
+  "minimum_vram_gib": 8,
+  "nms_policy": "one_frozen_configuration_for_validation_and_test",
+  "planned_run_count": 3,
+  "pretrained_weight_downloaded": false,
+  "primary_metric": "class_agnostic_map_50_95",
+  "reason": "cuda_unavailable_in_current_environment",
+  "required_device": "cuda_gpu",
+  "required_next_command_after_gpu_and_new_pretest_pin": "python scripts/run_detection.py --config configs/detection.yaml --train",
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "split_fingerprint": "264f8460f203074374c2c098c8fd5d2e55fb7ee1f281a8d505e2dfb0de9a2bc3",
+  "status": "blocked_before_dependency_or_weight_acquisition",
+  "test_firewall": "no_test_evaluation_before_all_training_and_validation_decisions_are_locked",
+  "test_metrics_inspected": false,
+  "threshold_policy": "validation_only_maximum_class_agnostic_f1_then_freeze",
+  "training_started": false
+}

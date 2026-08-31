@@ -1,0 +1,17 @@
+{
+  "annotation_audit": "PASS",
+  "application_unchanged": true,
+  "block_reason": "CUDA unavailable",
+  "curated_boxes": 1065,
+  "curated_images": 720,
+  "dataset_fingerprint": "ad4ab59c3e3c85c6cf0b85b148177bd6b79d24f372f49bdff0043609e6fefc97",
+  "exact_two_pass_equality": true,
+  "phase": "11A",
+  "phase10_unchanged": true,
+  "phase11b_blocked": true,
+  "phase11b_training_started": false,
+  "phase12_started": false,
+  "scientific_output_fingerprint": "03189c65bf9a160e06c501ce68b247275847d2fd0cfbb2689361adfaba864b29",
+  "split_fingerprint": "264f8460f203074374c2c098c8fd5d2e55fb7ee1f281a8d505e2dfb0de9a2bc3",
+  "status": "PASS"
+}

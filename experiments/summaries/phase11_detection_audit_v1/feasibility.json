@@ -1,0 +1,22 @@
+{
+  "application_integration": {
+    "basis": "No detector has been trained or evaluated; background false-positive evidence is absent.",
+    "decision": "unsupported"
+  },
+  "arbitrary_full_image_inspection": {
+    "basis": "The fixed defect-positive dataset does not represent arbitrary operational or healthy-blade imagery.",
+    "decision": "unsupported"
+  },
+  "class_agnostic_localization": {
+    "basis": "720 positive full images, 1,065 valid curated boxes, source-isolated split; no healthy controls.",
+    "decision": "supported with explicit limitations"
+  },
+  "healthy_blade_false_positive_evaluation": {
+    "basis": "No curated or raw image has zero annotated defects.",
+    "decision": "unsupported"
+  },
+  "six_class_detection": {
+    "basis": "All six classes occur in every split, but class support is imbalanced and thunderstrike has only 60 boxes overall.",
+    "decision": "supported with explicit limitations"
+  }
+}

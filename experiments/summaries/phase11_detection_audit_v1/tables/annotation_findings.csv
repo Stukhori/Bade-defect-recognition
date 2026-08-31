@@ -1,0 +1,10 @@
+severity,finding,count,interpretation
+info,authoritative_source,720,Primary PASCAL VOC annotations retained by wtbd-curation-v1; no screenshot or Grad-CAM reconstruction.
+pass,invalid_boxes,0,"All curated boxes are finite, positive, in bounds, and class-mapped."
+limitation,background_only_images,0,False-positive performance on healthy blades cannot be established.
+reviewed_exclusion,excluded_identity_or_duplicate_images,345,Existing human-reviewed curation exclusions are preserved; no Phase 11 relabeling or repair.
+diagnostic,small_boxes_area_lt_1pct,162,Retained and reported; no enlargement or deletion.
+diagnostic,almost_full_boxes_area_gt_50pct,9,Retained and reported; no clipping or repair.
+diagnostic,extreme_aspect_ratio_boxes,33,Retained and included in deterministic QC.
+pass,cross_split_exact_or_confirmed_scene_leakage,0,Detection split preserves curated source/duplicate isolation.
+limitation,pending_near_duplicate_pairs_within_split,78,All retained pending candidates are confined within one split; they cannot leak across evaluation partitions.

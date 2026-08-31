@@ -1,0 +1,13 @@
+{
+  "class_agnostic": {
+    "defect": 0
+  },
+  "multiclass": {
+    "corrosion": 1,
+    "crack": 4,
+    "craze": 0,
+    "hide_craze": 5,
+    "surface_injure": 2,
+    "thunderstrike": 3
+  }
+}

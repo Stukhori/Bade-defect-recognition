@@ -1,0 +1,80 @@
+{
+  "annotation_format": "PASCAL VOC XML represented by the frozen Phase 1/2 manifests",
+  "annotation_provenance": {
+    "acquisition_date_utc": "2026-08-27T16:12:59Z",
+    "acquisition_method": "automatic official download",
+    "archive_byte_size": 78958553,
+    "archive_relative_path": "data/raw/wtbd/WT blade defect dataset.zip",
+    "archive_sha256": "466452f2a0cfc9ef6ba63ea2a3bbc7ea4262057dd07e4fc9e00eedf5bba305b4",
+    "article_doi": "10.1038/s41597-026-06762-x",
+    "article_title": "Multiclass Dataset for Intelligent Detection of Wind Turbine Blade Defects Using Drone Imagery",
+    "authors": [
+      "Lipeng Ji",
+      "Junjie Cheng",
+      "Shilong Wu"
+    ],
+    "dataset_doi": "10.6084/m9.figshare.30210175",
+    "dataset_name": "WTBD — Wind Turbine Blade Defect dataset",
+    "dataset_version": 1,
+    "extracted_top_level_entries": [
+      "WT blade defect dataset"
+    ],
+    "extraction_location": "data/raw/wtbd",
+    "license": "CC BY 4.0",
+    "official_api_url": "https://api.figshare.com/v2/articles/30210175",
+    "official_file_id": 61029058,
+    "official_supplied_md5": "14ad7e2cf7161b9100d1d70fb398b0cf",
+    "original_download_filename": "WT blade defect dataset.zip",
+    "repository": "Springer Nature Figshare",
+    "schema_version": "1.0",
+    "source_url": "https://springernature.figshare.com/articles/dataset/Multiclass_Dataset_for_Intelligent_Detection_of_Wind_Turbine_Blade_Defects_Using_Drone_Imagery/30210175",
+    "versioned_dataset_doi": "10.6084/m9.figshare.30210175.v1"
+  },
+  "background_or_healthy_images": 0,
+  "classes": {
+    "corrosion": 178,
+    "crack": 131,
+    "craze": 169,
+    "hide_craze": 263,
+    "surface_injure": 264,
+    "thunderstrike": 60
+  },
+  "coordinate_convention": "one-based inclusive integer pixels; xmin/ymin start at 1 and xmax/ymax are valid through width/height",
+  "cross_split_duplicate_or_related_pair_count": 0,
+  "curated_box_count": 1065,
+  "curated_image_count": 720,
+  "duplicate_annotation_count": 0,
+  "images_with_multiple_boxes": 253,
+  "images_with_one_box": 467,
+  "images_with_zero_boxes": 0,
+  "maximum_boxes_per_image": 7,
+  "multi_class_images": 64,
+  "pending_near_duplicate_pairs_within_split": 78,
+  "phase9_crop_or_background_concern_source_count": 10,
+  "raw_box_count": 1584,
+  "raw_image_count": 1065,
+  "retained_exact_duplicate_groups": 0,
+  "split_box_counts": {
+    "test": 162,
+    "train": 757,
+    "validation": 146
+  },
+  "split_image_counts": {
+    "test": 109,
+    "train": 510,
+    "validation": 101
+  },
+  "status": "PASS",
+  "suspicious_geometry": {
+    "area_fraction_gt_0_50": 9,
+    "area_fraction_lt_0_01": 162,
+    "aspect_ratio_gt_10": 13,
+    "aspect_ratio_lt_0_10": 20,
+    "curation_excluded_images": 345,
+    "duplicate_annotations": 0,
+    "invalid_boxes": 0,
+    "overlapping_pairs_iou_ge_0_25": 0,
+    "overlapping_pairs_iou_gt_0": 24,
+    "xml_filename_mismatches_in_raw_release": 262
+  }
+}

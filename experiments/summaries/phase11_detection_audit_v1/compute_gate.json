@@ -1,0 +1,21 @@
+{
+  "block_reason": "CUDA is unavailable; multi-seed CPU detector training is prohibited by the frozen protocol.",
+  "cpu": "AMD64 Family 23 Model 24 Stepping 1, AuthenticAMD",
+  "cuda_available": false,
+  "cuda_device_count": 0,
+  "deterministic_cuda_operations_assessed": false,
+  "disk_free_gib_at_gate": 344.39,
+  "disk_total_gib": 475.73,
+  "estimated_storage_gib": 5,
+  "gpu": null,
+  "logical_cpu_count": 8,
+  "minimum_vram_gib": 8.0,
+  "planned_scientific_runs": 3,
+  "platform": "Windows-10-10.0.26200-SP0",
+  "python": "3.11.15",
+  "ram_gib": 13.95,
+  "status": "PASS_FOR_PHASE11A_BLOCKED_FOR_PHASE11B",
+  "torch": "2.13.0+cpu",
+  "training_authorized_here": false,
+  "vram_gib": 0.0
+}
