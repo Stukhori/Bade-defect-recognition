@@ -1,0 +1,19 @@
+{
+  "bootstrap_resamples": 5000,
+  "bootstrap_seed": 20260831,
+  "generation_commit": "9567862ff144f16550ad742554a2d30645a0ce2f",
+  "operating_system": "Windows",
+  "operating_system_release": "10",
+  "packages": {
+    "Pillow": "12.3.0",
+    "PyYAML": "6.0.3",
+    "matplotlib": "3.11.1",
+    "numpy": "2.4.6",
+    "scikit-learn": "1.9.0",
+    "torch": "2.13.0",
+    "torchvision": "0.28.0"
+  },
+  "platform": "Windows-10-10.0.26200-SP0",
+  "python_implementation": "CPython",
+  "python_version": "3.11.15"
+}

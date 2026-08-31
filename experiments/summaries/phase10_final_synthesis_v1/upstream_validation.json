@@ -1,0 +1,61 @@
+{
+  "apparatus": {
+    "paired_test_instances": 162,
+    "phase11_started": false,
+    "phase12_started": false,
+    "statistical_plan": {
+      "checks": {
+        "bootstrap_method": true,
+        "cnn_aggregation": true,
+        "common_indices": true,
+        "confidence": true,
+        "deterministic_sd": true,
+        "fixed_seed": true,
+        "frozen_before_generation": true,
+        "interpretation_limits": true,
+        "missing_rejected": true,
+        "p_values_omitted": true,
+        "paired": true,
+        "phase": true,
+        "primary_metric": true,
+        "resamples": true,
+        "six_pairs": true,
+        "stratified": true
+      },
+      "config_fingerprint": "0691d82dc6addc200806c26a42382db3ebd70cc5ef1cd6065c306a30a7ed2951",
+      "status": "PASS"
+    },
+    "status": "PASS",
+    "upstream_identity": {
+      "checks": {
+        "mapping": true,
+        "pass_a": true,
+        "pass_b": true,
+        "phase7_complete": true,
+        "phase8_complete": true,
+        "phase8_config_fingerprint": true,
+        "phase8_data_fingerprint": true,
+        "phase9_complete": true,
+        "phase9a_input": true,
+        "phase9a_output": true,
+        "phase9b_output": true,
+        "processed_fingerprint": true
+      },
+      "status": "PASS"
+    }
+  },
+  "validators": {
+    "status": "PASS",
+    "validators": {
+      "phase3_dataset": "PASS",
+      "phase3_subsets": "PASS",
+      "phase4": "PASS",
+      "phase5": "PASS",
+      "phase6": "PASS",
+      "phase7": "PASS",
+      "phase8": "PASS",
+      "phase9a": "PASS",
+      "phase9b": "PASS"
+    }
+  }
+}

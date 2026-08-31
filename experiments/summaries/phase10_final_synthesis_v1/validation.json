@@ -1,0 +1,20 @@
+{
+  "bootstrap_integrity": "PASS",
+  "canonical_figure_count": 7,
+  "canonical_table_count": 10,
+  "figure_data_consistency": "PASS",
+  "output_fingerprint": "6064922c936a05c33c38068ba86fa68c6b9b7f931d28df4e37a5e880edd5dbf0",
+  "p_values": "omitted",
+  "phase10_complete": true,
+  "phase10_frozen": true,
+  "phase11_started": false,
+  "phase12_started": false,
+  "scientific_file_count": 37,
+  "status": "PASS",
+  "table_json_consistency": "PASS",
+  "two_pass_reproduction": "PASS",
+  "upstream_artifacts_unchanged": true,
+  "upstream_validators": {
+    "status": "NOT_RUN"
+  }
+}

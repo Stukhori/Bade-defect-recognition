@@ -1,0 +1,68 @@
+{
+  "bootstrap": {
+    "common_indices_across_methods": true,
+    "confidence_level": 0.95,
+    "interval": "equal_tailed_percentile",
+    "method": "paired_class_stratified_nonparametric_percentile",
+    "resamples": 5000,
+    "seed": 20260831,
+    "stratification": "true_class"
+  },
+  "cnn_treatment": "calculate_each_seed_metric_within_each_resample_then_average_three_seed_metrics",
+  "comparison_unit": "frozen_test_classification_instance",
+  "descriptive_scope": "data_efficiency_robustness_error_analysis_human_review_and_cross_phase_tradeoffs",
+  "deterministic_treatment": "one_frozen_prediction_vector_with_sample_bootstrap_ci_and_seed_sd_not_applicable",
+  "frozen_before_generation": true,
+  "inferential_scope": "paired_sample_bootstrap_intervals_for_clean_test_metrics_and_predeclared_pairwise_macro_f1_differences",
+  "interpretation_limits": [
+    "three_cnn_seeds_do_not_support_population_inference_about_training_randomness",
+    "bootstrap_intervals_describe_uncertainty_over_the_fixed_test_sample_structure_not_new_datasets_or_deployments",
+    "interval_exclusion_of_zero_is_not_reported_as_a_multiplicity_controlled_significance_test",
+    "synthetic_corruption_grid_points_are_fixed_not_random_operational_environments",
+    "single_reviewer_judgments_are_descriptive_not_objective_ground_truth",
+    "gradcam_overlap_does_not_establish_model_mechanism_or_causality"
+  ],
+  "missing_value_policy": "reject_missing_nonfinite_or_inconsistent_rows",
+  "multiple_comparison_policy": "no_p_value_family; six_pointwise_estimation_intervals_reported_without_familywise_significance_claims",
+  "p_values": "omitted",
+  "pairing": "same_resampled_test_instances_for_every_method_and_comparison",
+  "pairwise_comparisons": [
+    [
+      "hog",
+      "lbp"
+    ],
+    [
+      "hog",
+      "resnet18"
+    ],
+    [
+      "hog",
+      "mobilenet_v3_small"
+    ],
+    [
+      "lbp",
+      "resnet18"
+    ],
+    [
+      "lbp",
+      "mobilenet_v3_small"
+    ],
+    [
+      "resnet18",
+      "mobilenet_v3_small"
+    ]
+  ],
+  "primary_metric": "macro_f1",
+  "secondary_metrics": [
+    "accuracy",
+    "balanced_accuracy",
+    "macro_precision",
+    "macro_recall",
+    "per_class_precision",
+    "per_class_recall",
+    "per_class_f1"
+  ],
+  "test_instances": 162,
+  "test_source_images": 109,
+  "version": "phase10_statistical_plan_v1"
+}

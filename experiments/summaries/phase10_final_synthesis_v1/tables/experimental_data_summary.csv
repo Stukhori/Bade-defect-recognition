@@ -1,0 +1,4 @@
+dataset,split,source_images,instances,classes,split_unit,processed_fingerprint
+WTBD curated crop benchmark,train,510,757,6,source image,4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991
+WTBD curated crop benchmark,validation,101,146,6,source image,4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991
+WTBD curated crop benchmark,test,109,162,6,source image,4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991

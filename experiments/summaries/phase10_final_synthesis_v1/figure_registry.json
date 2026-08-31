@@ -1,0 +1,65 @@
+{
+  "clean_macro_f1_bootstrap_ci.png": {
+    "caption": "Bars are frozen point estimates; error bars are 95% paired class-stratified percentile bootstrap intervals across 162 test instances, with CNN metrics averaged across all three frozen seeds within each resample.",
+    "source_hashes": {
+      "tables/clean_method_comparison.csv": "f188cc84471a4c9027c87d7b4dd33ba52278dd0fbc6d0e0514ae37b8d9c06c4e"
+    },
+    "sources": [
+      "tables/clean_method_comparison.csv"
+    ]
+  },
+  "clean_per_class_f1.png": {
+    "caption": "CNN bars are three-seed means; deterministic methods are single point estimates. No error bars are shown in this figure; exact seed SD and bootstrap intervals are tabulated.",
+    "source_hashes": {
+      "tables/clean_per_class_performance.csv": "a6ec33a693c7f8798e756bc1eaf5e4c96eb17fc051224225e0c9d1400183dd5e"
+    },
+    "sources": [
+      "tables/clean_per_class_performance.csv"
+    ]
+  },
+  "data_efficiency_learning_curves.png": {
+    "caption": "Error bars are sample SD across three predeclared reduced-data replicates; full-data HOG/LBP SD is N/A and is not drawn as zero.",
+    "source_hashes": {
+      "tables/data_efficiency_summary.csv": "8a66ff4ec7fe0214a4aa54b4304713c1d37700f6ed82e88291d72e3a41cae66c"
+    },
+    "sources": [
+      "tables/data_efficiency_summary.csv"
+    ]
+  },
+  "phase9_human_review_summary.png": {
+    "caption": "Percentages are one reviewer's post-hoc judgments on 60 deliberately selected cases; they are not objective ground truth or population estimates.",
+    "source_hashes": {
+      "tables/error_human_review_summary.csv": "32197abc40303ac3ec0604c6437c273a299e84b2abdfd14571a0c059166d5fd5"
+    },
+    "sources": [
+      "tables/error_human_review_summary.csv"
+    ]
+  },
+  "robustness_curves.png": {
+    "caption": "CNN curves are three-seed means; HOG/LBP are deterministic. Conditions are fixed synthetic design points, not random operational environments.",
+    "source_hashes": {
+      "tables/robustness_retention_summary.csv": "f6bb12c64b478c29d1c8782a55f1347a45e878b8eadab26ec8f3fa1e11b28ebc"
+    },
+    "sources": [
+      "tables/robustness_retention_summary.csv"
+    ]
+  },
+  "severe_per_class_f1.png": {
+    "caption": "CNN bars are three-seed means; deterministic bars are point estimates. Small class supports constrain interpretation.",
+    "source_hashes": {
+      "experiments/summaries/phase8_robustness_v1/aggregate/per_class_robustness.csv": "23451e7fffed5a7dc20b526c97119c62c4e7004a719621c212547f9736243aaa"
+    },
+    "sources": [
+      "experiments/summaries/phase8_robustness_v1/aggregate/per_class_robustness.csv"
+    ]
+  },
+  "severe_retention_heatmap.png": {
+    "caption": "Retention is corrupted macro-F1 divided by each method's clean macro-F1. It is a descriptive ratio on four fixed severe conditions.",
+    "source_hashes": {
+      "tables/severe_corruption_summary.csv": "6ed97863940f7b4cbdf4b58f33f34c3c7bfb8f6a362663283663bfd728834589"
+    },
+    "sources": [
+      "tables/severe_corruption_summary.csv"
+    ]
+  }
+}

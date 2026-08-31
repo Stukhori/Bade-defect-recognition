@@ -1,0 +1,74 @@
+{
+  "fields": [
+    "artifact",
+    "fingerprint_or_commit",
+    "scope"
+  ],
+  "rows": [
+    {
+      "artifact": "phase9_freeze_commit",
+      "fingerprint_or_commit": "89e18d48ef2dd7c2cef35e9b7a4fa6fe72c92ea9",
+      "scope": "Git"
+    },
+    {
+      "artifact": "phase3_processed_dataset",
+      "fingerprint_or_commit": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+      "scope": "Phase 3 manifest and crops"
+    },
+    {
+      "artifact": "phase8_corruption_config",
+      "fingerprint_or_commit": "a6a9e40c9c3de7130892df3cf49698f95718ce9241c8a963849016ce7adc1d57",
+      "scope": "Phase 8"
+    },
+    {
+      "artifact": "phase8_robustness_dataset",
+      "fingerprint_or_commit": "da0eda8956adfef63e001d0d1614279a907c46feffc5e2f180c5acdbe89987db",
+      "scope": "Phase 8"
+    },
+    {
+      "artifact": "phase9a_input",
+      "fingerprint_or_commit": "dbedb680481e6477b94ff623858e1db4c1981f2b8f5491d0e04a99b5672173b1",
+      "scope": "Phase 9A"
+    },
+    {
+      "artifact": "phase9a_output",
+      "fingerprint_or_commit": "14e500fd94fa871bbe1e6bee6494d3158fe003c3799e0ccfbcab8e549adf80fa",
+      "scope": "Phase 9A"
+    },
+    {
+      "artifact": "phase9b_config",
+      "fingerprint_or_commit": "ac60d00ffb9b0b729c334a9b5b76bf0f3630c09fd7e5b78b7f304f3048263830",
+      "scope": "Phase 9B"
+    },
+    {
+      "artifact": "phase9b_output",
+      "fingerprint_or_commit": "dc940fe0a802d285b236224b04197f7fb7d6b0ef73062a5bdddbb1238de286d3",
+      "scope": "Phase 9B"
+    },
+    {
+      "artifact": "pass_a_form",
+      "fingerprint_or_commit": "3b6548d8e6a1240c224f156f9266c5025cc099816d73a8c81960173fe9c8423e",
+      "scope": "human review"
+    },
+    {
+      "artifact": "pass_b_form",
+      "fingerprint_or_commit": "0f5258e06a4e854d338705bcf1d38ced048f0652a99ccc4639b18c3baae1cd96",
+      "scope": "human review"
+    },
+    {
+      "artifact": "review_id_mapping",
+      "fingerprint_or_commit": "46b19248797997e8aa7236b9c3fbf17f972977f2cdb2c3a958bd12513f25210b",
+      "scope": "human review"
+    },
+    {
+      "artifact": "phase10_config",
+      "fingerprint_or_commit": "0691d82dc6addc200806c26a42382db3ebd70cc5ef1cd6065c306a30a7ed2951",
+      "scope": "Phase 10"
+    },
+    {
+      "artifact": "complete_upstream_inventory",
+      "fingerprint_or_commit": "20d917d5cbe08f579382575218a62aa8f0162841197a5d5d98d4eec7e4d0f9a2",
+      "scope": "3008 frozen files"
+    }
+  ]
+}

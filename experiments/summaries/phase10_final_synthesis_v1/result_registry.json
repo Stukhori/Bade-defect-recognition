@@ -1,0 +1,152 @@
+{
+  "figures": {
+    "clean_macro_f1_bootstrap_ci.png": {
+      "caption": "Bars are frozen point estimates; error bars are 95% paired class-stratified percentile bootstrap intervals across 162 test instances, with CNN metrics averaged across all three frozen seeds within each resample.",
+      "source_hashes": {
+        "tables/clean_method_comparison.csv": "f188cc84471a4c9027c87d7b4dd33ba52278dd0fbc6d0e0514ae37b8d9c06c4e"
+      },
+      "sources": [
+        "tables/clean_method_comparison.csv"
+      ]
+    },
+    "clean_per_class_f1.png": {
+      "caption": "CNN bars are three-seed means; deterministic methods are single point estimates. No error bars are shown in this figure; exact seed SD and bootstrap intervals are tabulated.",
+      "source_hashes": {
+        "tables/clean_per_class_performance.csv": "a6ec33a693c7f8798e756bc1eaf5e4c96eb17fc051224225e0c9d1400183dd5e"
+      },
+      "sources": [
+        "tables/clean_per_class_performance.csv"
+      ]
+    },
+    "data_efficiency_learning_curves.png": {
+      "caption": "Error bars are sample SD across three predeclared reduced-data replicates; full-data HOG/LBP SD is N/A and is not drawn as zero.",
+      "source_hashes": {
+        "tables/data_efficiency_summary.csv": "8a66ff4ec7fe0214a4aa54b4304713c1d37700f6ed82e88291d72e3a41cae66c"
+      },
+      "sources": [
+        "tables/data_efficiency_summary.csv"
+      ]
+    },
+    "phase9_human_review_summary.png": {
+      "caption": "Percentages are one reviewer's post-hoc judgments on 60 deliberately selected cases; they are not objective ground truth or population estimates.",
+      "source_hashes": {
+        "tables/error_human_review_summary.csv": "32197abc40303ac3ec0604c6437c273a299e84b2abdfd14571a0c059166d5fd5"
+      },
+      "sources": [
+        "tables/error_human_review_summary.csv"
+      ]
+    },
+    "robustness_curves.png": {
+      "caption": "CNN curves are three-seed means; HOG/LBP are deterministic. Conditions are fixed synthetic design points, not random operational environments.",
+      "source_hashes": {
+        "tables/robustness_retention_summary.csv": "f6bb12c64b478c29d1c8782a55f1347a45e878b8eadab26ec8f3fa1e11b28ebc"
+      },
+      "sources": [
+        "tables/robustness_retention_summary.csv"
+      ]
+    },
+    "severe_per_class_f1.png": {
+      "caption": "CNN bars are three-seed means; deterministic bars are point estimates. Small class supports constrain interpretation.",
+      "source_hashes": {
+        "experiments/summaries/phase8_robustness_v1/aggregate/per_class_robustness.csv": "23451e7fffed5a7dc20b526c97119c62c4e7004a719621c212547f9736243aaa"
+      },
+      "sources": [
+        "experiments/summaries/phase8_robustness_v1/aggregate/per_class_robustness.csv"
+      ]
+    },
+    "severe_retention_heatmap.png": {
+      "caption": "Retention is corrupted macro-F1 divided by each method's clean macro-F1. It is a descriptive ratio on four fixed severe conditions.",
+      "source_hashes": {
+        "tables/severe_corruption_summary.csv": "6ed97863940f7b4cbdf4b58f33f34c3c7bfb8f6a362663283663bfd728834589"
+      },
+      "sources": [
+        "tables/severe_corruption_summary.csv"
+      ]
+    }
+  },
+  "lineage": "frozen dataset/splits -> frozen predictions/logits -> frozen phase metrics -> Phase 10 derivation -> canonical table/figure",
+  "tables": {
+    "clean_method_comparison": {
+      "csv": "tables/clean_method_comparison.csv",
+      "json": "tables/clean_method_comparison.json",
+      "rows": 4,
+      "upstream_sources": [
+        "Phase 4/5/6 frozen clean test predictions"
+      ]
+    },
+    "clean_per_class_performance": {
+      "csv": "tables/clean_per_class_performance.csv",
+      "json": "tables/clean_per_class_performance.json",
+      "rows": 24,
+      "upstream_sources": [
+        "Phase 4/5/6 frozen clean test predictions"
+      ]
+    },
+    "cross_phase_tradeoffs": {
+      "csv": "tables/cross_phase_tradeoffs.csv",
+      "json": "tables/cross_phase_tradeoffs.json",
+      "rows": 4,
+      "upstream_sources": [
+        "canonical clean, data-efficiency, and robustness sources"
+      ]
+    },
+    "data_efficiency_summary": {
+      "csv": "tables/data_efficiency_summary.csv",
+      "json": "tables/data_efficiency_summary.json",
+      "rows": 16,
+      "upstream_sources": [
+        "experiments/summaries/phase7_data_efficiency_v1/aggregate"
+      ]
+    },
+    "error_human_review_summary": {
+      "csv": "tables/error_human_review_summary.csv",
+      "json": "tables/error_human_review_summary.json",
+      "rows": 46,
+      "upstream_sources": [
+        "experiments/summaries/phase9_error_analysis_v1",
+        "experiments/summaries/phase9_error_analysis_v1/phase9b"
+      ]
+    },
+    "experimental_data_summary": {
+      "csv": "tables/experimental_data_summary.csv",
+      "json": "tables/experimental_data_summary.json",
+      "rows": 3,
+      "upstream_sources": [
+        "data/processed/wtbd_crops_v1/manifest.csv"
+      ]
+    },
+    "paired_macro_f1_differences": {
+      "csv": "tables/paired_macro_f1_differences.csv",
+      "json": "tables/paired_macro_f1_differences.json",
+      "rows": 6,
+      "upstream_sources": [
+        "Phase 4/5/6 frozen paired clean test predictions",
+        "bootstrap_indices.csv"
+      ]
+    },
+    "reproducibility_fingerprints": {
+      "csv": "tables/reproducibility_fingerprints.csv",
+      "json": "tables/reproducibility_fingerprints.json",
+      "rows": 13,
+      "upstream_sources": [
+        "frozen Phase 3--9 manifests, forms, mapping, and complete upstream inventory"
+      ]
+    },
+    "robustness_retention_summary": {
+      "csv": "tables/robustness_retention_summary.csv",
+      "json": "tables/robustness_retention_summary.json",
+      "rows": 52,
+      "upstream_sources": [
+        "experiments/summaries/phase8_robustness_v1/aggregate/robustness_summary.csv"
+      ]
+    },
+    "severe_corruption_summary": {
+      "csv": "tables/severe_corruption_summary.csv",
+      "json": "tables/severe_corruption_summary.json",
+      "rows": 16,
+      "upstream_sources": [
+        "experiments/summaries/phase8_robustness_v1/aggregate/severe_summary.csv"
+      ]
+    }
+  }
+}

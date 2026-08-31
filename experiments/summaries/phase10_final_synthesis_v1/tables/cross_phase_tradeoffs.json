@@ -1,0 +1,69 @@
+{
+  "fields": [
+    "method",
+    "method_name",
+    "clean_macro_f1",
+    "clean_seed_sd",
+    "mean_degraded_macro_f1",
+    "mean_degraded_retention_percent",
+    "mean_severe_retention_percent",
+    "fraction_reaching_95_percent_full",
+    "normalized_learning_curve_auc",
+    "training_randomness_replication",
+    "interpretation"
+  ],
+  "rows": [
+    {
+      "clean_macro_f1": 0.47798778741419395,
+      "clean_seed_sd": null,
+      "fraction_reaching_95_percent_full": 1.0,
+      "interpretation": "multidimensional observed trade-off; no composite rank or universal winner",
+      "mean_degraded_macro_f1": 0.4100730786538956,
+      "mean_degraded_retention_percent": 85.79153891615066,
+      "mean_severe_retention_percent": 71.33194208693152,
+      "method": "hog",
+      "method_name": "HOG + SVM",
+      "normalized_learning_curve_auc": 0.4225697297871484,
+      "training_randomness_replication": "N/A deterministic"
+    },
+    {
+      "clean_macro_f1": 0.5924013467096828,
+      "clean_seed_sd": null,
+      "fraction_reaching_95_percent_full": 1.0,
+      "interpretation": "multidimensional observed trade-off; no composite rank or universal winner",
+      "mean_degraded_macro_f1": 0.38195862558000493,
+      "mean_degraded_retention_percent": 64.47632634555619,
+      "mean_severe_retention_percent": 36.234396321604905,
+      "method": "lbp",
+      "method_name": "LBP + SVM",
+      "normalized_learning_curve_auc": 0.5217763188514523,
+      "training_randomness_replication": "N/A deterministic"
+    },
+    {
+      "clean_macro_f1": 0.8953144214810704,
+      "clean_seed_sd": 0.014117652330935615,
+      "fraction_reaching_95_percent_full": 0.5,
+      "interpretation": "multidimensional observed trade-off; no composite rank or universal winner",
+      "mean_degraded_macro_f1": 0.7991739834093107,
+      "mean_degraded_retention_percent": 89.28275951877934,
+      "mean_severe_retention_percent": 75.5676760773306,
+      "method": "resnet18",
+      "method_name": "ResNet-18",
+      "normalized_learning_curve_auc": 0.8547189175128745,
+      "training_randomness_replication": "three frozen seeds"
+    },
+    {
+      "clean_macro_f1": 0.8953207222549548,
+      "clean_seed_sd": 0.005977178505597876,
+      "fraction_reaching_95_percent_full": 0.75,
+      "interpretation": "multidimensional observed trade-off; no composite rank or universal winner",
+      "mean_degraded_macro_f1": 0.814902552594996,
+      "mean_degraded_retention_percent": 91.01573257666324,
+      "mean_severe_retention_percent": 79.5865750333248,
+      "method": "mobilenet_v3_small",
+      "method_name": "MobileNetV3-Small",
+      "normalized_learning_curve_auc": 0.825631075714111,
+      "training_randomness_replication": "three frozen seeds"
+    }
+  ]
+}

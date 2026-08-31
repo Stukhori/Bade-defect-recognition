@@ -1,0 +1,40 @@
+{
+  "fields": [
+    "dataset",
+    "split",
+    "source_images",
+    "instances",
+    "classes",
+    "split_unit",
+    "processed_fingerprint"
+  ],
+  "rows": [
+    {
+      "classes": 6,
+      "dataset": "WTBD curated crop benchmark",
+      "instances": 757,
+      "processed_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+      "source_images": 510,
+      "split": "train",
+      "split_unit": "source image"
+    },
+    {
+      "classes": 6,
+      "dataset": "WTBD curated crop benchmark",
+      "instances": 146,
+      "processed_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+      "source_images": 101,
+      "split": "validation",
+      "split_unit": "source image"
+    },
+    {
+      "classes": 6,
+      "dataset": "WTBD curated crop benchmark",
+      "instances": 162,
+      "processed_fingerprint": "4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991",
+      "source_images": 109,
+      "split": "test",
+      "split_unit": "source image"
+    }
+  ]
+}

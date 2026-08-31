@@ -1,0 +1,25 @@
+{
+  "bootstrap_resamples": 5000,
+  "canonical_figure_count": 7,
+  "canonical_table_count": 10,
+  "clean_results": {
+    "hog": 0.47798778741419395,
+    "lbp": 0.5924013467096828,
+    "mobilenet_v3_small": 0.8953207222549548,
+    "resnet18": 0.8953144214810704
+  },
+  "core_technical_project_complete": true,
+  "mean_degraded_results": {
+    "hog": 0.4100730786538956,
+    "lbp": 0.38195862558000493,
+    "mobilenet_v3_small": 0.814902552594996,
+    "resnet18": 0.7991739834093107
+  },
+  "p_values": "omitted",
+  "phase": 10,
+  "phase11_started": false,
+  "phase12_started": false,
+  "primary_metric": "macro_f1",
+  "result_id": "phase10_final_synthesis_v1",
+  "status": "completed"
+}

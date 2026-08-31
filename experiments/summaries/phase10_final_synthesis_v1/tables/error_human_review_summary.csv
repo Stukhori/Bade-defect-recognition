@@ -1,0 +1,47 @@
+section,metric,category,value,denominator,unit,percentage,scope,source
+human_review,defect_visible,yes,50,60,cases,83.333333,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,defect_visible,partially,10,60,cases,16.666667,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,defect_visible,no,0,60,cases,0.0,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,defect_visible,uncertain,0,60,cases,0.0,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,corruption_obscures_diagnostic_detail,none,35,60,cases,58.333333,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,corruption_obscures_diagnostic_detail,mild,16,60,cases,26.666667,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,corruption_obscures_diagnostic_detail,strong,9,60,cases,15.0,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,corruption_obscures_diagnostic_detail,uncertain,0,60,cases,0.0,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,dataset_label_visually_plausible,yes,51,60,cases,85.0,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,dataset_label_visually_plausible,no,1,60,cases,1.666667,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,dataset_label_visually_plausible,uncertain,8,60,cases,13.333333,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,visually_ambiguous_between_categories,yes,12,60,cases,20.0,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,visually_ambiguous_between_categories,no,44,60,cases,73.333333,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,visually_ambiguous_between_categories,uncertain,4,60,cases,6.666667,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,possible_crop_or_background_problem,yes,14,60,cases,23.333333,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,possible_crop_or_background_problem,no,42,60,cases,70.0,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,possible_crop_or_background_problem,uncertain,4,60,cases,6.666667,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,reviewer_notes,nonempty,30,60,cases,50.0,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,reviewer_notes,empty,30,60,cases,50.0,single reviewer; pass_a,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,activation_primarily_inside_annotation,inside,27,60,cases,45.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,activation_primarily_inside_annotation,partial,24,60,cases,40.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,activation_primarily_inside_annotation,outside,9,60,cases,15.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,activation_primarily_inside_annotation,diffuse,0,60,cases,0.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,activation_primarily_inside_annotation,uncertain,0,60,cases,0.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,activation_concentrated_on_degradation_artifact,yes,0,60,cases,0.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,activation_concentrated_on_degradation_artifact,no,45,60,cases,75.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,activation_concentrated_on_degradation_artifact,uncertain,15,60,cases,25.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,pattern_consistent_across_cnn_seeds,yes,24,60,cases,40.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,pattern_consistent_across_cnn_seeds,partly,30,60,cases,50.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,pattern_consistent_across_cnn_seeds,no,6,60,cases,10.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,pattern_consistent_across_cnn_seeds,uncertain,0,60,cases,0.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,prediction_visually_understandable_after_reveal,yes,57,60,cases,95.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,prediction_visually_understandable_after_reveal,no,0,60,cases,0.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,prediction_visually_understandable_after_reveal,uncertain,3,60,cases,5.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,reviewer_notes,nonempty,60,60,cases,100.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+human_review,reviewer_notes,empty,0,60,cases,0.0,single reviewer; pass_b,experiments/summaries/phase9_error_analysis_v1/phase9b/tables/response_summary.csv
+clean_error_stability,unanimous_failure,resnet18,7,162,test instances,4.320987654320987,descriptive across three frozen CNN seeds,experiments/summaries/phase9_error_analysis_v1/tables/cross_seed_distributions.csv
+clean_error_stability,majority_only_failure,resnet18,9,162,test instances,5.555555555555555,descriptive across three frozen CNN seeds,experiments/summaries/phase9_error_analysis_v1/tables/cross_seed_distributions.csv
+clean_error_stability,seed_disagreement,resnet18,26,162,test instances,16.049382716049383,descriptive across three frozen CNN seeds,experiments/summaries/phase9_error_analysis_v1/tables/cross_seed_distributions.csv
+clean_error_stability,unanimous_failure,mobilenet_v3_small,13,162,test instances,8.024691358024691,descriptive across three frozen CNN seeds,experiments/summaries/phase9_error_analysis_v1/tables/cross_seed_distributions.csv
+clean_error_stability,majority_only_failure,mobilenet_v3_small,4,162,test instances,2.4691358024691357,descriptive across three frozen CNN seeds,experiments/summaries/phase9_error_analysis_v1/tables/cross_seed_distributions.csv
+clean_error_stability,seed_disagreement,mobilenet_v3_small,19,162,test instances,11.728395061728396,descriptive across three frozen CNN seeds,experiments/summaries/phase9_error_analysis_v1/tables/cross_seed_distributions.csv
+cross_method_clean,misclassified_by_all_four,strict CNN consensus,10,162,test instances,6.172839506172839,descriptive frozen clean predictions,experiments/summaries/phase9_error_analysis_v1/tables/cross_method_agreement.csv
+cross_method_clean,both_cnns_correct_both_handcrafted_wrong,strict CNN consensus,22,162,test instances,13.580246913580247,descriptive frozen clean predictions,experiments/summaries/phase9_error_analysis_v1/tables/cross_method_agreement.csv
+cross_method_clean,missed_by_both_cnns,strict CNN consensus,17,162,test instances,10.493827160493828,descriptive frozen clean predictions,experiments/summaries/phase9_error_analysis_v1/tables/cross_method_agreement.csv
+cross_method_clean,model_specific_failure,strict CNN consensus,38,162,test instances,23.45679012345679,descriptive frozen clean predictions,experiments/summaries/phase9_error_analysis_v1/tables/cross_method_agreement.csv
