@@ -2,17 +2,33 @@
 
 ## Current phase
 
-- **Phase:** Phase 9A — Quantitative Error Analysis, Grad-CAM, and Blinded Human Review
-- **Status:** PHASE 9A COMPLETE — AWAITING HUMAN REVIEW; Phase 9 is not complete
+- **Phase:** Phase 9 — Post-hoc Error Analysis and Human-Review Synthesis
+- **Status:** PHASE 9 COMPLETE — VALIDATED AND FROZEN
 - **Start date:** 2026-08-30
+- **Completion date:** 2026-08-31
 - **Previous phases:** Phases 0–8 — complete and frozen
-- **Next phase:** Phase 9B — validate and incorporate returned human review
+- **Next phase:** Phase 10 — not started; requires separate explicit authorization
 
-Phase 9A is awaiting human review and is not yet frozen as a completed Phase 9. Phases 0–8 remain frozen. Phase 9B and Phase 10 have not started.
+Phases 0–9 are complete and frozen. Phase 10 has not started.
+
+## Phase 9B — Human-review incorporation and descriptive synthesis
+
+**COMPLETE, VALIDATED, AND FROZEN.** Apparatus/correction commit `29ca2fe`; human-review synthesis commit `b4e6727`. The final documentation/freeze commit is recorded in repository history after this state file.
+
+- The reviewer attested exactly: “I completed and saved every Pass A judgment before opening or completing Pass B. Both forms contain my own visual judgments. No review fields were filled automatically.”
+- Pass A is complete at `300/300`, with 30 notes and SHA-256 `3b6548d8e6a1240c224f156f9266c5025cc099816d73a8c81960173fe9c8423e`. Pass B is complete at `240/240`, with 60 notes and SHA-256 `0f5258e06a4e854d338705bcf1d38ced048f0652a99ccc4639b18c3baae1cd96`. Both source forms were incorporated byte-for-byte without automated entries or scientific-output normalization.
+- The anonymous-ID mapping is complete, one-to-one, order-preserving, and bound by SHA-256 `46b19248797997e8aa7236b9c3fbf17f972977f2cdb2c3a958bd12513f25210b`.
+- The corrected Pass B packet is the sole packet provenance: ZIP SHA-256 `fbfe1985e8a1809884c0df57a0e9a8eb265815988ad66583a8d9c5a3e84dcaf5`, corrected index SHA-256 `ed8f3ef20449603e8e55647f3d917dbefbf2803d05ed696532859dde92201f29`, and corrected blank-form SHA-256 `7ae98fa0cb8c05edd57632460b1a08339c96f4f24b0a991fc1b7ac64ccdfa9e8`. All 1,680 non-form packet files match the repository. The superseded caption-bugged packet and the AI comparison workbook were not used in the scientific analysis.
+- Deterministic outputs contain 60 joined review cases, 180 joined seed-prediction rows, 36 response-summary rows, 1,152 case cross-tab rows, 2,080 prediction cross-tab rows, and five descriptive figures.
+- Pass A responses indicate a visible or partially visible defect in all 60 selected cases; 51/60 labels were judged plausible. Pass B responses place activation inside or partially inside the annotated defect in 51/60 cases, with seed consistency marked yes or partly in 54/60 cases. These are single-reviewer, selected-case descriptive counts only; they are not causal, inferential, or population-level claims.
+- Phase 9B config fingerprint: `ac60d00ffb9b0b729c334a9b5b76bf0f3630c09fd7e5b78b7f304f3048263830`. Scientific-output fingerprint: `dc940fe0a802d285b236224b04197f7fb7d6b0ef73062a5bdddbb1238de286d3`.
+- Two independent temporary generations matched exactly for all 15 scientific derived files. The validator also confirmed 113 frozen upstream input files, 1,971 Phase 9A non-form files, all six checkpoint state identities, 104 prediction sets, and 507 Grad-CAM records with zero mutation.
+- Phase 3–8 preflight validators, Phase 9A validation, Phase 9B validation, the review-interface validator, and the classifier-app validator all pass. Focused Phase 9/review tests: **46 passed, 0 failed**. Complete repository suite: **222 passed, 0 failed**, with 11 unchanged scikit-learn `SVC(probability=True)` future warnings.
+- No training, fine-tuning, SVM/scaler refitting, checkpoint selection, model interpretation automation, scientific use of AI-authored comparison material, dataset download, or Phase 10 work occurred.
 
 ## Separate non-scientific human-review interface
 
-**Status: COMPLETE AND VALIDATED; does not change the scientific phase.** The local Streamlit review interface is a human-data-entry aid for the already generated Phase 9A packet. It is not a scientific experiment, does not incorporate the review, and does not start Phase 9B or Phase 10.
+**Status: COMPLETE AND VALIDATED; historical data-entry interface only.** The local Streamlit review interface was the human-data-entry aid for the Phase 9A packet. It is not a scientific experiment and did not itself incorporate the review or start Phase 10.
 
 - Entry point: `app/review_app.py`; operating guide: `docs/human_review_interface.md`; reusable isolated support: `src/windblade_review/`; machine-readable validation: `app/validation/review_interface_validation.json`.
 - Launch: `uv run streamlit run app/review_app.py --server.address 127.0.0.1`.
@@ -22,8 +38,8 @@ Phase 9A is awaiting human review and is not yet frozen as a completed Phase 9. 
 - Valid changes autosave to the current pass through a validated, same-directory temporary file and atomic replacement. Exact headers, review IDs, row order, response enums, notes, and the other pass are preserved. Restart resumes at the first incomplete case.
 - The interface performs no model or LLM inference, applies no heuristic or automated rule, supplies no judgments or answer suggestions, makes no external service call, and stores only the required CSV responses plus transient in-memory state.
 - Validation used temporary copied forms only. Focused review-interface suite: **22 passed, 0 failed**. Complete repository suite: **213 passed, 0 failed**, with 11 unchanged scikit-learn deprecation warnings. Phase 9A and classifier-app validators remain `PASS`; local-only live health returned HTTP 200/`ok` and the server was stopped.
-- At this interface commit, both canonical forms remain completely blank: Pass A `0/300`, SHA-256 `44a5200e8b921b65f55cd391943abfbd4ca600e9723fcd8c70a36eb6cf2b7d58`; Pass B `0/240`, SHA-256 `7ae98fa0cb8c05edd57632460b1a08339c96f4f24b0a991fc1b7ac64ccdfa9e8`.
-- No canonical judgment, mapping entry, packet image/HTML, checkpoint, prediction, quantitative output, or other scientific artifact changed. **Phase 9A remains complete and awaiting human review; Phase 9B and Phase 10 remain unstarted.**
+- At the interface-validation commit, both canonical forms were blank. They are now complete and frozen: Pass A SHA-256 `3b6548d8e6a1240c224f156f9266c5025cc099816d73a8c81960173fe9c8423e`; Pass B SHA-256 `0f5258e06a4e854d338705bcf1d38ced048f0652a99ccc4639b18c3baae1cd96`.
+- The interface changed no mapping entry, packet image/HTML, checkpoint, prediction, quantitative output, or other scientific artifact. Phase 9B subsequently incorporated the returned forms through the separately validated deterministic pipeline. Phase 9 is complete; Phase 10 remains unstarted.
 
 ## Separate non-scientific demonstration
 
@@ -38,7 +54,7 @@ Phase 9A is awaiting human review and is not yet frozen as a completed Phase 9. 
 - App dependencies are pinned separately in `requirements-app.txt`; scientific dependency constraints are unchanged.
 - Validation: both complete UI workflows pass; focused app suite 27 passed; complete suite 191 passed with 11 existing scikit-learn warnings; live server health returned HTTP 200/`ok`; frozen Phase 9A validator remains `PASS`.
 - Training, fine-tuning, calibration, ensembling, test-driven model/seed selection, new test-set evaluation, checkpoint mutation, external service calls, permanent upload storage, and tracked uploaded images: zero.
-- Scientific status remains **PHASE 9A COMPLETE — AWAITING HUMAN REVIEW**. Phase 9 is incomplete; Phase 9B and Phase 10 have not started. Phase 11 and Phase 12 remain optional and unstarted.
+- Scientific status is **PHASE 9 COMPLETE — VALIDATED AND FROZEN**. Phase 10 has not started. Phase 11 and Phase 12 remain optional and unstarted.
 
 The application classifies a manually identified visible surface-defect region. It does not automatically detect or localize defects, assess blade safety or condition, detect hidden/internal damage, estimate severity or remaining life, replace inspection professionals, or establish real-time target-hardware deployment.
 
@@ -46,17 +62,28 @@ The application classifies a manually identified visible surface-defect region. 
 
 ### Status and frozen identity
 
-**PHASE 9A COMPLETE — AWAITING HUMAN REVIEW.** Apparatus commit `9758f139d5c35fab3d13d955ce5457fa843b0795`; generated-output commit `95e1bd7`. Phase 9 is not complete and is not frozen because the required human judgments have not been returned or incorporated.
+**COMPLETE AND FROZEN AS THE PHASE 9A COMPONENT OF PHASE 9.** Apparatus commit `9758f139d5c35fab3d13d955ce5457fa843b0795`; original generated-output commit `95e1bd7`; caption-audit and Phase 9B apparatus commit `29ca2fe`. The required human judgments were subsequently returned, validated, and incorporated in Phase 9B.
 
 - Analysis-config fingerprint: `9a9c87f132359718636f46d1b9061e8e5539980b6c9b67a3f5336834ce1c9f1e`.
 - Frozen-input fingerprint: `dbedb680481e6477b94ff623858e1db4c1981f2b8f5491d0e04a99b5672173b1`.
-- Scientific-output fingerprint: `a5938ec22a0f496c6fd9ce3acd7d999cad56e8c13a85d9be4b4d59860aecd74b`.
+- Scientific-output fingerprint: `14e500fd94fa871bbe1e6bee6494d3158fe003c3799e0ccfbcab8e549adf80fa` after the caption-only Pass B correction; supersedes `a5938ec22a0f496c6fd9ce3acd7d999cad56e8c13a85d9be4b4d59860aecd74b`.
 - Upstream fingerprints remain Phase 3 `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`, Phase 8 config `a6a9e40c9c3de7130892df3cf49698f95718ce9241c8a963849016ce7adc1d57`, and Phase 8 robustness data `da0eda8956adfef63e001d0d1614279a907c46feffc5e2f180c5acdbe89987db`.
 - Canonical error manifest: 16,848 rows covering every fixed sample and all 104 method/seed-condition prediction sets.
 - Review set: 60 unique sample-condition cases with all six event quotas met and no shortfall.
 - Grad-CAM: 507 finite evidence records; ResNet `layer4.1` (`1×512×7×7`) and MobileNet `features.12` (`1×576×7×7`); parameters unchanged for all six checkpoint identities.
-- Review packet: two linked HTML passes, ten contact sheets, two blank CSV forms, and a separately stored anonymous-ID mapping.
+- Review packet: two linked HTML passes, ten contact sheets, two complete canonical CSV forms, and a separately stored anonymous-ID mapping. The corrected Pass B packet was used for the completed review.
 - Training, fine-tuning, SVM/scaler refitting, checkpoint/prediction mutation, automated visual interpretation, and Phase 10/app work: zero.
+
+### Grad-CAM reporting audit before Pass B review
+
+- A Pass B caption defect repeated `predicted_label` on `true_class` captions. The underlying target indices, metadata, arrays, heatmaps, and overlays were correct.
+- All 330 true-class target rows match frozen ground truth; all 177 predicted-class target rows match their corresponding frozen predictions. Zero target identity mismatches were found.
+- Independent read-only recomputation reproduced all 507 Grad-CAM array hashes, activation shapes, and prediction-logit argmax values; all six checkpoint state fingerprints remained unchanged.
+- The 177 affected true-class captions across 52 review cases were corrected. Grad-CAM array/figure fingerprint `84e0dd6c21a6ff0cd92602f83b99e6b0e08c2d175cdc5d10c6c6602abf20c321` is unchanged.
+- Completed Pass A is preserved byte-for-byte: `300/300`, SHA-256 `3b6548d8e6a1240c224f156f9266c5025cc099816d73a8c81960173fe9c8423e`.
+- Four early Pass B answers entered from the defective page were invalidated before the corrected review. The corrected blank form had SHA-256 `7ae98fa0cb8c05edd57632460b1a08339c96f4f24b0a991fc1b7ac64ccdfa9e8`; the later completed corrected form has SHA-256 `0f5258e06a4e854d338705bcf1d38ced048f0652a99ccc4639b18c3baae1cd96`.
+- Validator assertions bind both target roles to frozen class IDs/labels and validate every Pass B caption. Phase 9B incorporated the completed corrected review and is now complete.
+- Full audit: `docs/phase9a_gradcam_reporting_audit.md`; machine-readable record: `experiments/audits/phase9a_gradcam_reporting_audit.json`.
 
 ### Quantitative descriptive highlights
 
@@ -79,12 +106,12 @@ All findings are post-hoc and descriptive. No geometry association is causal, an
 - Grad-CAM and quantitative figures: `figures/phase9/`.
 - Full record: `docs/phase9_error_analysis.md`.
 
-### Human-review handoff
+### Human-review completion
 
-1. Read `docs/human_review_interface.md` and `experiments/summaries/phase9_error_analysis_v1/human_review_packet/README.md`.
-2. Launch the local review interface and complete Pass A without opening Pass B or the ID mapping.
-3. After all 300 Pass A fields are valid, attest, validate and lock Pass A, then deliberately begin and complete Pass B.
-4. Return both completed forms for Phase 9B. Do not begin Phase 10.
+1. Pass A was completed and saved before Pass B or the separate mapping was opened.
+2. Pass A was locked after all 300 fields were valid, and Pass B was then completed from the corrected packet.
+3. Both forms contain the reviewer's own visual judgments; no review field was filled automatically.
+4. Phase 9B validated and incorporated both immutable forms. Phase 10 was not begun.
 
 ## Phase 8 — Controlled Image-Degradation Robustness
 
@@ -626,4 +653,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phases 0–8 remain frozen unless the user explicitly requests a documented revision. Phase 9A is complete and awaiting human review; Phase 9 is incomplete. Phase 9B and Phase 10 have not started and require separate explicit authorization after the completed human-review forms are returned.
+Completed Phases 0–9 remain frozen unless the user explicitly requests a documented revision. Phase 10 has not started and requires separate explicit authorization.

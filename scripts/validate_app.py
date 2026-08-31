@@ -16,6 +16,8 @@ import numpy as np
 from PIL import Image
 
 from windblade.deep.checkpoints import state_dict_fingerprint
+from windblade_review.schema import load_pass_schema
+from windblade_review.store import ReviewDataError, ReviewStore
 from windblade_demo.constants import (
     CHECKPOINT_FILE_SHA256,
     CHECKPOINT_STATE_FINGERPRINT,
@@ -95,23 +97,45 @@ def validate(root: Path) -> dict[str, Any]:
     checkpoint = loaded.checkpoint_path
     if sha256(checkpoint) != CHECKPOINT_FILE_SHA256:
         raise RuntimeError("Checkpoint SHA-256 changed during validation.")
-    forms = [
-        root / "experiments/summaries/phase9_error_analysis_v1/human_review_packet/pass_a/pass_a_review_form.csv",
-        root / "experiments/summaries/phase9_error_analysis_v1/human_review_packet/pass_b/pass_b_review_form.csv",
-    ]
-    review_records = [
-        {"path": path.relative_to(root).as_posix(), "sha256": sha256(path), "blank": blank_review_form(path)}
-        for path in forms
-    ]
-    if not all(record["blank"] for record in review_records):
-        raise RuntimeError("A Phase 9A review form is no longer blank.")
+    packet_root = root / "experiments/summaries/phase9_error_analysis_v1/human_review_packet"
+    expected_ids = tuple(f"P9A-{index:03d}" for index in range(1, 61))
+    review_records = []
+    for pass_name, expected_total in (("pass_a", 300), ("pass_b", 240)):
+        path = packet_root / pass_name / f"{pass_name}_review_form.csv"
+        schema = load_pass_schema(root / "configs/error_analysis.yaml", pass_name)
+        try:
+            snapshot = ReviewStore(path, schema, expected_ids).load()
+        except ReviewDataError as exc:
+            raise RuntimeError(f"The {pass_name} review form is invalid: {exc}") from exc
+        if snapshot.answered_required not in {0, expected_total}:
+            raise RuntimeError(f"The {pass_name} review form is partially completed.")
+        review_records.append(
+            {
+                "pass_name": pass_name,
+                "path": path.relative_to(root).as_posix(),
+                "sha256": sha256(path),
+                "blank": snapshot.answered_required == 0,
+                "complete": snapshot.complete,
+                "answered_required": snapshot.answered_required,
+                "total_required": snapshot.total_required,
+            }
+        )
+    if review_records[1]["complete"] and not review_records[0]["complete"]:
+        raise RuntimeError("Pass B cannot be complete unless Pass A is complete.")
+    phase9b_manifest = root / "experiments/summaries/phase9_error_analysis_v1/phase9b/manifest.json"
+    scientific_status = (
+        "Phase 9 complete and frozen; Phase 10 not started"
+        if phase9b_manifest.is_file()
+        and json.loads(phase9b_manifest.read_text(encoding="utf-8")).get("phase9_complete")
+        else "Phase 9A complete; Phase 9 incomplete"
+    )
 
     return {
         "schema_version": "1.0",
         "status": "PASS",
         "validated_utc": datetime.now(timezone.utc).isoformat(),
         "scope": "non-scientific local demonstration validation",
-        "scientific_phase_status": "Phase 9A complete — awaiting human review; Phase 9 incomplete",
+        "scientific_phase_status": scientific_status,
         "dependencies": {
             "streamlit": version("streamlit"),
             "streamlit-cropper": version("streamlit-cropper"),

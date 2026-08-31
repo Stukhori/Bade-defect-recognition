@@ -1,6 +1,6 @@
 # Robust Wind Turbine Blade Defect Recognition
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–8 are complete and frozen. Results include the Phase 4 handcrafted baselines, matched Phase 5/6 ResNet-18 and MobileNetV3-Small baselines, the Phase 7 limited-labeled-data comparison, and the Phase 8 controlled image-degradation robustness experiment. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–9 are complete and frozen; Phase 10 has not started. Results include the Phase 4 handcrafted baselines, matched Phase 5/6 ResNet-18 and MobileNetV3-Small baselines, the Phase 7 limited-labeled-data comparison, the Phase 8 controlled image-degradation robustness experiment, and the Phase 9 post-hoc error analysis and single-reviewer descriptive synthesis. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -31,7 +31,7 @@ The separate Phase 9A review interface enters human judgments into the existing 
 uv run streamlit run app/review_app.py --server.address 127.0.0.1
 ```
 
-Complete and lock Pass A before deliberately beginning Pass B. See [`docs/human_review_interface.md`](docs/human_review_interface.md) for the blinding, autosave, recovery, and final-verification procedure. This tool does not start Phase 9B.
+The completed Phase 9 forms are now frozen. The interface remains documented for provenance, but it is no longer an active data-entry step. See [`docs/human_review_interface.md`](docs/human_review_interface.md) for the blinding, autosave, recovery, and verification procedure that was used. The tool is scientifically separate from Phase 9B.
 
 ## Run the complete test suite
 
@@ -127,20 +127,23 @@ The Phase 8 command verifies all upstream gates and frozen artifacts, exactly re
 uv run python scripts/run_robustness.py --config configs/robustness.yaml
 ```
 
-## Phase 9A: error analysis and blinded human review
+## Phase 9: error analysis, blinded review, and descriptive synthesis
 
-Phase 9A performs post-hoc quantitative error analysis on frozen Phase 8 predictions, generates Grad-CAM only from the frozen CNN checkpoints, and prepares an unfilled two-pass human-review packet. It performs no training or refitting:
+Phase 9A performed post-hoc quantitative error analysis on frozen Phase 8 predictions, generated Grad-CAM only from the frozen CNN checkpoints, and prepared the two-pass review packet. Pass A was completed blind to model evidence; Pass B was completed only after the corrected caption packet was verified. Phase 9B validates and joins those human judgments to frozen metadata and generates descriptive summaries only. No training or refitting occurs.
 
 ```powershell
 uv run python scripts/run_error_analysis.py --config configs/error_analysis.yaml --apparatus-check
-uv run python scripts/run_error_analysis.py --config configs/error_analysis.yaml
 uv run python scripts/run_error_analysis.py --config configs/error_analysis.yaml --validate-only
+uv run python scripts/run_error_analysis.py --config configs/error_analysis.yaml --phase9b
+uv run python scripts/run_error_analysis.py --config configs/error_analysis.yaml --validate-phase9b
 ```
 
-See [`docs/phase9_error_analysis.md`](docs/phase9_error_analysis.md) for the frozen analysis contract, quantitative results, and human-review instructions. Phase 9A is awaiting human review; Phase 9 is not complete.
+The default Phase 9A generation command now refuses to run when completed review data exist, preventing accidental replacement of the human inputs. Phase 9B outputs are under `experiments/summaries/phase9_error_analysis_v1/phase9b/`; its five figures are under `figures/phase9/human_review/`.
+
+Across the 60 reviewed cases, the dataset label was judged visually plausible in 51 cases, activation was inside or partially inside the annotation in 51 cases, and seed patterns were fully or partly consistent in 54 cases. These are single-reviewer, post-hoc descriptive observations. They are not hypothesis tests, do not establish causality, and do not make Grad-CAM a proof of model reasoning. See [`docs/phase9_error_analysis.md`](docs/phase9_error_analysis.md) for the full frozen record.
 
 Versioned results are under `experiments/summaries/phase8_robustness_v1/`, tracked dataset metadata under `data/processed/wtbd_robustness_v1/`, figures under `figures/phase8/`, and the complete record is [`docs/phase8_robustness.md`](docs/phase8_robustness.md). The 1,944 corrupted PNG payloads remain Git-ignored.
 
 ## Phase boundaries
 
-Phases 0–8 are complete and frozen. Phase 9A has generated the post-hoc quantitative analysis, Grad-CAM evidence, and blinded review packet and is awaiting human review. Phase 9 is not complete; Phase 9B and Phase 10 have not started.
+Phases 0–9 are complete, validated, and frozen. Phase 10 has not started.
