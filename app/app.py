@@ -36,7 +36,7 @@ NAVIGATION = (
 ANALYSIS_MODES = ("Prepared crop", "Manual single region", "Manual multi-region")
 
 st.set_page_config(
-    page_title="Blade Image Research Workspace", page_icon="🔎", layout="wide",
+    page_title="Wind Turbine Blade Defect Recognition", page_icon="🔎", layout="wide",
     initial_sidebar_state="expanded",
 )
 st.markdown(
