@@ -47,6 +47,15 @@ def test_application_v2_describes_region_workflow_and_safety_scope():
     assert "ultralytics" not in source.lower()
 
 
+def test_removed_status_copy_does_not_return_to_the_site():
+    source = APP_PATH.read_text(encoding="utf-8")
+    assert "Application v2 · prepared crop + manual" not in source
+    assert 'st.warning("Automatic localization unavailable")' not in source
+    assert "st.warning(status.block_reason)" not in source
+    assert "Phase " not in source
+    assert "CUDA" not in source
+
+
 def test_prepared_upload_and_classify_ui_workflow():
     testing = pytest.importorskip("streamlit.testing.v1")
     image = ROOT / "data/processed/wtbd_crops_v1/images/1_0.png"
