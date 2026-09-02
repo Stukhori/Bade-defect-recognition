@@ -565,9 +565,3 @@ elif page == "Detection Readiness":
     render_detection()
 else:
     render_about()
-
-st.divider()
-st.caption(
-    "Application v2 · prepared crop + manual single/multi-region classification · session-only history and exports · "
-    "automatic localization unavailable · Phase 10 and Phase 11A frozen · Phase 12 not started."
-)
