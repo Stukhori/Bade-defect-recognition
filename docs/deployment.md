@@ -1,6 +1,6 @@
 # Streamlit Community Cloud deployment
 
-Application v2 is prepared for deployment from a clean GitHub clone. The exact 6.2 MB frozen Phase 6 checkpoint and its metadata are versioned solely as the inference asset required by the app; their validated hashes are unchanged.
+The application is prepared for deployment from a clean GitHub clone. Its exact 6.2 MB verified checkpoint and metadata are versioned as the inference assets required by the app; their validated hashes are unchanged.
 
 ## Deployment coordinates
 
@@ -33,4 +33,4 @@ The deployment validator checks that all required files are tracked, verifies th
 
 ## Scope
 
-Deployment does not change the research claims or add a detector. Uploads, crops, session history, visualizations, and exports remain in process memory. The app uses no external API and performs no runtime artifact download. Automatic localization remains unavailable because Phase 11B detector training and evaluation have not been completed.
+The deployed interface analyzes prepared crops and rectangles selected by the user. Uploads, crops, session history, visualizations, and exports remain in process memory. The app uses no external API and performs no runtime artifact download. Deployment does not alter the underlying research results.
