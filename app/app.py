@@ -545,7 +545,6 @@ with st.sidebar:
     st.divider()
     st.metric("Session regions", len(records()))
     st.success("Frozen classifier · CPU · local processing")
-    st.warning("Automatic localization unavailable")
     if st.button("Clear all session data", width="stretch", disabled=not records()):
         st.session_state["analysis_records"] = []
         st.session_state["source_images"] = {}
