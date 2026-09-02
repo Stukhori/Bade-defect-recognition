@@ -78,7 +78,7 @@ def load_detection_status(root: str | Path) -> DetectorStatus:
 
 def load_detector(*_args: Any, **_kwargs: Any) -> None:
     raise DetectorUnavailableError(
-        "Automatic localization is unavailable because detector training and evaluation have not been completed."
+        "This application accepts user-selected regions for classification."
     )
 
 

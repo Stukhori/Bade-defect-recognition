@@ -35,14 +35,15 @@ def test_application_v2_starts_on_home_without_an_upload():
     assert len(app.file_uploader) == 0
 
 
-def test_application_v2_withholds_automatic_localization_and_shows_safety_scope():
+def test_application_v2_describes_region_workflow_and_safety_scope():
     testing = pytest.importorskip("streamlit.testing.v1")
     app = testing.AppTest.from_file(str(APP_PATH)).run(timeout=30)
     rendered = "\n".join(element.value for element in app.markdown)
     source = APP_PATH.read_text(encoding="utf-8")
-    assert "Automatic localization is unavailable" in rendered
+    assert "Region-based analysis" in rendered
+    assert "unavailable" not in rendered.lower()
     assert "operational safety" in source
-    assert "Detector training and evaluation have not been completed" in source
+    assert "CUDA" not in rendered
     assert "ultralytics" not in source.lower()
 
 
@@ -102,3 +103,7 @@ def test_read_only_pages_render_without_errors(page):
     app.radio[0].set_value(page).run(timeout=30)
     assert not app.exception
     assert not app.error
+    rendered = "\n".join(element.value for element in app.markdown)
+    assert "Phase " not in rendered
+    assert "CUDA" not in rendered
+    assert "unavailable" not in rendered.lower()

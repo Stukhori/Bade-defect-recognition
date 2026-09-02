@@ -64,9 +64,9 @@ def validate(root: Path) -> dict[str, Any]:
         "Manual single-region classification",
         "Manual multi-region analysis",
         "Compare regions",
-        "Frozen research results",
+        "Research results",
         "Detection readiness",
-        "Automatic localization is unavailable",
+        "Region-based analysis",
         "operational safety",
     )
     if not all(text in app_source for text in required_ui_copy):

@@ -18,7 +18,7 @@ from windblade_demo.visualization import annotate_regions
 
 
 LIMITATION_NOTICE = (
-    "User-supplied regions only. Automatic localization is unavailable; model scores are not "
+    "This export contains regions supplied by the user; model scores are not "
     "calibrated confidence estimates and do not assess structural integrity or operational safety."
 )
 
@@ -26,11 +26,11 @@ LIMITATION_NOTICE = (
 def session_payload(records: Iterable[RegionRecord], *, exported_utc: str | None = None) -> dict:
     items = list(records)
     return {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "application_version": APPLICATION_VERSION,
         "exported_utc": exported_utc or utc_now(),
         "processing": "local in-memory session processing",
-        "automatic_localization": "unavailable",
+        "analysis_scope": "user-supplied regions",
         "limitation_notice": LIMITATION_NOTICE,
         "region_count": len(items),
         "regions": [item.metadata() for item in items],

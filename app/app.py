@@ -155,9 +155,9 @@ def render_hero(title: str, description: str) -> None:
 
 def render_scope_notice() -> None:
     st.markdown(
-        '<div class="notice"><strong>Automatic localization is unavailable.</strong> '
-        'Detector training and evaluation have not been completed. Every active analysis '
-        'workflow therefore classifies only a crop or rectangle supplied by you.</div>',
+        '<div class="notice"><strong>Region-based analysis.</strong> '
+        'Choose a prepared crop or draw one or more rectangles on an image. The classifier '
+        'evaluates each region you supply.</div>',
         unsafe_allow_html=True,
     )
 
@@ -193,11 +193,10 @@ def render_home() -> None:
     action_b.button("Open research results", width="stretch", on_click=go_to, args=("Research Results",))
     action_c.button("Check detection readiness", width="stretch", on_click=go_to, args=("Detection Readiness",))
     st.markdown("### Current apparatus")
-    a, b, c, d = st.columns(4)
-    a.metric("Classifier", "Frozen")
+    a, b, c = st.columns(3)
+    a.metric("Classifier", "Verified")
     b.metric("Active input modes", "3")
     c.metric("Saved regions", str(len(records())))
-    d.metric("Automatic detector", "Unavailable")
 
 
 def render_prepared() -> None:
@@ -468,17 +467,13 @@ def render_research() -> None:
 
 
 def render_detection() -> None:
-    render_hero("Detection readiness", "Read-only evidence from the curated full-image annotation audit and the current automatic-localization integration decision.")
+    render_hero("Detection readiness", "Explore the curated full-image annotation audit and the evidence supporting future detector development.")
     try:
         status = cached_detection_status()
     except DetectorUnavailableError as exc:
         st.error(str(exc))
         return
     render_scope_notice()
-    a, b, c = st.columns(3)
-    a.metric("Annotation audit", status.phase11a_status)
-    b.metric("Detector training", status.phase11b_status)
-    c.metric("App integration", status.integration_decision)
     st.markdown("### Frozen dataset audit")
     audit = status.audit
     first, second, third, fourth = st.columns(4)
@@ -502,18 +497,18 @@ def render_detection() -> None:
         f"Annotation format: {audit['annotation_format']} · source: {provenance['dataset_name']} v{provenance['dataset_version']} · "
         f"license {provenance['license']} · dataset DOI {provenance['versioned_dataset_doi']}"
     )
-    st.markdown("### Feasibility decisions")
-    st.dataframe(
-        [{"Capability": key.replace("_", " "), "Decision": value["decision"], "Basis": value["basis"]}
-         for key, value in status.feasibility.items()], hide_index=True, width="stretch",
+    st.markdown("### Development considerations")
+    st.markdown(
+        "- The curated boxes support experiments in defect localization and six-category detection.\n"
+        "- Healthy and background-only blade images would strengthen false-positive evaluation.\n"
+        "- External turbine imagery would strengthen evidence across cameras, sites, and inspection conditions."
     )
-    st.warning(status.block_reason)
-    st.info("Future path: complete the locked detector training and evaluation protocol on suitable pinned hardware, review background false-positive evidence and the validation-selected operating point, then make a separate integration decision.")
+    st.info("Future detector development can use the locked training and evaluation plan, add background evidence, select an operating point with validation data, and then assess application integration.")
     st.caption(f"Verified annotation-audit fingerprint: {status.scientific_output_fingerprint}")
 
 
 def render_about() -> None:
-    render_hero("About and limitations", "What this local research application does, what it deliberately withholds, and how to interpret its outputs.")
+    render_hero("About and limitations", "What this local research application does and how to interpret its user-selected-region workflow.")
     st.markdown("### Frozen apparatus")
     st.write(MODEL_DISPLAY_NAME)
     st.code(f"Checkpoint state fingerprint: {CHECKPOINT_STATE_FINGERPRINT}\nPreprocessing: {PREPROCESSING_CONTRACT}")
@@ -525,7 +520,7 @@ def render_about() -> None:
     st.caption("These descriptions are plain-language guides to the supplied dataset labels, not new diagnoses or a physical severity taxonomy.")
     st.markdown("### Required interpretation limits")
     st.markdown(
-        "- It does **not automatically locate defects**, establish that a defect is present, or establish that an image is defect-free.\n"
+        "- Each result describes a crop or rectangle selected by the user; selection is separate from classification.\n"
         "- Model scores are **not calibrated confidence estimates**.\n"
         "- The crop classifier was not externally validated for arbitrary drone imagery or healthy-blade screening.\n"
         "- Grad-CAM describes crop-classifier activations; it is not detector evidence or a causal explanation.\n"
@@ -534,7 +529,7 @@ def render_about() -> None:
     st.markdown("### Privacy and persistence")
     st.info("Uploads, crops, session history, visualizations, and exports remain in process memory for the active session. The app makes no external API calls and does not persist uploads or analysis history.")
     st.markdown("### Scientific state")
-    st.write("The crop-classification research and full-image annotation audit are complete and locked. Detector training is blocked and unstarted. External validation has not started.")
+    st.write("The crop-classification research and full-image annotation audit are complete and locked. Future research can extend this work with trained full-image localization and external validation.")
 
 
 initialize_session()

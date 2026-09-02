@@ -30,13 +30,13 @@
     "streamlit-cropper": "0.3.1"
   },
   "descriptive_local_timings_seconds": {
-    "manual_inference": 0.01884599996265024,
-    "manual_preprocessing": 0.0021167000522837043,
-    "model_load_recorded": 0.16643240000121295,
-    "model_load_wrapper": 0.16703400004189461,
-    "optional_gradcam": 0.12910510005895048,
-    "prepared_inference": 0.03189909993670881,
-    "prepared_preprocessing": 0.004067300003953278
+    "manual_inference": 0.03635599999688566,
+    "manual_preprocessing": 0.004004399990662932,
+    "model_load_recorded": 0.25857180007733405,
+    "model_load_wrapper": 0.2590689000207931,
+    "optional_gradcam": 0.2138929000357166,
+    "prepared_inference": 0.04442930000368506,
+    "prepared_preprocessing": 0.007184099988080561
   },
   "detection_readiness_dashboard": {
     "detector_available": false,
@@ -51,7 +51,7 @@
     "checkpoint_file_sha256": "9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5",
     "checkpoint_state_fingerprint": "3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757",
     "device": "cpu",
-    "display_name": "MobileNetV3-Small \u2014 frozen Phase 6, full-data seed 17",
+    "display_name": "MobileNetV3-Small \u2014 locked full-data model, seed 17",
     "evaluation_mode": true,
     "expected_state_fingerprint": "3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757"
   },
@@ -133,7 +133,7 @@
     "status": "PASS"
   },
   "status": "PASS",
-  "validated_utc": "2026-08-31T09:35:52.171965+00:00",
+  "validated_utc": "2026-09-02T04:26:35.375281+00:00",
   "workflows": {
     "manual_multi_region": {
       "overlap_supported": true,

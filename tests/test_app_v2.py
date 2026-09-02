@@ -55,7 +55,7 @@ def test_json_and_csv_exports_include_reproducibility_metadata():
     item = record()
     payload = json.loads(json_export([item], exported_utc="2026-08-31T01:00:00+00:00"))
     assert payload["application_version"] == APPLICATION_VERSION
-    assert payload["automatic_localization"] == "unavailable"
+    assert payload["analysis_scope"] == "user-supplied regions"
     assert payload["regions"][0]["selected_box"] == [10, 12, 42, 50]
     assert set(payload["regions"][0]["scores"]) == set(CLASS_LABELS)
     rows = list(csv.DictReader(StringIO(csv_export([item]).decode("utf-8"))))
@@ -63,7 +63,7 @@ def test_json_and_csv_exports_include_reproducibility_metadata():
     assert rows[0][f"score_{CLASS_LABELS[1]}"] == "0.9"
     assert rows[0]["application_version"] == APPLICATION_VERSION
     assert len(rows[0]["checkpoint_state_fingerprint"]) == 64
-    assert "Automatic localization is unavailable" in rows[0]["limitation_notice"]
+    assert "regions supplied by the user" in rows[0]["limitation_notice"]
 
 
 def test_annotated_export_draws_user_boxes_without_touching_source():
@@ -90,7 +90,7 @@ def test_phase11a_status_and_future_detector_contract():
     assert status.available is False
     assert status.integration_decision == "unsupported"
     assert status.phase11b_status == "blocked and unstarted"
-    with pytest.raises(DetectorUnavailableError, match="detector training"):
+    with pytest.raises(DetectorUnavailableError, match="user-selected regions"):
         load_detector()
-    with pytest.raises(DetectorUnavailableError, match="detector training"):
+    with pytest.raises(DetectorUnavailableError, match="user-selected regions"):
         detect(Image.new("RGB", (50, 50)))
