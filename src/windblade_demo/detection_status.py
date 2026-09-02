@@ -53,7 +53,7 @@ def load_detection_status(root: str | Path) -> DetectorStatus:
         for name in ("manifest", "reproducibility", "audit_summary", "feasibility", "compute_gate")
     }
     if any(not path.is_file() for path in required.values()):
-        raise DetectorUnavailableError("Frozen Phase 11A readiness sources are unavailable.")
+        raise DetectorUnavailableError("The verified detection-readiness sources could not be loaded.")
     values = {name: json.loads(path.read_text(encoding="utf-8")) for name, path in required.items()}
     manifest = values["manifest"]
     repro = values["reproducibility"]
@@ -62,7 +62,7 @@ def load_detection_status(root: str | Path) -> DetectorStatus:
         or repro.get("scientific_output_fingerprint") != PHASE11A_FINGERPRINT
         or manifest.get("phase11b_training_started") is not False
     ):
-        raise DetectorUnavailableError("Frozen Phase 11A readiness identity failed verification.")
+        raise DetectorUnavailableError("The detection-readiness source identity failed verification.")
     return DetectorStatus(
         available=False,
         phase11a_status="complete and frozen",
@@ -78,7 +78,7 @@ def load_detection_status(root: str | Path) -> DetectorStatus:
 
 def load_detector(*_args: Any, **_kwargs: Any) -> None:
     raise DetectorUnavailableError(
-        "Automatic localization is unavailable because Phase 11B detector training and evaluation have not been completed."
+        "Automatic localization is unavailable because detector training and evaluation have not been completed."
     )
 
 

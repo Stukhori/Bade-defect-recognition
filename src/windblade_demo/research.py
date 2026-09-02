@@ -35,16 +35,16 @@ def load_phase10(root: str | Path) -> dict[str, Any]:
     repro_path = base / "reproducibility.json"
     summary_path = base / "summary.json"
     if not repro_path.is_file() or not summary_path.is_file():
-        raise FrozenResearchError("Frozen Phase 10 summary sources are unavailable.")
+        raise FrozenResearchError("The verified research-summary sources could not be loaded.")
     repro = json.loads(repro_path.read_text(encoding="utf-8"))
     if repro.get("phase10_scientific_output_fingerprint") != PHASE10_FINGERPRINT:
-        raise FrozenResearchError("Frozen Phase 10 fingerprint does not match the application contract.")
+        raise FrozenResearchError("The research-summary fingerprint does not match the application contract.")
     loaded: dict[str, Any] = {}
     for name in TABLES:
         path = base / "tables" / name
         expected = repro.get("inventory", {}).get(f"tables/{name}")
         if not path.is_file() or not expected or _sha256(path) != expected:
-            raise FrozenResearchError(f"Frozen Phase 10 table failed verification: {name}")
+            raise FrozenResearchError(f"A research-summary table failed verification: {name}")
         with path.open(newline="", encoding="utf-8") as handle:
             loaded[name.removesuffix(".csv")] = list(csv.DictReader(handle))
     return {

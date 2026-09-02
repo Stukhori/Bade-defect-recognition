@@ -156,7 +156,7 @@ def render_hero(title: str, description: str) -> None:
 def render_scope_notice() -> None:
     st.markdown(
         '<div class="notice"><strong>Automatic localization is unavailable.</strong> '
-        'Phase 11B detector training and evaluation have not been completed. Every active analysis '
+        'Detector training and evaluation have not been completed. Every active analysis '
         'workflow therefore classifies only a crop or rectangle supplied by you.</div>',
         unsafe_allow_html=True,
     )
@@ -423,13 +423,13 @@ def render_compare() -> None:
 
 
 def render_research() -> None:
-    render_hero("Frozen research results", "A read-only dashboard over canonical Phase 10 tables. Values are loaded from verified artifacts and are never recomputed in the app.")
+    render_hero("Research results", "A read-only dashboard over verified benchmark tables. Values are loaded from checked artifacts and are never recomputed in the app.")
     try:
         research = cached_research()
     except FrozenResearchError as exc:
         st.error(str(exc))
         return
-    st.markdown('<div class="status-ok"><strong>Phase 10 complete and frozen.</strong> Canonical source fingerprint verified.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="status-ok"><strong>Research analysis complete and locked.</strong> Canonical source fingerprint verified.</div>', unsafe_allow_html=True)
     clean = research["tables"]["clean_method_comparison"]
     summary = research["summary"]
     a, b, c, d = st.columns(4)
@@ -463,12 +463,12 @@ def render_research() -> None:
     st.dataframe(robust_view, hide_index=True, width="stretch")
     st.markdown("### Error and human-review summary")
     st.dataframe(research["tables"]["error_human_review_summary"], hide_index=True, width="stretch")
-    st.info("These are descriptive frozen research summaries, not live estimates for the uploaded image. Intervals and seed variability retain the exact Phase 10 definitions.")
-    st.caption(f"Canonical source: experiments/summaries/phase10_final_synthesis_v1 · fingerprint {research['scientific_output_fingerprint']}")
+    st.info("These are descriptive research summaries, not live estimates for the uploaded image. Intervals and seed variability retain the documented evaluation definitions.")
+    st.caption(f"Verified research-source fingerprint: {research['scientific_output_fingerprint']}")
 
 
 def render_detection() -> None:
-    render_hero("Detection readiness", "Read-only Phase 11A audit evidence and the explicit gate that keeps automatic localization unavailable.")
+    render_hero("Detection readiness", "Read-only evidence from the curated full-image annotation audit and the current automatic-localization integration decision.")
     try:
         status = cached_detection_status()
     except DetectorUnavailableError as exc:
@@ -476,8 +476,8 @@ def render_detection() -> None:
         return
     render_scope_notice()
     a, b, c = st.columns(3)
-    a.metric("Phase 11A", status.phase11a_status)
-    b.metric("Phase 11B", status.phase11b_status)
+    a.metric("Annotation audit", status.phase11a_status)
+    b.metric("Detector training", status.phase11b_status)
     c.metric("App integration", status.integration_decision)
     st.markdown("### Frozen dataset audit")
     audit = status.audit
@@ -508,8 +508,8 @@ def render_detection() -> None:
          for key, value in status.feasibility.items()], hide_index=True, width="stretch",
     )
     st.warning(status.block_reason)
-    st.info("Future path: complete the frozen Phase 11B training/evaluation protocol on suitable pinned CUDA hardware, review background false-positive evidence and the validation-selected operating point, then make a separate integration decision.")
-    st.caption(f"Frozen Phase 11A scientific fingerprint: {status.scientific_output_fingerprint}")
+    st.info("Future path: complete the locked detector training and evaluation protocol on suitable pinned hardware, review background false-positive evidence and the validation-selected operating point, then make a separate integration decision.")
+    st.caption(f"Verified annotation-audit fingerprint: {status.scientific_output_fingerprint}")
 
 
 def render_about() -> None:
@@ -534,7 +534,7 @@ def render_about() -> None:
     st.markdown("### Privacy and persistence")
     st.info("Uploads, crops, session history, visualizations, and exports remain in process memory for the active session. The app makes no external API calls and does not persist uploads or analysis history.")
     st.markdown("### Scientific state")
-    st.write("Phase 10 and Phase 11A are frozen. Phase 11B detector training is blocked and unstarted. Phase 12 has not started.")
+    st.write("The crop-classification research and full-image annotation audit are complete and locked. Detector training is blocked and unstarted. External validation has not started.")
 
 
 initialize_session()

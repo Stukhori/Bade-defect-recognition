@@ -81,7 +81,7 @@ def test_phase10_dashboard_sources_are_verified_and_not_recomputed(tmp_path):
     result = load_phase10(ROOT)
     assert result["scientific_output_fingerprint"] == PHASE10_FINGERPRINT
     assert len(result["tables"]["clean_method_comparison"]) == 4
-    with pytest.raises(FrozenResearchError, match="unavailable"):
+    with pytest.raises(FrozenResearchError, match="could not be loaded"):
         load_phase10(tmp_path)
 
 
@@ -90,7 +90,7 @@ def test_phase11a_status_and_future_detector_contract():
     assert status.available is False
     assert status.integration_decision == "unsupported"
     assert status.phase11b_status == "blocked and unstarted"
-    with pytest.raises(DetectorUnavailableError, match="Phase 11B"):
+    with pytest.raises(DetectorUnavailableError, match="detector training"):
         load_detector()
-    with pytest.raises(DetectorUnavailableError, match="Phase 11B"):
+    with pytest.raises(DetectorUnavailableError, match="detector training"):
         detect(Image.new("RGB", (50, 50)))

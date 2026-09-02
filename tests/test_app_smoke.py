@@ -42,7 +42,7 @@ def test_application_v2_withholds_automatic_localization_and_shows_safety_scope(
     source = APP_PATH.read_text(encoding="utf-8")
     assert "Automatic localization is unavailable" in rendered
     assert "operational safety" in source
-    assert "Phase 11B detector training and evaluation have not been completed" in source
+    assert "Detector training and evaluation have not been completed" in source
     assert "ultralytics" not in source.lower()
 
 

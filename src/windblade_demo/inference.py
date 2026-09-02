@@ -71,7 +71,7 @@ def load_frozen_model(root: str | Path | None = None) -> LoadedFrozenModel:
     metadata_path = checkpoint.with_suffix(".json")
     if not checkpoint.is_file() or not metadata_path.is_file():
         raise FrozenModelError(
-            "The local frozen Phase 6 seed-17 checkpoint and metadata are required to run the app."
+            "The verified seed-17 model checkpoint and metadata are required to run the app."
         )
     if _sha256(checkpoint) != CHECKPOINT_FILE_SHA256:
         raise FrozenModelError("The frozen checkpoint file SHA-256 does not match the app contract.")
