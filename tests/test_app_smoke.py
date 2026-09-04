@@ -26,6 +26,11 @@ def open_analysis(app):
     return app
 
 
+def chart_table(chart):
+    pyarrow = pytest.importorskip("pyarrow")
+    return pyarrow.ipc.open_stream(chart.proto.data.data).read_all()
+
+
 def test_application_v2_starts_on_home_without_an_upload():
     testing = pytest.importorskip("streamlit.testing.v1")
     app = testing.AppTest.from_file(str(APP_PATH)).run(timeout=30)
@@ -68,8 +73,16 @@ def test_prepared_upload_and_classify_ui_workflow():
     assert not app.error
     assert app.subheader[-1].value in set(HUMAN_LABELS.values())
     assert app.session_state["analysis_records"][0].region_id == "R1"
+    score_data = chart_table(app.get("vega_lite_chart")[0])
+    assert score_data.column_names == ["Category", "Model score"]
+    assert score_data.num_rows == len(HUMAN_LABELS)
+    assert all(row["Category"] in set(HUMAN_LABELS.values()) for row in score_data.to_pylist())
     next(item for item in app.radio if item.label == "Navigation").set_value("Compare Regions").run(timeout=30)
     assert {item.label for item in app.get("download_button")} >= {"Download JSON", "Download CSV"}
+    comparison_tables = [chart_table(chart) for chart in app.get("vega_lite_chart")]
+    comparison_data = next(table for table in comparison_tables if "Region" in table.column_names)
+    assert comparison_data.column_names == ["Region", "Category", "Model score"]
+    assert comparison_data.num_rows == len(HUMAN_LABELS)
     assert not app.exception
 
 
