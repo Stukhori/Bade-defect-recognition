@@ -36,7 +36,7 @@ NAVIGATION = (
 ANALYSIS_MODES = ("Prepared crop", "Manual single region", "Manual multi-region")
 
 st.set_page_config(
-    page_title="Wind Turbine Blade Defect Recognition", page_icon="🔎", layout="wide",
+    page_title="Wind Turbine Blade Defect Recognition", page_icon="🌬️", layout="wide",
     initial_sidebar_state="expanded",
 )
 st.markdown(
@@ -135,7 +135,7 @@ def render_scores(record: RegionRecord, *, key: str) -> None:
     st.caption(f"{record.region_id} · model scores, not calibrated confidence estimates")
     st.vega_lite_chart(
         data=rows,
-        spec={"mark": {"type": "bar", "cornerRadiusEnd": 4, "color": "#08766f"},
+        spec={"mark": {"type": "bar", "cornerRadiusEnd": 4, "color": "#1677c8"},
          "encoding": {
              "x": {"field": "Model score", "type": "quantitative", "scale": {"domain": [0, 1]}},
              "y": {"field": "Category", "type": "nominal", "sort": "-x"},
@@ -168,8 +168,8 @@ def classify_record(
 
 def render_hero(title: str, description: str) -> None:
     st.markdown(
-        f'<div class="hero"><div><span class="badge">APPLICATION v{APPLICATION_VERSION}</span>'
-        '<span class="badge">LOCAL PROCESSING</span><span class="badge">FROZEN CLASSIFIER</span></div>'
+        '<div class="hero"><div><span class="badge">WIND TURBINE VISION</span>'
+        '<span class="badge">LOCAL PROCESSING</span><span class="badge">VERIFIED CLASSIFIER</span></div>'
         f'<h1>{title}</h1><p>{description}</p></div>', unsafe_allow_html=True,
     )
 
@@ -194,7 +194,7 @@ def go_to_analysis(mode: str) -> None:
 
 def render_home() -> None:
     render_hero(
-        "Blade image research workspace",
+        "Wind turbine blade analysis",
         "Explore a frozen six-category crop classifier, compare your own regions, export this browser session, and inspect the project's frozen research evidence.",
     )
     render_scope_notice()
@@ -245,7 +245,7 @@ def render_prepared() -> None:
 def manual_selection(decoded: Any, *, key: str):
     displayed = display_image(decoded.image)
     rectangle = st_cropper(
-        displayed, realtime_update=True, box_color="#F59E0B", aspect_ratio=None,
+        displayed, realtime_update=True, box_color="#1D4ED8", aspect_ratio=None,
         return_type="box", should_resize_image=False, stroke_width=3, key=key,
     )
     selected = map_display_box(rectangle, display_size=displayed.size, original_size=decoded.image.size)
@@ -267,7 +267,7 @@ def render_manual_single() -> None:
     save_source(decoded)
     selected, crop = manual_selection(decoded, key=f"single_cropper_{decoded.byte_sha256[:12]}")
     left, right = st.columns([1.35, 1])
-    left.image(annotated_selection(decoded.image, crop), caption="Orange: your rectangle · Teal: contextual crop", width="stretch")
+    left.image(annotated_selection(decoded.image, crop), caption="Cobalt: your rectangle · Sky blue: contextual crop", width="stretch")
     right.image(crop.model_input, caption="Exact contextual RGB 224×224 model input", width="stretch")
     if st.button("Classify and add selected region", type="primary", key="single_classify"):
         with st.spinner("Running the frozen model on CPU…"):
@@ -555,7 +555,7 @@ def render_about() -> None:
 
 initialize_session()
 with st.sidebar:
-    st.markdown("## Blade research app")
+    st.markdown("## Wind turbine vision")
     page = st.radio("Navigation", NAVIGATION, key="navigation")
     st.caption(f"Application v{APPLICATION_VERSION}")
     st.divider()

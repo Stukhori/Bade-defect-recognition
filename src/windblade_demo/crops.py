@@ -151,6 +151,6 @@ def annotated_selection(image: Image.Image, crop: ContextualCrop) -> Image.Image
         crop.selected_box.bottom - 1,
     )
     line_width = max(2, max(rendered.size) // 350)
-    draw.rectangle(contextual, outline="#0B7A75", width=line_width)
-    draw.rectangle(selected, outline="#F59E0B", width=line_width)
+    draw.rectangle(contextual, outline="#38BDF8", width=line_width)
+    draw.rectangle(selected, outline="#1D4ED8", width=line_width)
     return rendered

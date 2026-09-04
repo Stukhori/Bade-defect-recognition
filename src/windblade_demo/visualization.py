@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 from windblade_demo.session import RegionRecord
 
 
-REGION_COLORS = ("#F59E0B", "#0EA5A4", "#7C3AED", "#DC2626", "#2563EB", "#65A30D")
+REGION_COLORS = ("#1D4ED8", "#0284C7", "#4338CA", "#7C3AED", "#C2415D", "#0F4C81")
 
 
 def color_for_region(region_id: str) -> str:
