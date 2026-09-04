@@ -42,24 +42,45 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .stApp { background: #f4f7f8; color: #173342; }
+    .stApp {
+        color: #102a43;
+        background:
+            radial-gradient(circle at 88% 4%, rgba(112, 190, 238, .20), transparent 24rem),
+            linear-gradient(180deg, #edf6fd 0%, #f8fbfe 38%, #f2f7fb 100%);
+    }
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #e5f1fb 0%, #f4f8fc 68%, #eaf3fb 100%);
+        border-right: 1px solid #c8ddec;
+    }
     .block-container { max-width: 1280px; padding-top: 1.2rem; padding-bottom: 3rem; }
-    .hero { padding: 1.65rem 1.8rem; border-radius: 22px; color: white;
-            background: linear-gradient(125deg, #12344d 0%, #08766f 72%, #0d9488 100%);
-            box-shadow: 0 14px 34px rgba(18,52,77,.18); margin-bottom: 1rem; }
+    .hero { position: relative; overflow: hidden; padding: 1.65rem 1.8rem;
+            border-radius: 22px; color: white;
+            background: linear-gradient(125deg, #0b3158 0%, #0d5f9f 58%, #49a4dc 100%);
+            box-shadow: 0 16px 38px rgba(18, 76, 122, .22); margin-bottom: 1rem; }
+    .hero::before { content: ""; position: absolute; width: 19rem; height: 19rem;
+                    right: -5rem; top: -11rem; border-radius: 50%;
+                    border: 2px solid rgba(255,255,255,.20);
+                    box-shadow: 0 0 0 2.7rem rgba(255,255,255,.055),
+                                0 0 0 5.6rem rgba(255,255,255,.035); }
+    .hero::after { content: ""; position: absolute; width: 22rem; height: 4rem;
+                   right: 2rem; bottom: -2.1rem; border-radius: 50%;
+                   border-top: 2px solid rgba(255,255,255,.24);
+                   transform: rotate(-7deg); }
+    .hero > * { position: relative; z-index: 1; }
     .hero h1 { margin: .2rem 0 0; font-size: clamp(1.85rem, 4vw, 2.6rem); line-height: 1.1; }
     .hero p { margin: .65rem 0 0; max-width: 840px; opacity: .94; font-size: 1.02rem; }
     .badge { display: inline-block; padding: .28rem .58rem; margin: 0 .32rem .3rem 0;
              border-radius: 999px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28);
              font-size: .72rem; font-weight: 750; letter-spacing: .055em; }
-    .notice { border-left: 5px solid #e69f00; background: #fff8e6; padding: .9rem 1rem;
-              border-radius: 10px; margin: .75rem 0 1.2rem; color: #332700; }
-    .card { background: white; border: 1px solid #d9e6e8; border-radius: 15px;
-            padding: 1rem 1.15rem; box-shadow: 0 5px 18px rgba(18,52,77,.07); }
-    .eyebrow { color: #08766f; font-size: .76rem; font-weight: 800; letter-spacing: .08em; }
-    .status-ok { border-left: 4px solid #0d9488; background: #eaf8f6; padding: .8rem 1rem; border-radius: 10px; }
-    div[data-testid="stMetric"] { background:white; border:1px solid #d9e6e8; padding:.7rem; border-radius:12px; }
-    div[data-testid="stFileUploader"] { background:white; border:1px solid #d9e6e8; border-radius:14px; padding:.55rem .8rem; }
+    .notice { border-left: 5px solid #2b8fd2; background: #eaf5fd; padding: .9rem 1rem;
+              border-radius: 10px; margin: .75rem 0 1.2rem; color: #153d5c; }
+    .card { background: rgba(255,255,255,.90); border: 1px solid #c9deed; border-radius: 15px;
+            padding: 1rem 1.15rem; box-shadow: 0 6px 20px rgba(23,75,116,.09); }
+    .eyebrow { color: #116eaf; font-size: .76rem; font-weight: 800; letter-spacing: .08em; }
+    .status-ok { border-left: 4px solid #2589c9; background: #e8f4fc; padding: .8rem 1rem; border-radius: 10px; }
+    div[data-testid="stMetric"] { background:rgba(255,255,255,.90); border:1px solid #c9deed; padding:.7rem; border-radius:12px; }
+    div[data-testid="stFileUploader"] { background:rgba(255,255,255,.90); border:1px solid #c9deed; border-radius:14px; padding:.55rem .8rem; }
+    div.stButton > button, div.stDownloadButton > button { border-radius: 10px; }
     @media (max-width: 700px) { .hero { padding:1.15rem; border-radius:14px; } }
     </style>
     """,
