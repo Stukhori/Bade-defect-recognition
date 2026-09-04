@@ -30,13 +30,13 @@
     "streamlit-cropper": "0.3.1"
   },
   "descriptive_local_timings_seconds": {
-    "manual_inference": 0.08166769985109568,
-    "manual_preprocessing": 0.012964899884536862,
-    "model_load_recorded": 0.4619640000164509,
-    "model_load_wrapper": 0.4627539999783039,
-    "optional_gradcam": 0.4437929999548942,
-    "prepared_inference": 0.10184240015223622,
-    "prepared_preprocessing": 0.009116900153458118
+    "manual_inference": 0.017908700043335557,
+    "manual_preprocessing": 0.002309399889782071,
+    "model_load_recorded": 0.18868879997171462,
+    "model_load_wrapper": 0.18910060008056462,
+    "optional_gradcam": 0.24457610002718866,
+    "prepared_inference": 0.03422659984789789,
+    "prepared_preprocessing": 0.00368200009688735
   },
   "detection_readiness_dashboard": {
     "detector_available": false,
@@ -133,7 +133,7 @@
     "status": "PASS"
   },
   "status": "PASS",
-  "validated_utc": "2026-09-04T02:44:50.966316+00:00",
+  "validated_utc": "2026-09-04T11:34:02.780447+00:00",
   "workflows": {
     "manual_multi_region": {
       "overlap_supported": true,
