@@ -113,8 +113,8 @@ def render_scores(record: RegionRecord, *, key: str) -> None:
     st.subheader(HUMAN_LABELS[record.predicted_label])
     st.caption(f"{record.region_id} · model scores, not calibrated confidence estimates")
     st.vega_lite_chart(
-        {"values": rows},
-        {"mark": {"type": "bar", "cornerRadiusEnd": 4, "color": "#08766f"},
+        data=rows,
+        spec={"mark": {"type": "bar", "cornerRadiusEnd": 4, "color": "#08766f"},
          "encoding": {
              "x": {"field": "Model score", "type": "quantitative", "scale": {"domain": [0, 1]}},
              "y": {"field": "Category", "type": "nominal", "sort": "-x"},
@@ -367,8 +367,8 @@ def render_compare() -> None:
         for item in items for index, label in enumerate(CLASS_LABELS)
     ]
     st.vega_lite_chart(
-        {"values": chart_rows},
-        {"mark": "bar", "encoding": {
+        data=chart_rows,
+        spec={"mark": "bar", "encoding": {
             "x": {"field": "Region", "type": "nominal"},
             "y": {"field": "Model score", "type": "quantitative"},
             "color": {"field": "Category", "type": "nominal"},
