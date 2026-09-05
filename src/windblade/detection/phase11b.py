@@ -17,6 +17,7 @@ import json
 import math
 import os
 from pathlib import Path, PurePosixPath
+import pickle
 import shutil
 import subprocess
 import sys
@@ -308,14 +309,25 @@ class DriveLayout:
 def decide_resume(run_dir: Path, seed: int, config_sha256: str) -> Path | None:
     state_path, checkpoint = run_dir / "run_state.json", run_dir / "weights" / "last.pt"
     if not checkpoint.exists() and not state_path.exists():
+        if run_dir.exists() and any(run_dir.iterdir()):
+            raise Phase11BError("existing run artifacts without state/checkpoint are ambiguous")
         return None
     if not checkpoint.is_file() or not state_path.is_file():
         raise Phase11BError("partial run state cannot be resumed safely")
-    state = json.loads(state_path.read_text(encoding="utf-8"))
+    try:
+        state = json.loads(state_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise Phase11BError("partial run state cannot be read safely") from error
+    if not isinstance(state, dict):
+        raise Phase11BError("partial run state must be a mapping")
     if state.get("seed") != seed or state.get("configuration_sha256") != config_sha256:
         raise Phase11BError("resume checkpoint belongs to a different seed or configuration")
-    if state.get("weight_sha256") and state["weight_sha256"] != sha256_file(Path(state["weight_path"])):
-        raise Phase11BError("resume run's initial-weight identity changed")
+    if state.get("weight_sha256"):
+        weight_path = state.get("weight_path")
+        if not isinstance(weight_path, str) or not Path(weight_path).is_file():
+            raise Phase11BError("resume run's initial-weight path is invalid")
+        if state["weight_sha256"] != sha256_file(Path(weight_path)):
+            raise Phase11BError("resume run's initial-weight identity changed")
     return checkpoint
 
 
@@ -449,6 +461,235 @@ def training_arguments(config: Mapping[str, Any], data_yaml: Path, layout: Drive
     }
 
 
+CRITICAL_TRAINING_ARGUMENTS = (
+    "data", "epochs", "patience", "imgsz", "batch", "optimizer", "lr0", "cos_lr", "amp",
+    "single_cls", "deterministic", "workers", "device", "save_period", "project", "name",
+)
+
+
+def _read_mapping(path: Path, label: str, *, yaml_format: bool = False) -> dict[str, Any]:
+    if not path.is_file():
+        raise Phase11BError(f"missing {label}: {path}")
+    try:
+        value = yaml.safe_load(path.read_text(encoding="utf-8")) if yaml_format else json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError, yaml.YAMLError) as error:
+        raise Phase11BError(f"invalid {label}: {path}") from error
+    if not isinstance(value, dict):
+        raise Phase11BError(f"{label} must be a mapping")
+    return value
+
+
+def _has_test_path(value: Any) -> bool:
+    if not isinstance(value, (str, Path)):
+        return False
+    parts = str(value).replace("\\", "/").lower().split("/")
+    return any(part in {"test", "test.yaml"} for part in parts)
+
+
+def _validate_trainval_materialization(materialization: Mapping[str, Any], data_root: Path) -> None:
+    if materialization.get("scope") != "trainval" or materialization.get("included_splits") != ["train", "validation"]:
+        raise Phase11BError("training accepts only the train/validation materialization")
+    artifacts = materialization.get("artifacts")
+    if not isinstance(artifacts, list) or not artifacts:
+        raise Phase11BError("train/validation materialization has no artifact identity list")
+    identities = []
+    for item in artifacts:
+        if not isinstance(item, dict) or set(item) != {"path", "sha256"}:
+            raise Phase11BError("train/validation materialization artifact identity is malformed")
+        if _has_test_path(item["path"]):
+            raise Phase11BError("test materialization is forbidden during training recovery")
+        identities.append({"path": item["path"], "sha256": item["sha256"]})
+    if materialization.get("artifact_fingerprint") != canonical_hash(sorted(identities, key=lambda item: item["path"])):
+        raise Phase11BError("train/validation materialization fingerprint is inconsistent")
+
+    data_yaml = data_root / "dataset" / "trainval.yaml"
+    dataset = _read_mapping(data_yaml, "train/validation dataset YAML", yaml_format=True)
+    if "test" in dataset or dataset.get("train") != "images/train" or dataset.get("val") != "images/validation":
+        raise Phase11BError("training dataset YAML must expose only train and validation splits")
+    if _has_test_path(dataset.get("path")):
+        raise Phase11BError("training dataset YAML references a test path")
+    expected_dataset_root = (data_root / "dataset").resolve()
+    if Path(str(dataset.get("path", ""))).resolve() != expected_dataset_root:
+        raise Phase11BError("training dataset YAML root does not match the materialization")
+
+
+def _expected_run_state(
+    seed: int, config_relative: str, config_sha: str, record: Mapping[str, Any],
+    weight: Path, materialization: Mapping[str, Any],
+) -> dict[str, Any]:
+    return {
+        "seed": seed, "configuration_path": config_relative,
+        "configuration_sha256": config_sha, "apparatus_commit": record["apparatus_commit"],
+        "weight_path": str(weight.resolve()), "weight_sha256": record["sha256"],
+        "materialization_fingerprint": materialization["artifact_fingerprint"],
+    }
+
+
+def _validate_run_identity(state: Mapping[str, Any], expected: Mapping[str, Any]) -> None:
+    for key, value in expected.items():
+        observed = state.get(key)
+        if key == "weight_path":
+            if not isinstance(observed, str) or Path(observed).resolve() != Path(str(value)).resolve():
+                raise Phase11BError("run-state initial-weight path does not match the acquisition record")
+        elif observed != value:
+            raise Phase11BError(f"run-state {key} identity mismatch")
+
+
+def _critical_training_values(
+    arguments: Mapping[str, Any], config: Mapping[str, Any], data_yaml: Path,
+    layout: DriveLayout, seed: int, label: str,
+) -> dict[str, Any]:
+    if str(arguments.get("split", "validation")).lower() == "test" or any(
+        _has_test_path(value) for value in arguments.values()
+    ):
+        raise Phase11BError(f"{label} contains a forbidden test reference")
+    expected = training_arguments(config, data_yaml, layout, seed)
+    for key in CRITICAL_TRAINING_ARGUMENTS:
+        if key not in arguments:
+            raise Phase11BError(f"{label} lacks frozen training control {key}")
+        observed, required = arguments[key], expected[key]
+        if key in {"data", "project"}:
+            matches = isinstance(observed, (str, Path)) and Path(str(observed)).resolve() == Path(str(required)).resolve()
+        elif isinstance(required, float):
+            matches = isinstance(observed, (int, float)) and not isinstance(observed, bool) and math.isclose(
+                float(observed), required, rel_tol=0.0, abs_tol=0.0
+            )
+        else:
+            matches = observed == required
+        if not matches:
+            raise Phase11BError(f"{label} frozen training control {key} mismatch")
+    return {key: arguments[key] for key in CRITICAL_TRAINING_ARGUMENTS}
+
+
+class _CheckpointStub:
+    """Inert target for non-primitive objects in a restricted checkpoint pickle."""
+
+    def __new__(cls, *args: Any, **kwargs: Any) -> "_CheckpointStub":
+        return super().__new__(cls)
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        self.state: Any = None
+
+    def __call__(self, *args: Any, **kwargs: Any) -> "_CheckpointStub":
+        return type(self)()
+
+    def __setstate__(self, state: Any) -> None:
+        self.state = state
+
+    def append(self, value: Any) -> None:
+        pass
+
+    def extend(self, values: Iterable[Any]) -> None:
+        pass
+
+    def __setitem__(self, key: Any, value: Any) -> None:
+        pass
+
+
+class _RestrictedCheckpointUnpickler(pickle.Unpickler):
+    def find_class(self, module: str, name: str) -> type[_CheckpointStub]:
+        return _CheckpointStub
+
+    def persistent_load(self, persistent_id: Any) -> _CheckpointStub:
+        return _CheckpointStub(persistent_id)
+
+
+def _inspect_checkpoint_training_arguments(checkpoint: Path) -> dict[str, Any]:
+    """Extract primitive train_args without importing or instantiating Ultralytics."""
+
+    if checkpoint.is_symlink() or not checkpoint.is_file() or checkpoint.stat().st_size == 0:
+        raise Phase11BError("last checkpoint is missing, empty, or indirect")
+    if not zipfile.is_zipfile(checkpoint):
+        raise Phase11BError("last checkpoint is not a valid PyTorch archive")
+    try:
+        with zipfile.ZipFile(checkpoint) as archive:
+            if archive.testzip() is not None:
+                raise Phase11BError("last checkpoint archive is corrupt")
+            pickle_members = [
+                name for name in archive.namelist()
+                if name == "data.pkl" or name.endswith("/data.pkl")
+            ]
+            if len(pickle_members) != 1:
+                raise Phase11BError("last checkpoint has an ambiguous metadata payload")
+            with archive.open(pickle_members[0]) as payload_file:
+                payload = _RestrictedCheckpointUnpickler(payload_file).load()
+    except Phase11BError:
+        raise
+    except Exception as error:
+        raise Phase11BError("last checkpoint metadata could not be inspected") from error
+    if not isinstance(payload, Mapping) or not isinstance(payload.get("train_args"), Mapping):
+        raise Phase11BError("last checkpoint lacks Ultralytics training arguments")
+    return dict(payload["train_args"])
+
+
+def _results_epochs(run_dir: Path, configured_epochs: int) -> list[int]:
+    results_path = run_dir / "results.csv"
+    if not results_path.is_file():
+        raise Phase11BError("existing run lacks results.csv")
+    try:
+        rows = read_csv(results_path)
+    except (OSError, UnicodeError, csv.Error) as error:
+        raise Phase11BError("existing run results.csv is unreadable") from error
+    epoch_key = next((key for key in rows[0] if key.strip() == "epoch"), None) if rows else None
+    if epoch_key is None:
+        raise Phase11BError("existing run results.csv lacks epoch values")
+    try:
+        epochs = [int(row[epoch_key].strip()) for row in rows]
+    except (KeyError, TypeError, ValueError) as error:
+        raise Phase11BError("existing run results.csv has invalid epoch values") from error
+    if not epochs or epochs != list(range(1, len(epochs) + 1)) or len(epochs) > configured_epochs:
+        raise Phase11BError("existing run epoch history is noncontiguous or ambiguous")
+    return epochs
+
+
+def recover_legacy_completed_run(
+    config: Mapping[str, Any], repo: Path, data_root: Path, layout: DriveLayout,
+    run_dir: Path, seed: int, state: Mapping[str, Any], expected_state: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Finalize a legacy full run, or validate and leave a partial run resumable."""
+
+    if state.get("status") is not None:
+        raise Phase11BError("unrecognized existing run status")
+    _validate_run_identity(state, expected_state)
+    configured_epochs = int(config["training"]["epochs"])
+    epochs = _results_epochs(run_dir, configured_epochs)
+    args = _read_mapping(run_dir / "args.yaml", "existing run args.yaml", yaml_format=True)
+    data_yaml = data_root / "dataset" / "trainval.yaml"
+    applied = _critical_training_values(args, config, data_yaml, layout, seed, "args.yaml")
+
+    weights = run_dir / "weights"
+    last = weights / "last.pt"
+    if not last.is_file():
+        raise Phase11BError("existing run lacks last.pt")
+    checkpoint_args = _inspect_checkpoint_training_arguments(last)
+    _critical_training_values(checkpoint_args, config, data_yaml, layout, seed, "last.pt")
+
+    checkpoint_frequency = int(config["training"]["checkpoint_every_epochs"])
+    expected_periodic = [weights / f"epoch{index}.pt" for index in range(0, len(epochs), checkpoint_frequency)]
+    if not all(path.is_file() for path in expected_periodic):
+        raise Phase11BError("existing run lacks an expected periodic checkpoint")
+    if len(epochs) < configured_epochs:
+        return None
+    if not (weights / "best.pt").is_file():
+        raise Phase11BError("completed legacy run lacks best.pt")
+
+    completed = dict(state)
+    completed.update({
+        "status": "TRAINING_COMMAND_COMPLETED",
+        "last_checkpoint_sha256": sha256_file(last),
+        "applied_batch_size": int(applied["batch"]),
+        "applied_optimizer": str(applied["optimizer"]),
+        "applied_amp": bool(applied["amp"]),
+        "completion_recovery": {
+            "mode": "VERIFIED_PRE_EXISTING_ARTIFACTS",
+            "training_invoked": False,
+            "repository_commit": _git(repo, "rev-parse", "HEAD"),
+        },
+    })
+    atomic_json(run_dir / "run_state.json", completed)
+    return completed
+
+
 def train_seed(
     config: Mapping[str, Any], config_path: Path, repo: Path, data_root: Path,
     drive_root: Path, weight: Path, record_path: Path, seed: int,
@@ -462,22 +703,29 @@ def train_seed(
     _git(repo, "diff", "--quiet", "HEAD", "--", config_relative)
     if seed not in SEEDS:
         raise Phase11BError(f"undeclared seed: {seed}")
-    materialization = json.loads((data_root / "materialization.json").read_text(encoding="utf-8"))
-    if materialization.get("scope") != "trainval" or materialization.get("included_splits") != ["train", "validation"]:
-        raise Phase11BError("training accepts only the train/validation materialization")
+    materialization = _read_mapping(data_root / "materialization.json", "train/validation materialization")
+    _validate_trainval_materialization(materialization, data_root)
     data_yaml = data_root / "dataset" / "trainval.yaml"
     layout = DriveLayout.from_root(drive_root)
     run_dir = layout.run(seed)
     config_sha = sha256_file(config_path)
-    resume = decide_resume(run_dir, seed, config_sha)
-    run_dir.mkdir(parents=True, exist_ok=True)
-    state = {
-        "seed": seed, "configuration_path": config_relative,
-        "configuration_sha256": config_sha, "apparatus_commit": record["apparatus_commit"],
-        "weight_path": str(weight.resolve()), "weight_sha256": record["sha256"],
-        "materialization_fingerprint": materialization["artifact_fingerprint"],
-    }
-    atomic_json(run_dir / "run_state.json", state)
+    expected_state = _expected_run_state(seed, config_relative, config_sha, record, weight, materialization)
+    state_path = run_dir / "run_state.json"
+    if state_path.is_file():
+        state = _read_mapping(state_path, "existing run state")
+        _validate_run_identity(state, expected_state)
+        if state.get("status") == "TRAINING_COMMAND_COMPLETED":
+            return validate_completed_run(run_dir, seed, config_sha)
+        recovered = recover_legacy_completed_run(config, repo, data_root, layout, run_dir, seed, state, expected_state)
+        if recovered is not None:
+            return recovered
+        resume = decide_resume(run_dir, seed, config_sha)
+        state = dict(state)
+    else:
+        resume = decide_resume(run_dir, seed, config_sha)
+        run_dir.mkdir(parents=True, exist_ok=True)
+        state = expected_state
+        atomic_json(state_path, state)
     _ultralytics_settings_off()
     import torch
     torch.use_deterministic_algorithms(True, warn_only=False)

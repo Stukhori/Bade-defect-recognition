@@ -65,6 +65,19 @@ the `src/windblade` package to `scripts/run_phase11b.py`. `--no-deps` prevents
 that step from resolving, upgrading, or replacing the already-pinned Colab GPU
 dependencies.
 
+The three-seed loop is interruption-safe. A completed run whose state and
+`last.pt` hash still match is validated and returned without importing
+Ultralytics or issuing another training command. For a legacy run that reached
+all 100 epochs before its completion marker was recorded, recovery first checks
+the run/configuration, weight provenance, train/validation materialization,
+contiguous epoch history, every periodic checkpoint, `best.pt`, `last.pt`, and
+the frozen controls in both `args.yaml` and the checkpoint metadata. Only then
+does it atomically add the completion marker and observed `last.pt` hash to
+`run_state.json`; it does not modify training outputs. A partial matching run
+continues from `last.pt`, while a seed with no prior artifacts starts from the
+recorded official initial weight. Missing, contradictory, corrupt, or
+test-referencing evidence stops recovery instead of starting or resuming a run.
+
 The notebook selects one checkpoint per seed by maximum validation
 `mAP@0.50:0.95` (earliest epoch on a tie), pools validation predictions from the
 three selected checkpoints, and selects the confidence threshold with maximum

@@ -4,10 +4,15 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import pickle
 import subprocess
+import sys
+import types
 import venv
+import zipfile
 
 import pytest
+import yaml
 
 from windblade.detection import phase11b
 
@@ -19,6 +24,76 @@ CONFIG_PATH = ROOT / "configs/detection_phase11b.yaml"
 @pytest.fixture(scope="module")
 def apparatus():
     return phase11b.load_apparatus(CONFIG_PATH)
+
+
+def _execution_fixture(tmp_path: Path, apparatus, seed: int = 17) -> dict:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    config_path = repo / "config.yaml"
+    config_path.write_text("fixture: true\n", encoding="utf-8")
+    data_root = (tmp_path / "trainval-data").resolve()
+    dataset_root = data_root / "dataset"
+    dataset_root.mkdir(parents=True)
+    data_yaml = dataset_root / "trainval.yaml"
+    data_yaml.write_text(yaml.safe_dump({
+        "path": str(dataset_root), "names": {0: "defect"},
+        "train": "images/train", "val": "images/validation",
+    }, sort_keys=False), encoding="utf-8")
+    artifacts = [{"path": "dataset/images/train/image.jpg", "sha256": "1" * 64}]
+    materialization = {
+        "scope": "trainval", "included_splits": ["train", "validation"],
+        "artifact_fingerprint": phase11b.canonical_hash(artifacts), "artifacts": artifacts,
+    }
+    phase11b.atomic_json(data_root / "materialization.json", materialization)
+    drive_root = (tmp_path / "drive").resolve()
+    layout = phase11b.DriveLayout.from_root(drive_root)
+    run_dir = layout.run(seed)
+    weight = layout.provenance / "yolo11n.pt"
+    weight.parent.mkdir(parents=True)
+    weight.write_bytes(b"official initial weight fixture")
+    record = {
+        "apparatus_commit": "a" * 40,
+        "sha256": phase11b.sha256_file(weight),
+    }
+    expected_state = phase11b._expected_run_state(
+        seed, "config.yaml", phase11b.sha256_file(config_path), record, weight, materialization,
+    )
+    arguments = phase11b.training_arguments(apparatus, data_yaml, layout, seed)
+    return {
+        "repo": repo, "config_path": config_path, "data_root": data_root,
+        "drive_root": drive_root, "layout": layout, "run_dir": run_dir,
+        "weight": weight, "record_path": layout.provenance / "weight-record.json",
+        "record": record, "state": expected_state, "arguments": arguments,
+    }
+
+
+def _write_existing_run(context: dict, epochs: int) -> None:
+    run_dir = context["run_dir"]
+    weights = run_dir / "weights"
+    weights.mkdir(parents=True)
+    phase11b.atomic_json(run_dir / "run_state.json", context["state"])
+    (run_dir / "args.yaml").write_text(
+        yaml.safe_dump(context["arguments"], sort_keys=False), encoding="utf-8",
+    )
+    rows = ["epoch,metrics/mAP50-95(B)"] + [f"{epoch},0.5" for epoch in range(1, epochs + 1)]
+    (run_dir / "results.csv").write_text("\n".join(rows) + "\n", encoding="utf-8")
+    for index in range(epochs):
+        (weights / f"epoch{index}.pt").write_bytes(f"epoch-{index}".encode())
+    (weights / "last.pt").write_bytes(b"last checkpoint fixture")
+    if epochs == 100:
+        (weights / "best.pt").write_bytes(b"best checkpoint fixture")
+
+
+def _patch_execution_checks(monkeypatch, context: dict) -> None:
+    monkeypatch.setattr(phase11b, "validate_frozen_inputs", lambda config, repo: {"status": "PASS"})
+    monkeypatch.setattr(
+        phase11b, "validate_weight_record",
+        lambda config, weight, record_path: dict(context["record"]),
+    )
+    monkeypatch.setattr(
+        phase11b, "_git",
+        lambda repo, *args, **kwargs: "b" * 40 if args == ("rev-parse", "HEAD") else "",
+    )
 
 
 def test_frozen_fingerprints_counts_and_run_matrix(apparatus) -> None:
@@ -85,6 +160,290 @@ def test_partial_resume_state_is_rejected(tmp_path: Path) -> None:
     (run / "run_state.json").write_text("{}", encoding="utf-8")
     with pytest.raises(phase11b.Phase11BError, match="partial run"):
         phase11b.decide_resume(run, 17, "a" * 64)
+
+
+def test_completed_run_is_idempotent_without_state_rewrite_or_yolo(tmp_path: Path, apparatus, monkeypatch) -> None:
+    context = _execution_fixture(tmp_path, apparatus)
+    _write_existing_run(context, 100)
+    state_path = context["run_dir"] / "run_state.json"
+    completed = {
+        **context["state"], "status": "TRAINING_COMMAND_COMPLETED",
+        "last_checkpoint_sha256": phase11b.sha256_file(context["run_dir"] / "weights/last.pt"),
+        "applied_batch_size": 16, "applied_optimizer": "AdamW", "applied_amp": True,
+    }
+    phase11b.atomic_json(state_path, completed)
+    original_bytes = state_path.read_bytes()
+    _patch_execution_checks(monkeypatch, context)
+    monkeypatch.setattr(
+        phase11b, "_ultralytics_settings_off",
+        lambda: pytest.fail("completed run must not initialize Ultralytics"),
+    )
+    monkeypatch.setattr(
+        phase11b, "_inspect_checkpoint_training_arguments",
+        lambda checkpoint: pytest.fail("completed run must not load last.pt"),
+    )
+
+    result = phase11b.train_seed(
+        apparatus, context["config_path"], context["repo"], context["data_root"],
+        context["drive_root"], context["weight"], context["record_path"], 17,
+    )
+
+    assert result == completed
+    assert state_path.read_bytes() == original_bytes
+
+
+def test_legacy_full_run_is_recovered_without_training_or_artifact_changes(
+    tmp_path: Path, apparatus, monkeypatch,
+) -> None:
+    context = _execution_fixture(tmp_path, apparatus)
+    _write_existing_run(context, 100)
+    protected = [context["run_dir"] / "results.csv", context["run_dir"] / "args.yaml"]
+    protected.extend(sorted((context["run_dir"] / "weights").glob("*.pt")))
+    before = {path: phase11b.sha256_file(path) for path in protected}
+    _patch_execution_checks(monkeypatch, context)
+    monkeypatch.setattr(
+        phase11b, "_inspect_checkpoint_training_arguments", lambda checkpoint: dict(context["arguments"]),
+    )
+    monkeypatch.setattr(
+        phase11b, "_ultralytics_settings_off",
+        lambda: pytest.fail("legacy completion recovery must not initialize Ultralytics"),
+    )
+
+    result = phase11b.train_seed(
+        apparatus, context["config_path"], context["repo"], context["data_root"],
+        context["drive_root"], context["weight"], context["record_path"], 17,
+    )
+
+    assert result["status"] == "TRAINING_COMMAND_COMPLETED"
+    assert result["last_checkpoint_sha256"] == phase11b.sha256_file(context["run_dir"] / "weights/last.pt")
+    assert result["applied_batch_size"] == 16
+    assert result["applied_optimizer"] == "AdamW"
+    assert result["applied_amp"] is True
+    assert result["completion_recovery"] == {
+        "mode": "VERIFIED_PRE_EXISTING_ARTIFACTS",
+        "training_invoked": False,
+        "repository_commit": "b" * 40,
+    }
+    assert {path: phase11b.sha256_file(path) for path in protected} == before
+
+
+def test_partial_seed_29_run_remains_resumable_from_last_checkpoint(
+    tmp_path: Path, apparatus, monkeypatch,
+) -> None:
+    context = _execution_fixture(tmp_path, apparatus, seed=29)
+    _write_existing_run(context, 30)
+    state_path = context["run_dir"] / "run_state.json"
+    original_bytes = state_path.read_bytes()
+    monkeypatch.setattr(
+        phase11b, "_inspect_checkpoint_training_arguments", lambda checkpoint: dict(context["arguments"]),
+    )
+
+    recovered = phase11b.recover_legacy_completed_run(
+        apparatus, context["repo"], context["data_root"], context["layout"],
+        context["run_dir"], 29, context["state"], context["state"],
+    )
+
+    assert recovered is None
+    assert phase11b.decide_resume(
+        context["run_dir"], 29, context["state"]["configuration_sha256"],
+    ) == context["run_dir"] / "weights/last.pt"
+    assert state_path.read_bytes() == original_bytes
+
+
+def test_fresh_seed_43_starts_once_from_official_initial_weight(
+    tmp_path: Path, apparatus, monkeypatch,
+) -> None:
+    context = _execution_fixture(tmp_path, apparatus, seed=43)
+    _patch_execution_checks(monkeypatch, context)
+    calls: list[tuple] = []
+
+    class FakeYOLO:
+        def __init__(self, source: str):
+            calls.append(("init", source))
+            self.trainer = types.SimpleNamespace(
+                args=types.SimpleNamespace(batch=16), optimizer=type("AdamW", (), {})(), amp=True,
+            )
+
+        def train(self, **arguments):
+            calls.append(("train", arguments))
+            weights = context["run_dir"] / "weights"
+            weights.mkdir(parents=True, exist_ok=True)
+            (weights / "last.pt").write_bytes(b"fake completed last checkpoint")
+
+    fake_torch = types.ModuleType("torch")
+    fake_torch.use_deterministic_algorithms = lambda *args, **kwargs: None
+    fake_torch.backends = types.SimpleNamespace(
+        cudnn=types.SimpleNamespace(benchmark=True, deterministic=False),
+    )
+    fake_ultralytics = types.ModuleType("ultralytics")
+    fake_ultralytics.settings = {}
+    fake_ultralytics.YOLO = FakeYOLO
+    monkeypatch.setitem(sys.modules, "torch", fake_torch)
+    monkeypatch.setitem(sys.modules, "ultralytics", fake_ultralytics)
+
+    result = phase11b.train_seed(
+        apparatus, context["config_path"], context["repo"], context["data_root"],
+        context["drive_root"], context["weight"], context["record_path"], 43,
+    )
+
+    assert calls[0] == ("init", str(context["weight"]))
+    assert calls[1][0] == "train"
+    assert calls[1][1]["seed"] == 43
+    assert len(calls) == 2
+    assert result["status"] == "TRAINING_COMMAND_COMPLETED"
+
+
+@pytest.mark.parametrize(
+    "corruption, message",
+    [
+        ("missing_results", "lacks results.csv"),
+        ("noncontiguous_results", "noncontiguous or ambiguous"),
+        ("missing_args", "missing existing run args.yaml"),
+        ("mismatched_args", "batch mismatch"),
+        ("mismatched_checkpoint_args", "last.pt frozen training control batch mismatch"),
+        ("missing_periodic", "expected periodic checkpoint"),
+        ("missing_best", "lacks best.pt"),
+        ("corrupt_last", "not a valid PyTorch archive"),
+    ],
+)
+def test_legacy_completion_evidence_fails_closed(
+    tmp_path: Path, apparatus, monkeypatch, corruption: str, message: str,
+) -> None:
+    context = _execution_fixture(tmp_path, apparatus)
+    _write_existing_run(context, 100)
+    if corruption == "missing_results":
+        (context["run_dir"] / "results.csv").unlink()
+    elif corruption == "noncontiguous_results":
+        (context["run_dir"] / "results.csv").write_text(
+            "epoch,metrics/mAP50-95(B)\n1,0.5\n3,0.5\n", encoding="utf-8",
+        )
+    elif corruption == "missing_args":
+        (context["run_dir"] / "args.yaml").unlink()
+    elif corruption == "mismatched_args":
+        changed = {**context["arguments"], "batch": 8}
+        (context["run_dir"] / "args.yaml").write_text(yaml.safe_dump(changed), encoding="utf-8")
+    elif corruption == "missing_periodic":
+        (context["run_dir"] / "weights/epoch50.pt").unlink()
+    elif corruption == "missing_best":
+        (context["run_dir"] / "weights/best.pt").unlink()
+    if corruption != "corrupt_last":
+        checkpoint_arguments = dict(context["arguments"])
+        if corruption == "mismatched_checkpoint_args":
+            checkpoint_arguments["batch"] = 8
+        monkeypatch.setattr(
+            phase11b, "_inspect_checkpoint_training_arguments",
+            lambda checkpoint: checkpoint_arguments,
+        )
+
+    with pytest.raises(phase11b.Phase11BError, match=message):
+        phase11b.recover_legacy_completed_run(
+            apparatus, context["repo"], context["data_root"], context["layout"],
+            context["run_dir"], 17, context["state"], context["state"],
+        )
+
+
+def test_checkpoint_metadata_inspection_uses_restricted_pickle(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "last.pt"
+    arguments = {"seed": 17, "data": "/content/trainval.yaml"}
+    with zipfile.ZipFile(checkpoint, "w") as archive:
+        archive.writestr("archive/data.pkl", pickle.dumps({"model": object(), "train_args": arguments}))
+    assert phase11b._inspect_checkpoint_training_arguments(checkpoint) == arguments
+
+
+@pytest.mark.parametrize(
+    "field, value",
+    [
+        ("seed", 29),
+        ("configuration_sha256", "f" * 64),
+        ("apparatus_commit", "f" * 40),
+        ("weight_sha256", "f" * 64),
+        ("materialization_fingerprint", "f" * 64),
+    ],
+)
+def test_legacy_recovery_rejects_wrong_provenance_identities(
+    tmp_path: Path, apparatus, monkeypatch, field: str, value,
+) -> None:
+    context = _execution_fixture(tmp_path, apparatus)
+    _write_existing_run(context, 100)
+    changed = {**context["state"], field: value}
+    monkeypatch.setattr(
+        phase11b, "_inspect_checkpoint_training_arguments", lambda checkpoint: dict(context["arguments"]),
+    )
+    with pytest.raises(phase11b.Phase11BError, match="identity mismatch"):
+        phase11b.recover_legacy_completed_run(
+            apparatus, context["repo"], context["data_root"], context["layout"],
+            context["run_dir"], 17, changed, context["state"],
+        )
+
+
+def test_recovery_rejects_test_materialization_and_test_training_path(tmp_path: Path, apparatus, monkeypatch) -> None:
+    context = _execution_fixture(tmp_path, apparatus)
+    materialization_path = context["data_root"] / "materialization.json"
+    materialization = json.loads(materialization_path.read_text(encoding="utf-8"))
+    materialization["artifacts"] = [{"path": "dataset/images/test/image.jpg", "sha256": "1" * 64}]
+    materialization["artifact_fingerprint"] = phase11b.canonical_hash(materialization["artifacts"])
+    with pytest.raises(phase11b.Phase11BError, match="test materialization"):
+        phase11b._validate_trainval_materialization(materialization, context["data_root"])
+
+    _write_existing_run(context, 100)
+    changed_args = {**context["arguments"], "data": str(context["data_root"] / "dataset/test.yaml")}
+    (context["run_dir"] / "args.yaml").write_text(yaml.safe_dump(changed_args), encoding="utf-8")
+    monkeypatch.setattr(
+        phase11b, "_inspect_checkpoint_training_arguments", lambda checkpoint: dict(changed_args),
+    )
+    with pytest.raises(phase11b.Phase11BError, match="forbidden test reference"):
+        phase11b.recover_legacy_completed_run(
+            apparatus, context["repo"], context["data_root"], context["layout"],
+            context["run_dir"], 17, context["state"], context["state"],
+        )
+
+
+def test_invalid_completed_state_cannot_be_erased_by_resume(tmp_path: Path, apparatus, monkeypatch) -> None:
+    context = _execution_fixture(tmp_path, apparatus)
+    _write_existing_run(context, 100)
+    state_path = context["run_dir"] / "run_state.json"
+    completed = {
+        **context["state"], "status": "TRAINING_COMMAND_COMPLETED",
+        "last_checkpoint_sha256": "0" * 64,
+    }
+    phase11b.atomic_json(state_path, completed)
+    original_bytes = state_path.read_bytes()
+    _patch_execution_checks(monkeypatch, context)
+    monkeypatch.setattr(
+        phase11b, "_ultralytics_settings_off",
+        lambda: pytest.fail("invalid completed state must fail before Ultralytics"),
+    )
+    with pytest.raises(phase11b.Phase11BError, match="last checkpoint identity mismatch"):
+        phase11b.train_seed(
+            apparatus, context["config_path"], context["repo"], context["data_root"],
+            context["drive_root"], context["weight"], context["record_path"], 17,
+        )
+    assert state_path.read_bytes() == original_bytes
+
+
+def test_selection_still_requires_completed_state_and_matching_last_sha(tmp_path: Path) -> None:
+    run_dir = tmp_path / "seed_17"
+    weights = run_dir / "weights"
+    weights.mkdir(parents=True)
+    last = weights / "last.pt"
+    last.write_bytes(b"last")
+    state = {
+        "seed": 17, "configuration_sha256": "a" * 64,
+        "status": "TRAINING_COMMAND_COMPLETED", "last_checkpoint_sha256": phase11b.sha256_file(last),
+    }
+    phase11b.atomic_json(run_dir / "run_state.json", state)
+    assert phase11b.validate_completed_run(run_dir, 17, "a" * 64) == state
+    last.write_bytes(b"changed")
+    with pytest.raises(phase11b.Phase11BError, match="last checkpoint identity mismatch"):
+        phase11b.validate_completed_run(run_dir, 17, "a" * 64)
+
+
+def test_ambiguous_existing_run_cannot_be_treated_as_fresh(tmp_path: Path) -> None:
+    run_dir = tmp_path / "seed_43"
+    run_dir.mkdir()
+    (run_dir / "results.csv").write_text("epoch\n1\n", encoding="utf-8")
+    with pytest.raises(phase11b.Phase11BError, match="ambiguous"):
+        phase11b.decide_resume(run_dir, 43, "a" * 64)
 
 
 def test_checkpoint_selection_is_validation_only_with_earliest_tie_break() -> None:
