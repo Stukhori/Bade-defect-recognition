@@ -38,9 +38,18 @@ No package or model weight is vendored in the apparatus commit.
 
 ## Colab procedure
 
-Open `notebooks/phase11b_train_validate.ipynb` in Google Colab, select a GPU
-runtime with at least 8 GiB VRAM, set the apparatus commit, and run the cells in
-order. Place the frozen raw archive at:
+Open `notebooks/phase11b_train_validate.ipynb` in Google Colab and select the
+pinned runtime using this menu path:
+
+`Runtime (Среда выполнения) → Change runtime type (Сменить тип среды выполнения) → Runtime version 2025.07 → T4 GPU`
+
+Phase 11B requires runtime version `2025.07`, Python 3.11, and a CUDA GPU with
+at least 8 GiB VRAM. A T4 GPU is acceptable. Colab's Latest runtime is currently
+incompatible because it uses Python 3.13, outside the repository's pinned
+Python 3.11 compatibility range, and must not be used.
+
+After reconnecting to the selected runtime, set the apparatus commit and run
+the cells in order. Place the frozen raw archive at:
 
 `MyDrive/windblade_phase11b/inputs/WT blade defect dataset.zip`
 

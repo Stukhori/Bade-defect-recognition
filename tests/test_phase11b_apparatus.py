@@ -228,10 +228,15 @@ def test_colab_notebook_has_no_outputs_and_no_final_command() -> None:
     assert all(cell.get("execution_count") is None for cell in notebook["cells"] if cell["cell_type"] == "code")
     assert "final-test" not in code
     assert "materialize-trainval" in code
+    guard_index = next(index for index, source in enumerate(code_cells) if "EXPECTED_PYTHON = (3, 11)" in source)
+    drive_index = next(index for index, source in enumerate(code_cells) if "drive.mount" in source)
+    checkout_index = next(index for index, source in enumerate(code_cells) if "git', 'checkout" in source)
     requirements_index = next(index for index, source in enumerate(code_cells) if "requirements-detection-colab.txt" in source)
     editable_index = next(index for index, source in enumerate(code_cells) if "--editable" in source)
     apparatus_index = next(index for index, source in enumerate(code_cells) if "apparatus-check" in source)
-    assert requirements_index < editable_index < apparatus_index
+    assert guard_index < drive_index < checkout_index < requirements_index < editable_index < apparatus_index
+    assert "sys.version_info[:2] != EXPECTED_PYTHON" in code_cells[guard_index]
+    assert "Runtime version: 2025.07" in code_cells[guard_index]
     assert "--no-deps" in code_cells[editable_index]
     assert "sys.path" not in code
 
