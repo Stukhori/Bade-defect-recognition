@@ -227,6 +227,67 @@ def test_legacy_full_run_is_recovered_without_training_or_artifact_changes(
     assert {path: phase11b.sha256_file(path) for path in protected} == before
 
 
+@pytest.mark.parametrize("observed", [0, "0"])
+def test_device_zero_accepts_only_supported_equivalent_representations(tmp_path: Path, apparatus, observed) -> None:
+    context = _execution_fixture(tmp_path, apparatus)
+    arguments = {**context["arguments"], "device": observed}
+    result = phase11b._critical_training_values(
+        arguments, apparatus, context["data_root"] / "dataset/trainval.yaml",
+        context["layout"], 17, "fixture",
+    )
+    assert result["device"] == observed
+
+
+@pytest.mark.parametrize("observed", [False, 0.0, 1, "1", "cuda:0", "0,1", "", None, "cpu", " 0 "])
+def test_device_zero_rejects_other_or_malformed_representations(tmp_path: Path, apparatus, observed) -> None:
+    context = _execution_fixture(tmp_path, apparatus)
+    arguments = {**context["arguments"], "device": observed}
+    with pytest.raises(phase11b.Phase11BError, match="device mismatch"):
+        phase11b._critical_training_values(
+            arguments, apparatus, context["data_root"] / "dataset/trainval.yaml",
+            context["layout"], 17, "fixture",
+        )
+
+
+@pytest.mark.parametrize("yaml_device, checkpoint_device", [("0", 0), (0, "0")])
+def test_device_zero_normalization_applies_to_args_and_checkpoint_without_training(
+    tmp_path: Path, apparatus, monkeypatch, yaml_device, checkpoint_device,
+) -> None:
+    context = _execution_fixture(tmp_path, apparatus)
+    context["arguments"]["device"] = yaml_device
+    _write_existing_run(context, 100)
+    checkpoint_arguments = {**context["arguments"], "device": checkpoint_device}
+    _patch_execution_checks(monkeypatch, context)
+    monkeypatch.setattr(
+        phase11b, "_inspect_checkpoint_training_arguments", lambda checkpoint: checkpoint_arguments,
+    )
+    monkeypatch.setattr(
+        phase11b, "_ultralytics_settings_off",
+        lambda: pytest.fail("device normalization recovery must not initialize Ultralytics"),
+    )
+
+    result = phase11b.train_seed(
+        apparatus, context["config_path"], context["repo"], context["data_root"],
+        context["drive_root"], context["weight"], context["record_path"], 17,
+    )
+
+    assert result["status"] == "TRAINING_COMMAND_COMPLETED"
+    assert result["completion_recovery"]["training_invoked"] is False
+
+
+@pytest.mark.parametrize("key, observed", [("batch", "16"), ("optimizer", "adamw"), ("amp", False)])
+def test_device_normalization_does_not_relax_other_controls(
+    tmp_path: Path, apparatus, key: str, observed,
+) -> None:
+    context = _execution_fixture(tmp_path, apparatus)
+    arguments = {**context["arguments"], key: observed}
+    with pytest.raises(phase11b.Phase11BError, match=rf"{key} mismatch"):
+        phase11b._critical_training_values(
+            arguments, apparatus, context["data_root"] / "dataset/trainval.yaml",
+            context["layout"], 17, "fixture",
+        )
+
+
 def test_partial_seed_29_run_remains_resumable_from_last_checkpoint(
     tmp_path: Path, apparatus, monkeypatch,
 ) -> None:

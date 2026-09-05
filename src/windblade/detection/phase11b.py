@@ -550,6 +550,10 @@ def _critical_training_values(
         observed, required = arguments[key], expected[key]
         if key in {"data", "project"}:
             matches = isinstance(observed, (str, Path)) and Path(str(observed)).resolve() == Path(str(required)).resolve()
+        elif key == "device" and isinstance(required, int) and not isinstance(required, bool) and required == 0:
+            matches = (
+                isinstance(observed, int) and not isinstance(observed, bool) and observed == 0
+            ) or (isinstance(observed, str) and observed == "0")
         elif isinstance(required, float):
             matches = isinstance(observed, (int, float)) and not isinstance(observed, bool) and math.isclose(
                 float(observed), required, rel_tol=0.0, abs_tol=0.0
