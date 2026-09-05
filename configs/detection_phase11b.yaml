@@ -1,0 +1,127 @@
+schema_version: "1.0"
+apparatus:
+  name: phase11b_yolo11n_pretest
+  status: pretest_apparatus_only
+  apparatus_commit_required: true
+  license: AGPL-3.0-only
+  run_matrix: three_total_class_agnostic_runs
+
+detector:
+  family: Ultralytics YOLO11
+  variant: yolo11n
+  task: detect
+  package: ultralytics
+  version: 8.3.150
+  architecture_source: https://github.com/ultralytics/ultralytics/blob/v8.3.150/ultralytics/cfg/models/11/yolo11.yaml
+  license: AGPL-3.0
+  license_source: https://github.com/ultralytics/ultralytics/blob/v8.3.150/LICENSE
+  pretrained_filename: yolo11n.pt
+  pretrained_official_url: https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt
+  pretrained_record_required: true
+
+environment:
+  python: "3.11"
+  torch: "2.6.0"
+  torchvision: "0.21.0"
+  cuda_wheel: cu124
+  required_device: cuda
+  minimum_vram_gib: 8
+  requirements: requirements-detection-colab.txt
+  telemetry_disabled: true
+  external_trackers: false
+
+frozen_inputs:
+  phase11a_config: configs/detection.yaml
+  audit_root: experiments/summaries/phase11_detection_audit_v1
+  image_manifest: experiments/summaries/phase11_detection_audit_v1/tables/detection_image_manifest.csv
+  annotation_manifest: experiments/summaries/phase11_detection_audit_v1/tables/detection_annotation_manifest.csv
+  split_manifest: experiments/summaries/phase11_detection_audit_v1/tables/detection_split_manifest.csv
+  class_mapping: experiments/summaries/phase11_detection_audit_v1/class_mapping.json
+  raw_archive_filename: WT blade defect dataset.zip
+  raw_archive_bytes: 78958553
+  raw_archive_sha256: 466452f2a0cfc9ef6ba63ea2a3bbc7ea4262057dd07e4fc9e00eedf5bba305b4
+  coordinate_convention: pascal_voc_one_based_inclusive
+  dataset_fingerprint: ad4ab59c3e3c85c6cf0b85b148177bd6b79d24f372f49bdff0043609e6fefc97
+  split_fingerprint: 264f8460f203074374c2c098c8fd5d2e55fb7ee1f281a8d505e2dfb0de9a2bc3
+  phase11a_config_fingerprint: 9f4a20ba4404c9a6072277a504c466a0756143b908e79c7168d2ccf91ff32057
+  phase11a_scientific_output_fingerprint: 3f46cbdc6c7a2e3cf6093ff177dd1948d113fa4c36fa9eb907d7c8621e800461
+  expected:
+    images: 720
+    boxes: 1065
+    images_by_split: {train: 510, validation: 101, test: 109}
+    boxes_by_split: {train: 757, validation: 146, test: 162}
+
+scientific_protocol:
+  primary_task: class_agnostic_localization
+  primary_metric: map_50_95
+  seeds: [17, 29, 43]
+  run_count: 3
+  checkpoint_selection: maximum_validation_map_50_95_then_earliest_epoch
+  threshold_selection: pooled_three_seed_validation_f1_then_lower_threshold
+  threshold_grid: {start: 0.01, stop: 0.99, step: 0.01}
+  threshold_match_iou: 0.50
+  no_post_test_tuning: true
+
+training:
+  image_size: 640
+  batch_size: 16
+  optimizer: AdamW
+  initial_learning_rate: 0.001
+  final_learning_rate_fraction: 0.01
+  schedule: cosine
+  epochs: 100
+  patience: 20
+  early_stopping_monitor: validation_map_50_95
+  early_stopping_min_delta: 0.0
+  warmup_epochs: 3.0
+  warmup_momentum: 0.8
+  warmup_bias_learning_rate: 0.1
+  momentum: 0.9
+  weight_decay: 0.0005
+  amp: true
+  workers: 4
+  checkpoint_every_epochs: 1
+  deterministic: true
+  single_class: true
+  cache: false
+  rectangular_batches: false
+  multi_scale: false
+  augmentations:
+    hsv_h: 0.015
+    hsv_s: 0.7
+    hsv_v: 0.4
+    degrees: 5.0
+    translate: 0.1
+    scale: 0.5
+    shear: 0.0
+    perspective: 0.0
+    flip_up_down: 0.5
+    flip_left_right: 0.5
+    mosaic: 1.0
+    mixup: 0.0
+    copy_paste: 0.0
+    close_mosaic_epochs: 10
+
+nms:
+  confidence_floor: 0.001
+  iou_threshold: 0.70
+  maximum_detections: 300
+  class_agnostic: true
+
+colab:
+  drive_root: /content/drive/MyDrive/windblade_phase11b
+  local_data_root: /content/windblade_phase11b_data
+  repository_root: /content/Bade-defect-recognition
+  archive_relative_path: inputs/WT blade defect dataset.zip
+  weight_relative_path: provenance/yolo11n.pt
+  weight_record_relative_path: provenance/phase11b_weight_acquisition.json
+  runs_relative_path: runs
+  selection_relative_path: selection
+  bundles_relative_path: bundles
+
+firewall:
+  training_materialization_scope: trainval
+  final_test_command: final-test
+  committed_selection_receipt: provenance/phase11b_selection_receipt.json
+  receipt_must_be_git_tracked_and_clean: true
+  required_receipt_hashes: [configuration, checkpoints, threshold, nms]

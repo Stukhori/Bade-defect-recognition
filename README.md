@@ -1,6 +1,11 @@
 # Robust Wind Turbine Blade Defect Recognition
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–10 are complete, validated, and frozen; the core classification research remains unchanged. Optional Phase 11A completed a separate full-image annotation/feasibility audit, while Phase 11B training remains compute/dependency-blocked. Application v2 productizes only the current frozen assets; automatic localization remains unavailable. Phase 12 has not started. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+> **License:** This entire repository is licensed under the GNU Affero General
+> Public License v3.0 only (`AGPL-3.0-only`). See [LICENSE](LICENSE). Dataset-
+> derived assets retain the attribution documented in
+> [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–10 are complete, validated, and frozen; the core classification research remains unchanged. Optional Phase 11A completed a separate full-image annotation/feasibility audit. A pinned, GPU-only Phase 11B pre-test apparatus is now prepared, while detector training and held-out evaluation remain unstarted. Application v2 productizes only the current frozen assets; automatic localization remains unavailable. Phase 12 has not started. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -168,8 +173,8 @@ uv run python scripts/run_detection.py --config configs/detection.yaml --apparat
 uv run python scripts/run_detection.py --config configs/detection.yaml --validate-only
 ```
 
-Phase 11B was not started: this host has CPU-only PyTorch, no CUDA device, and no detector package or pretrained weight was acquired. The dataset/protocol, compute gate, QC packet, limitations, and handoff are documented in [`docs/phase11_detection.md`](docs/phase11_detection.md). Application v2 subsequently added product workflows around the frozen assets while retaining the user-supplied-region boundary; see [`docs/app.md`](docs/app.md).
+Phase 11B training has not started on this host. Its separate Colab apparatus pins YOLO11n and every direct GPU dependency, verifies all frozen identities and the raw archive, persists interruption-safe per-seed runs to Drive, performs validation-only checkpoint/threshold selection, and enforces a committed-receipt firewall before held-out evaluation. See [`docs/phase11b_colab.md`](docs/phase11b_colab.md). The Phase 11A dataset/protocol, compute gate, QC packet, and limitations remain frozen in [`docs/phase11_detection.md`](docs/phase11_detection.md). Application v2 retains the user-supplied-region boundary; see [`docs/app.md`](docs/app.md).
 
 ## Phase boundaries
 
-Phases 0–10 remain complete, validated, and frozen. Optional Phase 11A is complete and frozen; Phase 11B detector training is compute/dependency-blocked and unstarted. Application v2 is complete without automatic localization. Phase 12 external validation has not started. The Streamlit application remains non-scientific and does not automatically detect defects or assess structural safety.
+Phases 0–10 remain complete, validated, and frozen. Optional Phase 11A is complete and frozen; the Phase 11B Colab pre-test apparatus is prepared, but dependencies, weights, training, validation selection, and held-out evaluation have not been executed. Application v2 is unchanged and does not automatically localize defects. Phase 12 external validation has not started.

@@ -7,6 +7,7 @@ name = "windblade"
 version = "0.1.0"
 description = "Reproducible experimental infrastructure for wind-turbine blade defect recognition research."
 readme = "README.md"
+license = { text = "AGPL-3.0-only" }
 requires-python = ">=3.11,<3.12"
 dependencies = [
   "matplotlib>=3.9,<4",
@@ -18,6 +19,9 @@ dependencies = [
   "scikit-learn>=1.6,<2",
   "torch>=2.6,<3",
   "torchvision>=0.21,<1",
+]
+classifiers = [
+  "License :: OSI Approved :: GNU Affero General Public License v3",
 ]
 
 [project.optional-dependencies]
