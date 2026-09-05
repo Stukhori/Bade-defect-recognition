@@ -20,8 +20,17 @@ validation `mAP@0.50:0.95`.
 1. Commit and push this apparatus before opening the Colab dependency cell.
 2. In the notebook, replace `REPLACE_WITH_APPARATUS_COMMIT` with that full
    40-character commit and check out exactly that commit.
-3. Only then install `requirements-detection-colab.txt` and acquire `yolo11n.pt`.
-4. `acquire-weight` downloads only the configured official URL and atomically
+3. Only then install `requirements-detection-colab.txt`.
+4. Install the checked-out repository through its declared `src`-layout package
+   configuration, without resolving dependencies a second time:
+
+   ```bash
+   python -m pip install --no-deps --editable /content/Bade-defect-recognition
+   ```
+
+5. Only after both installations pass may the apparatus checks run and
+   `yolo11n.pt` be acquired.
+6. `acquire-weight` downloads only the configured official URL and atomically
    writes the Drive weight-acquisition record before training. Training refuses
    missing, altered, or inconsistent weight records.
 
@@ -41,6 +50,11 @@ materializes only train/validation data locally, and executes each declared seed
 sequentially. Re-running a seed resumes from its Drive `last.pt` only when its
 seed, apparatus configuration, initial weight, and materialization identities
 match. No automatic batch sizing or optimizer selection is used.
+
+The editable installation uses the repository's `pyproject.toml` and exposes
+the `src/windblade` package to `scripts/run_phase11b.py`. `--no-deps` prevents
+that step from resolving, upgrading, or replacing the already-pinned Colab GPU
+dependencies.
 
 The notebook selects one checkpoint per seed by maximum validation
 `mAP@0.50:0.95` (earliest epoch on a tie), pools validation predictions from the

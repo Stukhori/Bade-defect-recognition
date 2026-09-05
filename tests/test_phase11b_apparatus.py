@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
+import venv
 
 import pytest
 
@@ -220,11 +222,42 @@ def test_test_firewall_accepts_only_consistent_committed_hashes(tmp_path: Path, 
 
 def test_colab_notebook_has_no_outputs_and_no_final_command() -> None:
     notebook = json.loads((ROOT / "notebooks/phase11b_train_validate.ipynb").read_text(encoding="utf-8"))
-    code = "\n".join("".join(cell.get("source", [])) for cell in notebook["cells"] if cell["cell_type"] == "code")
+    code_cells = ["".join(cell.get("source", [])) for cell in notebook["cells"] if cell["cell_type"] == "code"]
+    code = "\n".join(code_cells)
     assert all(cell.get("outputs", []) == [] for cell in notebook["cells"] if cell["cell_type"] == "code")
     assert all(cell.get("execution_count") is None for cell in notebook["cells"] if cell["cell_type"] == "code")
     assert "final-test" not in code
     assert "materialize-trainval" in code
+    requirements_index = next(index for index, source in enumerate(code_cells) if "requirements-detection-colab.txt" in source)
+    editable_index = next(index for index, source in enumerate(code_cells) if "--editable" in source)
+    apparatus_index = next(index for index, source in enumerate(code_cells) if "apparatus-check" in source)
+    assert requirements_index < editable_index < apparatus_index
+    assert "--no-deps" in code_cells[editable_index]
+    assert "sys.path" not in code
+
+
+def test_clean_clone_editable_install_makes_windblade_importable(tmp_path: Path) -> None:
+    clone = tmp_path / "clean-clone"
+    subprocess.run(
+        ["git", "clone", "--quiet", "--local", "--no-hardlinks", str(ROOT), str(clone)],
+        check=True, capture_output=True, text=True,
+    )
+    environment = tmp_path / "venv"
+    venv.EnvBuilder(with_pip=True).create(environment)
+    python = environment / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    install = subprocess.run(
+        [
+            str(python), "-m", "pip", "install", "--disable-pip-version-check",
+            "--no-deps", "--no-build-isolation", "--editable", str(clone),
+        ],
+        check=False, capture_output=True, text=True,
+    )
+    assert install.returncode == 0, install.stdout + install.stderr
+    imported = subprocess.check_output(
+        [str(python), "-I", "-c", "import pathlib, windblade; print(pathlib.Path(windblade.__file__).resolve())"],
+        text=True,
+    ).strip()
+    assert Path(imported) == (clone / "src/windblade/__init__.py").resolve()
 
 
 def test_dependencies_and_training_controls_are_explicitly_pinned(apparatus) -> None:
