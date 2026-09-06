@@ -15,7 +15,7 @@ Application v3 is prepared for deployment from a clean GitHub clone but has not 
 
 The entrypoint-local dependency file pins Streamlit `1.62.0`, streamlit-cropper `0.3.1`, Ultralytics `8.3.150`, PyTorch `2.13.0+cpu`, torchvision `0.28.0+cpu`, and the remaining validated application packages. The exact frozen crop-classifier checkpoint and detector proposal checkpoint are tracked. No runtime model download is required.
 
-The root `packages.txt` declares only `libgl1`. Streamlit Community Cloud installs this Debian library so the pinned `opencv-python` runtime can resolve `libGL.so.1`; it does not change Python packages or application inference behavior.
+The root `packages.txt` declares only `libgl1` and `libglib2.0-0t64`. Streamlit Community Cloud installs `libgl1` so the pinned `opencv-python` runtime can resolve `libGL.so.1`; on its Debian Trixie environment, `libglib2.0-0t64` provides the required `libgthread-2.0.so.0`. These system libraries do not change Python packages or application inference behavior.
 
 ## Deploy
 
@@ -32,7 +32,7 @@ uv run python scripts/validate_deployment.py
 uv run streamlit run app/app.py --server.address 127.0.0.1
 ```
 
-The validator requires both checkpoints and all deployment inputs, including `packages.txt`, to be tracked. It permits exactly the single normalized apt declaration `libgl1`, verifies checkpoint byte identities, loads the frozen classifier on CPU, and checks the pinned dependency and Streamlit configuration contract.
+The validator requires both checkpoints and all deployment inputs, including `packages.txt`, to be tracked. It permits exactly the normalized apt declarations `libgl1` and `libglib2.0-0t64` in that order, verifies checkpoint byte identities, loads the frozen classifier on CPU, and checks the pinned dependency and Streamlit configuration contract.
 
 ## Scope
 

@@ -28,7 +28,7 @@ EXPECTED_REQUIREMENTS = {
     'torch==2.13.0+cpu; sys_platform != "darwin"',
     'torchvision==0.28.0+cpu; sys_platform != "darwin"',
 }
-EXPECTED_SYSTEM_PACKAGES = ["libgl1"]
+EXPECTED_SYSTEM_PACKAGES = ["libgl1", "libglib2.0-0t64"]
 
 
 def sha256(path: Path) -> str:
@@ -64,7 +64,8 @@ def validate_system_packages(path: Path) -> list[str]:
     packages = normalized_system_packages(path)
     if packages != EXPECTED_SYSTEM_PACKAGES:
         raise RuntimeError(
-            "Deployment system packages must contain exactly ['libgl1']; "
+            "Deployment system packages must contain exactly "
+            "['libgl1', 'libglib2.0-0t64']; "
             f"found {packages}."
         )
     return packages
