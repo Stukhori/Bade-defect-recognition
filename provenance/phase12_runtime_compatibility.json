@@ -1,0 +1,61 @@
+{
+  "apparatus_config_sha256": "8f084ceecfa911c6fe333d20c2d55a8cd8b738f0ae0dd2d5f00e5dd26f89dde1",
+  "checkpoint": {
+    "application_semantic_classes": {
+      "0": "defect_region_proposal"
+    },
+    "bytes": 16085716,
+    "checkpoint_internal_classes": {
+      "0": "item"
+    },
+    "metadata": {
+      "image_size": 640,
+      "seed": 17
+    },
+    "original_drive_path": "runs/seed_17/weights/epoch82.pt",
+    "selected_epoch": 83,
+    "sha256": "793547a5ec31954d8e909b2f5c63f378374134353a8d1e0cefdd452a5365eefa",
+    "task": "detect"
+  },
+  "checkpoint_copied_to_repository": false,
+  "checkpoint_modified": false,
+  "environment": {
+    "cpu_only": true,
+    "dependencies": {
+      "Pillow": "12.3.0",
+      "PyYAML": "6.0.3",
+      "joblib": "1.5.3",
+      "matplotlib": "3.11.1",
+      "numpy": "2.4.6",
+      "scikit-image": "0.26.0",
+      "scikit-learn": "1.9.0",
+      "streamlit": "1.62.0",
+      "streamlit-cropper": "0.3.1",
+      "torch": "2.13.0+cpu",
+      "torchvision": "0.28.0+cpu",
+      "ultralytics": "8.3.150"
+    },
+    "python": "3.11.15",
+    "telemetry_disabled": true
+  },
+  "schema_version": "1.0",
+  "status": "PASS",
+  "synthetic_smoke": {
+    "controls": {
+      "agnostic_nms": true,
+      "conf": 0.39,
+      "device": "cpu",
+      "imgsz": 640,
+      "iou": 0.7,
+      "max_det": 300,
+      "plots": false,
+      "save": false,
+      "verbose": false
+    },
+    "prediction_details_recorded": false,
+    "project_data_used": false,
+    "source": "deterministic_in_memory_rgb",
+    "status": "PASS",
+    "timing_recorded": false
+  }
+}

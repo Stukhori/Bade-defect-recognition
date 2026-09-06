@@ -1,0 +1,102 @@
+schema_version: "1.0"
+apparatus:
+  name: phase12a_detector_application_integration
+  status: compatibility_gate_passed_apparatus_only
+  application_implementation: false
+  external_deployment: false
+
+deployment_candidate:
+  detector: YOLO11n
+  package: ultralytics
+  package_version: 8.3.150
+  task: detect
+  seed: 17
+  selected_epoch: 83
+  original_drive_path: runs/seed_17/weights/epoch82.pt
+  proposed_repository_path: experiments/results/phase11b_yolo11n_v1/final/seed_17/epoch82.pt
+  bytes: 16085716
+  sha256: 793547a5ec31954d8e909b2f5c63f378374134353a8d1e0cefdd452a5365eefa
+  selection_source: validation_only
+  selection_policy: maximum_validation_map_50_95
+  validation_candidates:
+    - {seed: 17, validation_map_50_95: 0.43109}
+    - {seed: 29, validation_map_50_95: 0.42675}
+    - {seed: 43, validation_map_50_95: 0.40643}
+  held_out_test_used_for_selection: false
+  checkpoint_internal_classes:
+    0: item
+  application_semantic_classes:
+    0: defect_region_proposal
+  class_mapping_scope: presentation_only
+  class_mapping_must_not_change: [coordinates, scores, thresholding, nms, model_execution]
+
+runtime_compatibility:
+  record: provenance/phase12_runtime_compatibility.json
+  python: 3.11.15
+  device: cpu
+  cuda_enabled: false
+  telemetry_disabled: true
+  dependencies:
+    streamlit: 1.62.0
+    streamlit-cropper: 0.3.1
+    numpy: 2.4.6
+    Pillow: 12.3.0
+    matplotlib: 3.11.1
+    PyYAML: 6.0.3
+    joblib: 1.5.3
+    scikit-image: 0.26.0
+    scikit-learn: 1.9.0
+    torch: 2.13.0+cpu
+    torchvision: 0.28.0+cpu
+    ultralytics: 8.3.150
+
+inference:
+  image_size: 640
+  confidence_threshold: 0.39
+  nms_iou: 0.7
+  class_agnostic_nms: true
+  maximum_detections: 300
+  device: cpu
+  save: false
+  plots: false
+  verbose: false
+  model_ensembling: false
+  checkpoint_switching: false
+  user_adjustable_threshold: false
+  user_adjustable_nms: false
+
+application_design:
+  feature_name: Experimental automatic region proposals
+  proposals_user_reviewable: true
+  retain_prepared_crop: true
+  retain_manual_single_region: true
+  retain_manual_multi_region: true
+  proposal_crop_pipeline: frozen_contextual_crop_then_frozen_six_class_mobilenet
+  separate_detector_and_classifier_scores: true
+  zero_proposal_message: No region proposal exceeded the frozen threshold.
+  zero_proposals_mean_healthy: false
+  expose_internal_label_item: false
+
+limitations:
+  healthy_or_background_only_training_images: 0
+  healthy_blade_false_positive_behavior: unknown
+  unsupported_claims: [safety, severity, progression, remaining_life, production_readiness]
+
+frozen_inputs:
+  phase11b_configuration:
+    path: configs/detection_phase11b.yaml
+    sha256: fc0ab33a25bafb5b92da88f67343bca9bbcecb6c715d867b06f4ac74f90cff1b
+  phase11b_selection_receipt:
+    path: provenance/phase11b_selection_receipt.json
+    sha256: 6c236e9d7220b443f17a628a3d8f621afc56be3777949eeca47f462879e46509
+  phase11b_final_metrics:
+    path: provenance/phase11b_final_test_metrics.json
+    sha256: e6bac76aa5a2e3d68ed7b93f5be180228addba1f1f90ddafab398d198496bcbb
+
+application_v2_freeze:
+  baseline_commit: 0ee2d339574ca32481e7a01761ed3bcb4db67044
+  git_objects:
+    app: d79cbb4321d01f3cca143e05edeccb9a691454eb
+    src/windblade_demo: 4f7d206eaffdb819a848458a9a7bba9a61fc7e64
+    .streamlit: 34a2afdeafbaa804b132308a0771e9368c86fb29
+    requirements-app.txt: d537dc57418e944dcdd419423fdc080697c3c8fa

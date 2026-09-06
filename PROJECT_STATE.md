@@ -2,17 +2,45 @@
 
 ## Current phase
 
-- **Phase:** Phase 11B detector study scientific closeout
-- **Status:** COMPLETE, VALIDATED, AND FROZEN
-- **Previous phases:** Phases 0–10 and Phase 11A — complete and frozen
-- **Next phase:** Phase 12 — unstarted and requires separate authorization
+- **Phase:** Phase 12A detector-to-application integration apparatus
+- **Status:** RUNTIME COMPATIBILITY PASSED; APPARATUS ONLY; NOT INTEGRATED
+- **Previous phases:** Phases 0–11B — complete, validated, and frozen
+- **Next phase:** Separately authorized Phase 12 application implementation
 
 Phases 0–10 and Phase 11A remain complete and frozen. Phase 11B is complete,
 validated, and frozen with status
 `FINAL_TEST_COMPLETE_NO_FURTHER_TUNING`. Application v2 remains unchanged and
 does not integrate the detector; automatic localization remains unavailable
 pending a separately authorized Phase 12 integration decision. Phase 12 has
-not started.
+entered apparatus design only; application implementation has not started.
+
+## Phase 12A — detector integration apparatus and runtime gate
+
+**RUNTIME COMPATIBILITY PASSED; APPARATUS FROZEN; APPLICATION UNCHANGED.** The
+external seed-17, selected-epoch-83 YOLO11n checkpoint was verified at
+16,085,716 bytes with SHA-256
+`793547a5ec31954d8e909b2f5c63f378374134353a8d1e0cefdd452a5365eefa`.
+It loaded on CPU under the exact Application v2 pins plus Ultralytics
+`8.3.150` and passed one non-scientific deterministic synthetic-image smoke
+inference. No project image or dataset was used.
+
+- The checkpoint is a one-class detection model with internal class mapping
+  `{0: item}`. Its only permitted application presentation mapping is
+  `{0: defect_region_proposal}`; that mapping may not alter coordinates,
+  scores, thresholding, NMS, or model execution.
+- The candidate was chosen solely from the frozen validation receipt, where
+  seed 17 had the highest validation mAP@0.50:0.95. Held-out-test performance
+  was not used for deployment selection.
+- Frozen runtime controls remain image size 640, confidence threshold `0.39`,
+  NMS IoU `0.7`, class-agnostic NMS, maximum 300 detections, and CPU execution.
+- The checkpoint remains external and was not copied, converted, rewritten,
+  or tracked. Application v2 code, dependencies, behavior, and deployment are
+  unchanged; automatic localization remains unavailable.
+- Full apparatus: `configs/application_phase12.yaml`; compatibility identity
+  record: `provenance/phase12_runtime_compatibility.json`; design record:
+  `docs/phase12_integration.md`; validator: `scripts/validate_phase12.py`.
+- Any checkpoint addition or application implementation requires a separate
+  authorization and validation gate.
 
 ## Phase 11B — detector training and held-out-test freeze
 
@@ -744,4 +772,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phases 0–10 remain frozen unless the user explicitly requests a documented new version. Phase 11A is complete and frozen, and Phase 11B is complete, validated, and frozen with no further tuning permitted. Application v2 remains unchanged and automatic localization remains unavailable. Phase 12 integration or external validation has not started and requires separate explicit authorization and validation. Documentation-only corrections may not change frozen numbers, statistical definitions, outputs, or conclusions.
+Completed Phases 0–10 remain frozen unless the user explicitly requests a documented new version. Phase 11A is complete and frozen, and Phase 11B is complete, validated, and frozen with no further tuning permitted. Application v2 remains unchanged and automatic localization remains unavailable. Phase 12A apparatus design and runtime compatibility are complete, but checkpoint addition, application implementation, and external validation have not started and require separate explicit authorization and validation. Documentation-only corrections may not change frozen numbers, statistical definitions, outputs, or conclusions.
