@@ -5,7 +5,7 @@
 > derived assets retain the attribution documented in
 > [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–10 are complete, validated, and frozen; the core classification research remains unchanged. Optional Phase 11A completed a separate full-image annotation/feasibility audit. A pinned, GPU-only Phase 11B pre-test apparatus is now prepared, while detector training and held-out evaluation remain unstarted. Application v2 productizes only the current frozen assets; automatic localization remains unavailable. Phase 12 has not started. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–10 are complete, validated, and frozen; the core classification research remains unchanged. Optional Phase 11A completed a separate full-image annotation/feasibility audit, and the Phase 11B detector study is complete, validated, and frozen. Application v2 remains unchanged; automatic localization remains unavailable pending a separately authorized Phase 12 integration decision. Phase 12 has not started. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -173,8 +173,8 @@ uv run python scripts/run_detection.py --config configs/detection.yaml --apparat
 uv run python scripts/run_detection.py --config configs/detection.yaml --validate-only
 ```
 
-Phase 11B training has not started on this host. Its separate Colab apparatus pins YOLO11n and every direct GPU dependency, verifies all frozen identities and the raw archive, persists interruption-safe per-seed runs to Drive, performs validation-only checkpoint/threshold selection, and enforces a committed-receipt firewall before held-out evaluation. See [`docs/phase11b_colab.md`](docs/phase11b_colab.md). The Phase 11A dataset/protocol, compute gate, QC packet, and limitations remain frozen in [`docs/phase11_detection.md`](docs/phase11_detection.md). Application v2 retains the user-supplied-region boundary; see [`docs/app.md`](docs/app.md).
+The Phase 11B detector study completed its three frozen YOLO11n runs, validation-only checkpoint and threshold selection, and firewalled held-out evaluation. Its final metrics are committed and no further tuning is permitted. See [`docs/phase11b_detector_training.md`](docs/phase11b_detector_training.md) for the final scientific record and [`docs/phase11b_colab.md`](docs/phase11b_colab.md) for the execution apparatus. The Phase 11A dataset/protocol, compute gate, QC packet, and limitations remain frozen in [`docs/phase11_detection.md`](docs/phase11_detection.md). Application v2 retains the user-supplied-region boundary; see [`docs/app.md`](docs/app.md).
 
 ## Phase boundaries
 
-Phases 0–10 remain complete, validated, and frozen. Optional Phase 11A is complete and frozen; the Phase 11B Colab pre-test apparatus is prepared, but dependencies, weights, training, validation selection, and held-out evaluation have not been executed. Application v2 is unchanged and does not automatically localize defects. Phase 12 external validation has not started.
+Phases 0–10 remain complete, validated, and frozen. Optional Phase 11A is complete and frozen, and Phase 11B is complete, validated, and frozen with no post-test tuning permitted. Application v2 is unchanged and does not automatically localize defects; any integration decision requires a separately authorized and validated Phase 12. Phase 12 has not started.
