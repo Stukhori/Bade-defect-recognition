@@ -1,0 +1,65 @@
+{
+  "checkpoints": [
+    {
+      "drive_relative_path": "runs/seed_17/weights/epoch82.pt",
+      "epoch": 83,
+      "seed": 17,
+      "sha256": "793547a5ec31954d8e909b2f5c63f378374134353a8d1e0cefdd452a5365eefa",
+      "size_bytes": 16085716,
+      "validation_map_50_95": 0.43109
+    },
+    {
+      "drive_relative_path": "runs/seed_29/weights/epoch85.pt",
+      "epoch": 86,
+      "seed": 29,
+      "sha256": "d799f11b13d88c73e6a0473fb33f00943ff0975fbd25ef8202ef7f17f3e14874",
+      "size_bytes": 16086164,
+      "validation_map_50_95": 0.42675
+    },
+    {
+      "drive_relative_path": "runs/seed_43/weights/epoch80.pt",
+      "epoch": 81,
+      "seed": 43,
+      "sha256": "99be27499d56f2321fc32a0742f457540629dffdab29457e2bf7d3dd4d280cf3",
+      "size_bytes": 16085524,
+      "validation_map_50_95": 0.40643
+    }
+  ],
+  "configuration": {
+    "path": "configs/detection_phase11b.yaml",
+    "sha256": "fc0ab33a25bafb5b92da88f67343bca9bbcecb6c715d867b06f4ac74f90cff1b"
+  },
+  "frozen_hashes": {
+    "checkpoints": "4813e67109152e927219db9b9e8368fe2159967959db9024c4ed35cb3907075f",
+    "configuration": "fc0ab33a25bafb5b92da88f67343bca9bbcecb6c715d867b06f4ac74f90cff1b",
+    "nms": "06108a2f432a1215888791012878c0900d904f9df0e0ade1e5ad697736bddac4",
+    "threshold": "6e25e6dc0d6242427b37b94c9c884af812e1ba6322fc4c4a295f44dd78197ce5"
+  },
+  "nms": {
+    "class_agnostic": true,
+    "confidence_floor": 0.001,
+    "iou_threshold": 0.7,
+    "maximum_detections": 300
+  },
+  "no_post_test_tuning": true,
+  "schema_version": "1.0",
+  "scientific_task": "class_agnostic_localization",
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "status": "FROZEN_BEFORE_TEST",
+  "test_evaluated": false,
+  "threshold": {
+    "candidate_artifact_sha256": "0810fb1687224ea1ee1a5caeaa7c3c43c421e5f4e00cfe2cee9c824f7f1c5739",
+    "match_iou": 0.5,
+    "policy": "pooled_three_seed_validation_f1_then_lower_threshold",
+    "validation_f1": 0.6567967698519516,
+    "value": 0.39
+  },
+  "validation_artifacts": {
+    "checkpoint_candidates_sha256": "4fe756ab54597b2e4e71cfda8d97e60fa6c4926579e6ab260174ead173c4f371",
+    "threshold_candidates_sha256": "0810fb1687224ea1ee1a5caeaa7c3c43c421e5f4e00cfe2cee9c824f7f1c5739"
+  }
+}
