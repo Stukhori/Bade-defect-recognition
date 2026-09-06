@@ -28,6 +28,7 @@ EXPECTED_REQUIREMENTS = {
     'torch==2.13.0+cpu; sys_platform != "darwin"',
     'torchvision==0.28.0+cpu; sys_platform != "darwin"',
 }
+EXPECTED_SYSTEM_PACKAGES = ["libgl1"]
 
 
 def sha256(path: Path) -> str:
@@ -49,14 +50,38 @@ def tracked(root: Path, path: Path) -> bool:
     return result.returncode == 0
 
 
+def normalized_system_packages(path: Path) -> list[str]:
+    """Return stripped, non-comment apt package declarations in file order."""
+
+    return [
+        line.strip()
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+
+
+def validate_system_packages(path: Path) -> list[str]:
+    packages = normalized_system_packages(path)
+    if packages != EXPECTED_SYSTEM_PACKAGES:
+        raise RuntimeError(
+            "Deployment system packages must contain exactly ['libgl1']; "
+            f"found {packages}."
+        )
+    return packages
+
+
 def validate(root: Path, *, require_tracked: bool = True) -> dict:
     entrypoint = root / "app/app.py"
     requirements = root / "app/requirements.txt"
     config = root / ".streamlit/config.toml"
+    system_packages = root / "packages.txt"
     checkpoint = root / CHECKPOINT_RELATIVE_PATH
     metadata = checkpoint.with_suffix(".json")
     detector_checkpoint = root / DETECTOR_CHECKPOINT
-    for path in (entrypoint, requirements, config, checkpoint, metadata, detector_checkpoint):
+    for path in (
+        entrypoint, requirements, config, system_packages,
+        checkpoint, metadata, detector_checkpoint,
+    ):
         if not path.is_file():
             raise RuntimeError(f"Required deployment file is missing: {path.relative_to(root)}")
 
@@ -68,6 +93,7 @@ def validate(root: Path, *, require_tracked: bool = True) -> dict:
     missing = EXPECTED_REQUIREMENTS - requirement_lines
     if missing:
         raise RuntimeError(f"Deployment requirements are incomplete: {sorted(missing)}")
+    apt_packages = validate_system_packages(system_packages)
     config_text = config.read_text(encoding="utf-8")
     if "gatherUsageStats = false" not in config_text or "headless = true" not in config_text:
         raise RuntimeError("Streamlit deployment configuration is incomplete.")
@@ -83,7 +109,10 @@ def validate(root: Path, *, require_tracked: bool = True) -> dict:
 
     tracked_files = {
         path.relative_to(root).as_posix(): tracked(root, path)
-        for path in (entrypoint, requirements, config, checkpoint, metadata, detector_checkpoint)
+        for path in (
+            entrypoint, requirements, config, system_packages,
+            checkpoint, metadata, detector_checkpoint,
+        )
     }
     if require_tracked and not all(tracked_files.values()):
         raise RuntimeError(f"Deployment files are not all tracked: {tracked_files}")
@@ -100,6 +129,8 @@ def validate(root: Path, *, require_tracked: bool = True) -> dict:
         "python_version": "3.11",
         "dependency_file": "app/requirements.txt",
         "configuration_file": ".streamlit/config.toml",
+        "system_package_file": "packages.txt",
+        "system_packages": apt_packages,
         "checkpoint": {
             "path": CHECKPOINT_RELATIVE_PATH.as_posix(),
             "bytes": checkpoint.stat().st_size,
