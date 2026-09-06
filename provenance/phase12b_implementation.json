@@ -1,0 +1,20 @@
+{
+  "checkpoint": {
+    "bytes": 16085716,
+    "copied_byte_for_byte": true,
+    "path": "experiments/results/phase11b_yolo11n_v1/final/seed_17/epoch82.pt",
+    "sha256": "793547a5ec31954d8e909b2f5c63f378374134353a8d1e0cefdd452a5365eefa"
+  },
+  "configuration_sha256": "956fcb74f266e9084e31d7770dcd156a0001515240afaf1c4b9681967c141957",
+  "external_deployment": false,
+  "phase": "12B",
+  "schema_version": "1.0",
+  "status": "PASS",
+  "synthetic_smoke": {
+    "prediction_details_recorded": false,
+    "project_data_used": false,
+    "source": "deterministic_in_memory_rgb",
+    "status": "PASS",
+    "timing_recorded": false
+  }
+}

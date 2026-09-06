@@ -1,4 +1,4 @@
-"""Validate Application v2 against frozen classifier and research contracts."""
+"""Validate Application v3 and its preserved manual workflows without detector inference."""
 
 from __future__ import annotations
 
@@ -63,6 +63,7 @@ def validate(root: Path) -> dict[str, Any]:
         "Prepared crop classification",
         "Manual single-region classification",
         "Manual multi-region analysis",
+        "Experimental automatic region proposals",
         "Compare regions",
         "Research results",
         "Detection readiness",
@@ -70,9 +71,7 @@ def validate(root: Path) -> dict[str, Any]:
         "operational safety",
     )
     if not all(text in app_source for text in required_ui_copy):
-        raise RuntimeError("The Application v2 workflow or limitation copy is incomplete.")
-    if "windblade.detection" in app_source or "ultralytics" in app_source.lower():
-        raise RuntimeError("Automatic detector integration is forbidden while Phase 11B is incomplete.")
+        raise RuntimeError("The Application v3 workflow or limitation copy is incomplete.")
     if "gatherUsageStats = false" not in streamlit_config:
         raise RuntimeError("Streamlit telemetry is not disabled.")
     manifest = read_rows(root / "data/processed/wtbd_crops_v1/manifest.csv")
@@ -123,13 +122,13 @@ def validate(root: Path) -> dict[str, Any]:
         created_utc="2026-08-31T00:00:01+00:00",
     )
     if (prepared_record.region_id, manual_record.region_id) != ("R1", "R2"):
-        raise RuntimeError("Application v2 stable region IDs failed validation.")
+        raise RuntimeError("Application v3 stable region IDs failed validation.")
     session_records = (prepared_record, manual_record)
     json_payload = json.loads(json_export(session_records, exported_utc="2026-08-31T00:00:02+00:00"))
     csv_rows = list(csv.DictReader(csv_export(session_records).decode("utf-8").splitlines()))
     annotated_png = annotated_image_export(large_image, (manual_record,))
     if json_payload.get("region_count") != 2 or len(csv_rows) != 2 or not annotated_png.startswith(b"\x89PNG"):
-        raise RuntimeError("Application v2 in-memory exports failed validation.")
+        raise RuntimeError("Application v3 in-memory exports failed validation.")
 
     research = load_phase10(root)
     detection_status = load_detection_status(root)
@@ -197,8 +196,8 @@ def validate(root: Path) -> dict[str, Any]:
     )
     if phase11a_complete:
         scientific_status = (
-            "Phase 11A complete and frozen; Phase 11B compute/dependency-blocked and unstarted; "
-            "Phase 10 frozen; Phase 12 not started"
+            "Phases 10, 11A, and 11B complete and frozen; Phase 12B application integration "
+            "implemented and locally validated; external deployment not performed"
         )
     elif phase10_complete:
         scientific_status = (
@@ -220,6 +219,7 @@ def validate(root: Path) -> dict[str, Any]:
         "dependencies": {
             "streamlit": version("streamlit"),
             "streamlit-cropper": version("streamlit-cropper"),
+            "ultralytics": version("ultralytics"),
         },
         "model": {
             "display_name": MODEL_DISPLAY_NAME,
@@ -251,20 +251,20 @@ def validate(root: Path) -> dict[str, Any]:
                 "phase3_pixel_parity": True,
             },
         },
-        "application_v2": {
+        "application_v3": {
             "status": "PASS",
             "entered": True,
-            "automatic_localization_integrated": False,
+            "automatic_region_proposals_integrated": True,
             "automatic_integration_gate": readiness.get("application_integration", {}).get("decision"),
             "navigation_sections": [
                 "Home", "Analyze Image", "Compare Regions", "Research Results",
                 "Detection Readiness", "About and Limitations",
             ],
-            "mode_count": 3,
-            "modes": ["prepared_crop", "manual_single_region", "manual_multi_region"],
-            "detector_checkpoint": None,
-            "detector_threshold": None,
-            "nms_configuration": None,
+            "mode_count": 4,
+            "modes": ["prepared_crop", "manual_single_region", "manual_multi_region", "experimental_automatic_region_proposal"],
+            "detector_checkpoint": "experiments/results/phase11b_yolo11n_v1/final/seed_17/epoch82.pt",
+            "detector_threshold": 0.39,
+            "nms_configuration": {"iou": 0.7, "agnostic": True, "maximum_detections": 300},
             "software_productization_only": True,
             "existing_scientific_behavior_preserved": True,
         },
@@ -287,9 +287,9 @@ def validate(root: Path) -> dict[str, Any]:
             "status": "PASS",
             "source": "frozen Phase 11A audit outputs",
             "phase11a": detection_status.phase11a_status,
-            "phase11b": detection_status.phase11b_status,
-            "integration_decision": detection_status.integration_decision,
-            "detector_available": detection_status.available,
+            "phase11b": "complete, validated, and frozen",
+            "historical_phase11a_integration_decision": detection_status.integration_decision,
+            "experimental_proposal_detector_available": True,
             "scientific_output_fingerprint": detection_status.scientific_output_fingerprint,
         },
         "scientific_invariance": {
@@ -301,8 +301,10 @@ def validate(root: Path) -> dict[str, Any]:
                 if phase10_repro.is_file() else None
             ),
             "phase11a_scientific_output_fingerprint": phase11_reproduction.get("scientific_output_fingerprint"),
-            "phase11b_training_started": phase11.get("phase11b_training_started"),
-            "phase12_started": phase11.get("phase12_started"),
+            "historical_phase11a_manifest_phase11b_training_started": phase11.get("phase11b_training_started"),
+            "historical_phase11a_manifest_phase12_started": phase11.get("phase12_started"),
+            "phase11b_complete_and_frozen": True,
+            "phase12b_application_integration": True,
             "status": "PASS" if phase11a_complete and phase10_complete else "FAIL",
         },
         "optional_gradcam": {

@@ -56,6 +56,11 @@ experiments/results/**
 experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/**
 !experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/best_state_dict.pt
 !experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/best_state_dict.json
+!experiments/results/phase11b_yolo11n_v1/
+!experiments/results/phase11b_yolo11n_v1/final/
+!experiments/results/phase11b_yolo11n_v1/final/seed_17/
+experiments/results/phase11b_yolo11n_v1/final/seed_17/**
+!experiments/results/phase11b_yolo11n_v1/final/seed_17/epoch82.pt
 experiments/cache/**
 
 # Logs outside ignored run directories

@@ -1,4 +1,4 @@
-"""Application v2: local analysis workspace around frozen scientific assets."""
+"""Application v3: reviewed detector proposals plus the frozen classifier workflows."""
 
 from __future__ import annotations
 
@@ -17,6 +17,10 @@ from windblade_demo.crops import (
     map_display_box, prepare_region,
 )
 from windblade_demo.detection_status import DetectorUnavailableError, load_detection_status
+from windblade_demo.detector import (
+    PROPOSAL_LIMITATION_NOTICE, ZERO_PROPOSAL_MESSAGE, ProposalDetectorError,
+    RegionProposal, load_proposal_detector, propose_regions, reviewed_proposals,
+)
 from windblade_demo.explain import generate_gradcam
 from windblade_demo.exports import annotated_image_export, csv_export, json_export
 from windblade_demo.inference import FrozenModelError, infer, load_frozen_model
@@ -25,7 +29,7 @@ from windblade_demo.research import FrozenResearchError, load_phase10
 from windblade_demo.session import (
     RegionRecord, make_region_record, remove_region, replace_region, with_gradcam,
 )
-from windblade_demo.visualization import annotate_regions
+from windblade_demo.visualization import annotate_proposals, annotate_regions
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,7 +37,10 @@ NAVIGATION = (
     "Home", "Analyze Image", "Compare Regions", "Research Results",
     "Detection Readiness", "About and Limitations",
 )
-ANALYSIS_MODES = ("Prepared crop", "Manual single region", "Manual multi-region")
+ANALYSIS_MODES = (
+    "Prepared crop", "Manual single region", "Manual multi-region",
+    "Experimental automatic region proposals",
+)
 
 st.set_page_config(
     page_title="Wind Turbine Blade Defect Recognition", page_icon="🌬️", layout="wide",
@@ -103,11 +110,17 @@ def cached_detection_status():
     return load_detection_status(ROOT)
 
 
+@st.cache_resource(show_spinner="Verifying and loading the frozen proposal detector…")
+def cached_proposal_detector():
+    return load_proposal_detector(ROOT)
+
+
 def initialize_session() -> None:
     st.session_state.setdefault("analysis_records", [])
     st.session_state.setdefault("source_images", {})
     st.session_state.setdefault("multi_uploader_nonce", 0)
     st.session_state.setdefault("next_region_number", 1)
+    st.session_state.setdefault("proposal_results", {})
 
 
 def records() -> list[RegionRecord]:
@@ -133,6 +146,9 @@ def render_scores(record: RegionRecord, *, key: str) -> None:
     rows = score_rows(record)
     st.subheader(HUMAN_LABELS[record.predicted_label])
     st.caption(f"{record.region_id} · model scores, not calibrated confidence estimates")
+    if record.detector_confidence is not None:
+        st.metric("Detector confidence", f"{record.detector_confidence:.6f}")
+        st.caption("Detector confidence is separate from the six crop-classifier scores below.")
     st.vega_lite_chart(
         data=rows,
         spec={"mark": {"type": "bar", "cornerRadiusEnd": 4, "color": "#1677c8"},
@@ -150,6 +166,8 @@ def classify_record(
     selected_box: tuple[int, int, int, int] | None = None,
     contextual_box: tuple[int, int, int, int] | None = None,
     replacement_id: str | None = None,
+    detector_proposal_id: str | None = None,
+    detector_confidence: float | None = None,
 ) -> RegionRecord:
     result = infer(cached_model(), model_input)
     chosen_id = replacement_id
@@ -160,6 +178,8 @@ def classify_record(
         source_sha256=decoded.byte_sha256, source_size=decoded.image.size,
         model_input=model_input, result=result, selected_box=selected_box,
         contextual_box=contextual_box, region_id=chosen_id,
+        detector_proposal_id=detector_proposal_id,
+        detector_confidence=detector_confidence,
     )
     if replacement_id is None:
         st.session_state["next_region_number"] += 1
@@ -177,8 +197,8 @@ def render_hero(title: str, description: str) -> None:
 def render_scope_notice() -> None:
     st.markdown(
         '<div class="notice"><strong>Region-based analysis.</strong> '
-        'Choose a prepared crop or draw one or more rectangles on an image. The classifier '
-        'evaluates each region you supply.</div>',
+        'Choose a prepared crop, draw one or more rectangles, or review experimental automatic '
+        'proposals. The classifier evaluates only a region you supply or explicitly accept.</div>',
         unsafe_allow_html=True,
     )
 
@@ -199,7 +219,7 @@ def render_home() -> None:
     )
     render_scope_notice()
     st.markdown("### Start an analysis workflow")
-    first, second, third = st.columns(3)
+    first, second, third, fourth = st.columns(4)
     with first:
         st.markdown('<div class="card"><div class="eyebrow">PREPARED</div><h3>Classify a crop</h3><p>Use an image already centered on one visible region.</p></div>', unsafe_allow_html=True)
         st.button("Analyze prepared crop", type="primary", width="stretch", on_click=go_to_analysis, args=("Prepared crop",))
@@ -209,6 +229,9 @@ def render_home() -> None:
     with third:
         st.markdown('<div class="card"><div class="eyebrow">MULTI</div><h3>Build a region set</h3><p>Add, replace, compare, and export multiple manual regions.</p></div>', unsafe_allow_html=True)
         st.button("Analyze multiple regions", width="stretch", on_click=go_to_analysis, args=("Manual multi-region",))
+    with fourth:
+        st.markdown('<div class="card"><div class="eyebrow">EXPERIMENTAL</div><h3>Review proposals</h3><p>Generate, review, and accept automatic region proposals.</p></div>', unsafe_allow_html=True)
+        st.button("Generate region proposals", width="stretch", on_click=go_to_analysis, args=("Experimental automatic region proposals",))
     action_a, action_b, action_c = st.columns(3)
     action_a.button("Compare saved regions", width="stretch", on_click=go_to, args=("Compare Regions",))
     action_b.button("Open research results", width="stretch", on_click=go_to, args=("Research Results",))
@@ -216,7 +239,7 @@ def render_home() -> None:
     st.markdown("### Current apparatus")
     a, b, c = st.columns(3)
     a.metric("Classifier", "Verified")
-    b.metric("Active input modes", "3")
+    b.metric("Active input modes", "4")
     c.metric("Saved regions", str(len(records())))
 
 
@@ -347,6 +370,105 @@ def render_manual_multi() -> None:
         st.rerun()
 
 
+def proposal_table(proposals: tuple[RegionProposal, ...]) -> list[dict[str, Any]]:
+    return [
+        {
+            "Proposal": proposal.proposal_id,
+            "Presentation label": proposal.semantic_label,
+            "Detector confidence": proposal.detector_confidence,
+            "Box": proposal.box.as_tuple(),
+        }
+        for proposal in proposals
+    ]
+
+
+def render_automatic_proposals() -> None:
+    st.subheader("Experimental automatic region proposals")
+    st.warning(PROPOSAL_LIMITATION_NOTICE)
+    uploaded = st.file_uploader(
+        "Choose a full PNG, JPG, or JPEG image", type=["png", "jpg", "jpeg"], key="automatic_v3"
+    )
+    if uploaded is None:
+        return
+    decoded = decode_upload(uploaded.getvalue(), uploaded.name)
+    save_source(decoded)
+    proposal_store = st.session_state["proposal_results"]
+    if st.button("Generate experimental proposals", type="primary", key="automatic_generate"):
+        with st.spinner("Running the frozen proposal detector on CPU…"):
+            proposal_store[decoded.byte_sha256] = propose_regions(
+                cached_proposal_detector(), decoded.image
+            )
+    if decoded.byte_sha256 not in proposal_store:
+        st.image(decoded.image, caption="Uploaded image", width="stretch")
+        return
+
+    proposals = tuple(proposal_store[decoded.byte_sha256])
+    if not proposals:
+        st.info(ZERO_PROPOSAL_MESSAGE)
+        st.warning(
+            "This does not establish that the blade is healthy or defect-free. "
+            "Use a manual-region workflow to inspect a visible area."
+        )
+        left, right = st.columns(2)
+        left.button(
+            "Use manual single-region workflow", width="stretch", on_click=go_to_analysis,
+            args=("Manual single region",), key="zero_manual_single",
+        )
+        right.button(
+            "Use manual multi-region workflow", width="stretch", on_click=go_to_analysis,
+            args=("Manual multi-region",), key="zero_manual_multi",
+        )
+        return
+
+    st.image(
+        annotate_proposals(decoded.image, proposals),
+        caption=f"{len(proposals)} numbered experimental proposal(s) at the frozen operating point",
+        width="stretch",
+    )
+    st.dataframe(proposal_table(proposals), hide_index=True, width="stretch")
+    proposal_ids = [proposal.proposal_id for proposal in proposals]
+    selected_ids = st.multiselect(
+        "Select reviewed proposals to classify", proposal_ids, key=f"proposal_select_{decoded.byte_sha256[:12]}"
+    )
+    confirmed = st.checkbox(
+        "I reviewed the selected proposal boxes", key=f"proposal_review_{decoded.byte_sha256[:12]}"
+    )
+    if st.button(
+        "Classify reviewed proposals", type="primary", key="automatic_classify",
+        disabled=not selected_ids or not confirmed,
+    ):
+        accepted = reviewed_proposals(proposals, selected_ids, reviewed=confirmed)
+        with st.spinner("Applying the frozen contextual crop and six-category classifier…"):
+            for proposal in accepted:
+                crop = contextual_crop(decoded.image, proposal.box)
+                geometry = crop.geometry
+                record = classify_record(
+                    mode="experimental_automatic_region_proposal",
+                    decoded=decoded,
+                    model_input=crop.model_input,
+                    selected_box=proposal.box.as_tuple(),
+                    contextual_box=(
+                        geometry.crop_xmin, geometry.crop_ymin,
+                        geometry.crop_xmax, geometry.crop_ymax,
+                    ),
+                    detector_proposal_id=proposal.proposal_id,
+                    detector_confidence=proposal.detector_confidence,
+                )
+                add_record(record)
+                st.session_state["latest_region_id"] = record.region_id
+        st.rerun()
+
+    accepted_records = [
+        item for item in records()
+        if item.source_sha256 == decoded.byte_sha256
+        and item.mode == "experimental_automatic_region_proposal"
+    ]
+    if accepted_records:
+        st.markdown("### Accepted and classified regions")
+        for record in accepted_records:
+            render_scores(record, key=f"automatic_{record.region_id}")
+
+
 def render_analyze() -> None:
     render_hero("Analyze image", "Choose exactly how you will supply each visible region to the frozen crop classifier.")
     render_scope_notice()
@@ -356,9 +478,14 @@ def render_analyze() -> None:
             render_prepared()
         elif mode == "Manual single region":
             render_manual_single()
-        else:
+        elif mode == "Manual multi-region":
             render_manual_multi()
-    except (UploadValidationError, SelectionValidationError, FrozenModelError, RuntimeError) as exc:
+        else:
+            render_automatic_proposals()
+    except (
+        UploadValidationError, SelectionValidationError, FrozenModelError,
+        ProposalDetectorError, RuntimeError,
+    ) as exc:
         st.error(str(exc))
 
 
@@ -379,6 +506,7 @@ def render_compare() -> None:
     rows = [
         {"Region": item.region_id, "Mode": item.mode.replace("_", " "), "Source": item.source_name,
          "Prediction": HUMAN_LABELS[item.predicted_label], "Top score": max(item.scores),
+         "Detector confidence": item.detector_confidence,
          "Grad-CAM": item.gradcam_status}
         for item in items
     ]
@@ -404,6 +532,11 @@ def render_compare() -> None:
     with scores_col:
         render_scores(selected, key=f"compare_{selected.region_id}")
     st.caption(f"Selected box: {selected.selected_box or 'prepared crop'} · contextual box: {selected.contextual_box or 'not applicable'}")
+    if selected.detector_confidence is not None:
+        st.caption(
+            f"Reviewed proposal {selected.detector_proposal_id} detector confidence: "
+            f"{selected.detector_confidence:.6f}; this is separate from classifier scores."
+        )
     if st.button("Generate Grad-CAM for selected region", key="compare_gradcam"):
         with st.spinner("Generating a read-only activation visualization…"):
             visual = generate_gradcam(cached_model(), selected.model_input, selected.predicted_class_id)
@@ -524,12 +657,12 @@ def render_detection() -> None:
         "- Healthy and background-only blade images would strengthen false-positive evaluation.\n"
         "- External turbine imagery would strengthen evidence across cameras, sites, and inspection conditions."
     )
-    st.info("Future detector development can use the locked training and evaluation plan, add background evidence, select an operating point with validation data, and then assess application integration.")
+    st.info("The application includes a separately validated experimental proposal workflow. Background evidence and external validation are still needed before broader operational claims.")
     st.caption(f"Verified annotation-audit fingerprint: {status.scientific_output_fingerprint}")
 
 
 def render_about() -> None:
-    render_hero("About and limitations", "What this local research application does and how to interpret its user-selected-region workflow.")
+    render_hero("About and limitations", "How to interpret manual regions and explicitly reviewed experimental proposals in this local research application.")
     st.markdown("### Frozen apparatus")
     st.write(MODEL_DISPLAY_NAME)
     st.code(f"Checkpoint state fingerprint: {CHECKPOINT_STATE_FINGERPRINT}\nPreprocessing: {PREPROCESSING_CONTRACT}")
@@ -541,16 +674,18 @@ def render_about() -> None:
     st.caption("These descriptions are plain-language guides to the supplied dataset labels, not new diagnoses or a physical severity taxonomy.")
     st.markdown("### Required interpretation limits")
     st.markdown(
-        "- Each result describes a crop or rectangle selected by the user; selection is separate from classification.\n"
+        "- Each result describes a crop, a manual rectangle, or an experimental proposal explicitly reviewed by the user.\n"
+        "- The detector dataset contains no healthy/background-only images; no proposal result can establish that a blade is healthy or defect-free.\n"
+        "- Experimental proposals require human review before crop classification.\n"
         "- Model scores are **not calibrated confidence estimates**.\n"
         "- The crop classifier was not externally validated for arbitrary drone imagery or healthy-blade screening.\n"
         "- Grad-CAM describes crop-classifier activations; it is not detector evidence or a causal explanation.\n"
-        "- Outputs do not assess structural integrity, defect severity, remaining service life, or operational safety."
+        "- Outputs do not assess structural integrity, defect severity, progression, remaining service life, production readiness, or operational safety."
     )
     st.markdown("### Privacy and persistence")
     st.info("Uploads, crops, session history, visualizations, and exports remain in process memory for the active session. The app makes no external API calls and does not persist uploads or analysis history.")
     st.markdown("### Scientific state")
-    st.write("The crop-classification research and full-image annotation audit are complete and locked. Future research can extend this work with trained full-image localization and external validation.")
+    st.write("The frozen detector is integrated only as an experimental, human-reviewed region-proposal aid. The scientific results remain locked and external application validation has not occurred.")
 
 
 initialize_session()
@@ -560,11 +695,12 @@ with st.sidebar:
     st.caption(f"Application v{APPLICATION_VERSION}")
     st.divider()
     st.metric("Session regions", len(records()))
-    st.success("Frozen classifier · CPU · local processing")
+    st.success("Frozen classifier and experimental proposals · CPU · local processing")
     if st.button("Clear all session data", width="stretch", disabled=not records()):
         st.session_state["analysis_records"] = []
         st.session_state["source_images"] = {}
         st.session_state["next_region_number"] = 1
+        st.session_state["proposal_results"] = {}
         st.rerun()
     st.caption("PNG/JPG/JPEG · max 15 MB · no upload persistence or telemetry")
 

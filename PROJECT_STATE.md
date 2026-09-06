@@ -2,17 +2,50 @@
 
 ## Current phase
 
-- **Phase:** Phase 12A detector-to-application integration apparatus
-- **Status:** RUNTIME COMPATIBILITY PASSED; APPARATUS ONLY; NOT INTEGRATED
+- **Phase:** Phase 12B detector-to-application integration
+- **Status:** APPLICATION V3 IMPLEMENTED AND LOCALLY VALIDATED; NOT EXTERNALLY DEPLOYED
 - **Previous phases:** Phases 0–11B — complete, validated, and frozen
-- **Next phase:** Separately authorized Phase 12 application implementation
+- **Next phase:** Separately authorized external deployment or external-domain validation
 
 Phases 0–10 and Phase 11A remain complete and frozen. Phase 11B is complete,
 validated, and frozen with status
-`FINAL_TEST_COMPLETE_NO_FURTHER_TUNING`. Application v2 remains unchanged and
-does not integrate the detector; automatic localization remains unavailable
-pending a separately authorized Phase 12 integration decision. Phase 12 has
-entered apparatus design only; application implementation has not started.
+`FINAL_TEST_COMPLETE_NO_FURTHER_TUNING`. Phase 12A remains frozen historical
+apparatus evidence. Phase 12B copied the exact validation-selected checkpoint
+byte-for-byte and implemented Application v3 as an experimental, human-reviewed
+region-proposal feature. Local validation is complete; external deployment and
+external-domain validation have not occurred.
+
+## Phase 12B — Application v3 detector proposal integration
+
+**IMPLEMENTED AND LOCALLY VALIDATED; NOT EXTERNALLY DEPLOYED.** The tracked
+detector checkpoint is `experiments/results/phase11b_yolo11n_v1/final/seed_17/epoch82.pt`,
+16,085,716 bytes with SHA-256
+`793547a5ec31954d8e909b2f5c63f378374134353a8d1e0cefdd452a5365eefa`.
+
+- The runtime is Ultralytics `8.3.150`, PyTorch `2.13.0+cpu`, torchvision
+  `0.28.0+cpu`, and CPU-only inference with image size 640, threshold `0.39`,
+  NMS IoU `0.7`, class-agnostic NMS, maximum 300 detections, and no saved
+  predictions, plots, verbose output, ensembling, downloads, or user controls.
+- The detector is loaded lazily and cached only after its size, SHA-256,
+  detection task, seed, image-size metadata, and exact one-class mapping pass.
+- The UI shows numbered **defect region proposal** boxes and detector confidence
+  separately. It never shows checkpoint-internal display metadata. Users must
+  select proposals and confirm review before accepted boxes pass through the
+  unchanged contextual crop and frozen six-class MobileNet classifier.
+- Prepared-crop, manual single-region, and manual multi-region modes remain
+  functional. The manual modes remain the correction and zero-proposal fallback.
+- Zero proposals display exactly `No region proposal exceeded the frozen threshold.`
+  and explicitly do not establish that a blade is healthy or defect-free.
+- The detector dataset has no healthy/background-only images. Safety, severity,
+  progression, remaining-life, production-readiness, and arbitrary operational
+  claims remain unsupported.
+- Phase 12B configuration: `configs/application_phase12b.yaml`; provenance:
+  `provenance/phase12b_implementation.json`; validator:
+  `scripts/validate_phase12b.py`. Phase 12A configuration and compatibility
+  evidence remain byte-for-byte unchanged.
+- One deterministic in-memory synthetic CPU smoke used no project image and
+  retained no coordinates or timing. No training, tuning, selection, dataset
+  inference, or held-out evaluation occurred.
 
 ## Phase 12A — detector integration apparatus and runtime gate
 
@@ -33,14 +66,14 @@ inference. No project image or dataset was used.
   was not used for deployment selection.
 - Frozen runtime controls remain image size 640, confidence threshold `0.39`,
   NMS IoU `0.7`, class-agnostic NMS, maximum 300 detections, and CPU execution.
-- The checkpoint remains external and was not copied, converted, rewritten,
-  or tracked. Application v2 code, dependencies, behavior, and deployment are
-  unchanged; automatic localization remains unavailable.
+- At the historical Phase 12A gate the checkpoint remained external and had not
+  been copied, converted, rewritten, or tracked. That historical state remains
+  verifiable; the separately authorized Phase 12B step later copied it unchanged.
 - Full apparatus: `configs/application_phase12.yaml`; compatibility identity
   record: `provenance/phase12_runtime_compatibility.json`; design record:
   `docs/phase12_integration.md`; validator: `scripts/validate_phase12.py`.
-- Any checkpoint addition or application implementation requires a separate
-  authorization and validation gate.
+- Checkpoint addition and application implementation were later separately
+  authorized and validated by Phase 12B; external deployment remains unperformed.
 
 ## Phase 11B — detector training and held-out-test freeze
 
@@ -67,29 +100,29 @@ machine-readable result is `provenance/phase11b_final_test_metrics.json`.
   false-positive behavior is not measured. Arbitrary operational inspection,
   safety, severity, progression, remaining-life, and production-readiness
   claims remain unsupported.
-- Test results may not be used for tuning or checkpoint selection. Application
-  v2 remains unchanged; Phase 12 integration or external validation must be
-  separately specified, authorized, and validated.
+- Test results may not be used for tuning or checkpoint selection. Scientific
+  artifacts remain unchanged; external deployment or external validation must
+  be separately specified, authorized, and validated.
 - Full record: `docs/phase11b_detector_training.md`; execution apparatus:
   `docs/phase11b_colab.md`.
 
-## Application v2 — frozen-asset productization
+## Application v3 — experimental reviewed proposals and frozen classification
 
-**COMPLETE AND VALIDATED; AUTOMATIC LOCALIZATION UNAVAILABLE.** The initial interface-refresh commit is `1f6a6fe`; Application v2 implementation/validation commits are recorded in subsequent history.
+**IMPLEMENTED AND LOCALLY VALIDATED; NOT EXTERNALLY DEPLOYED.** Application v3 preserves all Application v2 manual behavior and adds the separately gated experimental proposal path.
 
-- Gate: Application v2 was frozen before Phase 11B completed and remains unchanged. It has no detector runtime or integrated detector checkpoint, and automatic localization requires a separately authorized Phase 12 integration decision.
+- Gate: proposals are experimental, require explicit human review, and cannot establish healthy-blade status or operational fitness.
 - Navigation: Home, Analyze Image, Compare Regions, Research Results, Detection Readiness, and About and Limitations.
-- Active modes: prepared crop, manual single region, and manual multi-region. Multi-region work supports stable IDs, overlap, replace, remove, clear, and new-image actions.
+- Active modes: prepared crop, manual single region, manual multi-region, and experimental automatic region proposals. Multi-region work supports stable IDs, overlap, replace, remove, clear, and new-image actions.
 - Session product features: thumbnails, score comparison, selected-region Grad-CAM, and in-memory JSON/CSV/annotated-PNG downloads. Session data and uploads are not persisted.
 - Evidence dashboards: verified read-only Phase 10 canonical tables and Phase 11A audit/readiness outputs; no metric recomputation or hard-coded substitute values.
-- Future detector contract: explicit unavailable exception and typed box/result boundary; no detector dependency, weights, predictions, or fabricated boxes.
+- Detector contract: exact tracked seed-17 epoch-83 checkpoint, fixed CPU controls, lazy cached load, mandatory review, contextual-crop reuse, and separate detector/classifier scores.
 - Scientific behavior: Phase 3 pixel parity, Phase 6 checkpoint/state/reference logits, six scores, CPU inference, and Grad-CAM prediction/parameter invariance remain unchanged. Phase 8–11A scientific outputs remain unchanged.
-- Frozen classifier checkpoint SHA-256 `9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5`; state fingerprint `3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757`. Detector checkpoint, threshold, NMS, detector latency, and detector parity within Application v2: `N/A`.
+- Frozen classifier checkpoint SHA-256 `9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5`; state fingerprint `3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757`. Detector checkpoint SHA-256 `793547a5ec31954d8e909b2f5c63f378374134353a8d1e0cefdd452a5365eefa`; threshold `0.39`; NMS IoU `0.7`, class-agnostic, maximum 300.
 - Privacy: local in-memory uploads, telemetry disabled, no persistent upload writes, no external service/API, no tracked upload, and no global caching of user images.
-- Dependencies remain Streamlit `1.62.0` and streamlit-cropper `0.3.1`; no detector runtime or detector-license implication was added.
-- Validation: focused Application v2 suite **37 passed**; complete repository suite **266 passed** with 11 unchanged scikit-learn future warnings; all read-only Phase 2–11A/app/review validators pass.
+- Application dependencies add exactly Ultralytics `8.3.150` while preserving the exact CPU PyTorch `2.13.0+cpu` and torchvision `0.28.0+cpu` pins.
+- Validation includes preserved Application v2 manual-workflow regressions, focused integration tests, both Phase 12 validators, upstream guards, deployment validation, a complete repository suite, and local loopback health.
 - Local loopback health: HTTP 200 / `ok`, then the server was stopped. No external deployment occurred.
-- Streamlit deployment preparation: app-local pinned requirements, root Streamlit configuration, exact tracked 6.2 MB frozen checkpoint/metadata, deployment validator, and Community Cloud instructions. Deployment itself remains a user-controlled external action.
+- Streamlit deployment preparation: app-local pinned requirements, root Streamlit configuration, both exact tracked checkpoints, deployment validator, and Community Cloud instructions. Deployment itself remains a user-controlled external action.
 - Full record: `docs/app.md`; machine validation: `app/validation/validation.json`.
 
 ## Phase 11A — full-image detection feasibility and annotation audit
@@ -108,7 +141,7 @@ machine-readable result is `provenance/phase11b_final_test_metrics.json`.
 - Validation: Phase 3–10 chain, Phase 11A validator, review-interface validator, and classifier-app validator all PASS. Focused Phase 11A suite: **21 passed, 0 failed**. Complete repository suite: **256 passed, 0 failed**, with 11 unchanged scikit-learn `SVC(probability=True)` future warnings.
 - Compute gate: AMD64 Family 23 Model 24, 8 logical CPUs, 13.95 GiB RAM, Python 3.11.15, PyTorch 2.13.0+cpu, CUDA devices 0, VRAM 0. Multi-seed CPU training is prohibited.
 - At the Phase 11A freeze, no detector dependency, pretrained weight, checkpoint, prediction, or metric existed; Phase 11B subsequently completed without modifying the frozen Phase 11A record.
-- Automatic-localization integration remains unperformed. Application v2 reads the frozen readiness evidence but every analysis path still requires a user-supplied crop or rectangle. Phase 12 has not started.
+- At the Phase 11A freeze, automatic-localization integration was unperformed and every application path required a user-supplied crop or rectangle. The later Phase 12B application integration does not modify this historical audit.
 - Results: `experiments/summaries/phase11_detection_audit_v1/`; full record: `docs/phase11_detection.md`.
 
 ## Phase 10 — Final statistical synthesis and reproducibility freeze
@@ -159,9 +192,9 @@ machine-readable result is `provenance/phase11b_final_test_metrics.json`.
 - At the interface-validation commit, both canonical forms were blank. They are now complete and frozen: Pass A SHA-256 `3b6548d8e6a1240c224f156f9266c5025cc099816d73a8c81960173fe9c8423e`; Pass B SHA-256 `0f5258e06a4e854d338705bcf1d38ced048f0652a99ccc4639b18c3baae1cd96`.
 - The interface changed no mapping entry, packet image/HTML, checkpoint, prediction, quantitative output, or other scientific artifact. Phase 9B subsequently incorporated the returned forms through the separately validated deterministic pipeline. At this Phase 9B completion point, Phase 10 was unstarted; it subsequently completed without changing any interface or Phase 9 artifact.
 
-## Separate non-scientific Application v2
+## Historical separate non-scientific Application v2
 
-**Status: COMPLETE AND VALIDATED; does not change the scientific phase.** The local Streamlit application is an engineering demonstration of the already frozen classifier, not a scientific experiment or a Phase 10 deliverable.
+**Historical status: COMPLETE AND VALIDATED; superseded by Application v3 without changing the scientific phases.** This section records the earlier engineering demonstration boundary.
 
 - Entry point: `app/app.py`; operating record: `docs/app.md`; app-only validation: `app/validation/`.
 - Frozen model: Phase 6 full-data MobileNetV3-Small seed 17, used because 17 is the predeclared canonical seed rather than because of a best-result comparison.
@@ -171,11 +204,11 @@ machine-readable result is `provenance/phase11b_final_test_metrics.json`.
 - Optional Grad-CAM imports the unchanged Phase 9A primitive; model-state and prediction invariance pass.
 - Local app dependencies remain in `requirements-app.txt`; Community Cloud uses the entrypoint-local, fully pinned `app/requirements.txt`. Scientific dependency constraints are unchanged.
 - Product features: session-only comparison, stable region IDs, optional Grad-CAM, in-memory JSON/CSV/annotated-PNG exports, frozen Phase 10 research dashboard, and frozen Phase 11A readiness dashboard.
-- Validation: all three UI workflows, pure session/export contracts, canonical dashboard sources, classifier invariance, and automatic-localization gate pass. Final suite and live-health results are recorded in the current Application v2 section.
+- Validation at that point covered all three UI workflows, pure session/export contracts, canonical dashboard sources, classifier invariance, and the then-active automatic-localization gate. Application v3 preserves these workflows through regression tests.
 - Training, fine-tuning, calibration, ensembling, test-driven model/seed selection, new test-set evaluation, checkpoint mutation, external service calls, permanent upload storage, and tracked uploaded images: zero.
-- Scientific status remains **PHASE 10 COMPLETE — VALIDATED AND FROZEN** with **PHASE 11A COMPLETE AND FROZEN** and **PHASE 11B COMPLETE, VALIDATED, AND FROZEN**. Phase 12 has not started.
+- Scientific status remained **PHASE 10 COMPLETE — VALIDATED AND FROZEN** with **PHASE 11A COMPLETE AND FROZEN** and **PHASE 11B COMPLETE, VALIDATED, AND FROZEN**. Phase 12 was unstarted at this historical checkpoint and later proceeded through separately validated apparatus and integration steps.
 
-The application classifies a manually identified visible surface-defect region. It does not automatically detect or localize defects, assess blade safety or condition, detect hidden/internal damage, estimate severity or remaining life, replace inspection professionals, or establish real-time target-hardware deployment.
+That earlier application classified manually identified visible regions only. The current experimental proposal integration still does not assess blade safety or condition, detect hidden/internal damage, estimate severity or remaining life, replace inspection professionals, or establish real-time target-hardware deployment.
 
 ## Phase 9A — Quantitative Error Analysis, Grad-CAM, and Blinded Human Review
 
@@ -772,4 +805,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phases 0–10 remain frozen unless the user explicitly requests a documented new version. Phase 11A is complete and frozen, and Phase 11B is complete, validated, and frozen with no further tuning permitted. Application v2 remains unchanged and automatic localization remains unavailable. Phase 12A apparatus design and runtime compatibility are complete, but checkpoint addition, application implementation, and external validation have not started and require separate explicit authorization and validation. Documentation-only corrections may not change frozen numbers, statistical definitions, outputs, or conclusions.
+Completed Phases 0–10 remain frozen unless the user explicitly requests a documented new version. Phase 11A is complete and frozen, and Phase 11B is complete, validated, and frozen with no further tuning permitted. Phase 12A historical apparatus evidence remains frozen. Phase 12B implements and locally validates Application v3 with the exact detector checkpoint, fixed CPU controls, and mandatory review. No external deployment or external-domain validation has occurred. Documentation-only corrections may not change frozen numbers, statistical definitions, outputs, or conclusions.

@@ -1,4 +1,4 @@
-"""Validate the Phase 12A detector-integration apparatus without loading a model."""
+"""Validate the historical Phase 12A detector-integration apparatus without loading a model."""
 
 from __future__ import annotations
 
@@ -196,18 +196,17 @@ def validate(root: Path) -> dict[str, Any]:
         "plots": False, "verbose": False,
     }, "synthetic smoke controls mismatch")
 
-    proposed = (root / candidate["proposed_repository_path"]).resolve()
-    _require(proposed.is_relative_to(root), "proposed checkpoint path escapes repository")
-    _require(not proposed.exists(), "Phase 12A must not contain the deployment checkpoint")
-    tracked = subprocess.run(
-        ["git", "ls-files", "--error-unmatch", candidate["proposed_repository_path"]],
+    freeze = config["application_v2_freeze"]
+    proposed = candidate["proposed_repository_path"]
+    baseline_checkpoint = subprocess.run(
+        ["git", "cat-file", "-e", f"{freeze['baseline_commit']}:{proposed}"],
         cwd=root, check=False, capture_output=True, text=True,
     )
-    _require(tracked.returncode != 0, "Phase 12A must not track the deployment checkpoint")
-
-    freeze = config["application_v2_freeze"]
+    _require(
+        baseline_checkpoint.returncode != 0,
+        "Phase 12A baseline unexpectedly contained the deployment checkpoint",
+    )
     for path, expected in freeze["git_objects"].items():
-        _require(_git(root, "rev-parse", f"HEAD:{path}") == expected, f"Application v2 object changed: {path}")
         _require(_git(root, "rev-parse", f"{freeze['baseline_commit']}:{path}") == expected, f"Application v2 baseline mismatch: {path}")
 
     return {

@@ -1,10 +1,10 @@
-# Application v2 — frozen classifier research workspace
+# Application v3 — reviewed experimental proposals and frozen classification
 
 ## Status and boundary
 
-Application v2 is a separate, non-scientific local interface around already frozen assets. It adds product workflows and read-only dashboards; it does not alter or extend any scientific experiment. Phase 10 and Phase 11A remain frozen. Phase 11B detector training is blocked and unstarted, so automatic localization remains unavailable. Phase 12 has not started.
+Application v3 is implemented and locally validated, but it has not been externally deployed. It adds an experimental automatic region-proposal option around frozen scientific assets without changing the detector model, checkpoint, operating threshold, NMS, metrics, or the frozen MobileNet crop classifier.
 
-Every active analysis path requires a user-supplied crop or rectangle. The software cannot establish that a defect exists, establish that an image is defect-free, assess hidden damage, structural integrity, severity, remaining service life, or operational safety, or replace professional inspection.
+This is a research feature, not automatic inspection. The detector dataset contains no healthy/background-only images, so a proposal result cannot establish that a blade is healthy or defect-free. Every proposal must be reviewed and explicitly selected by a user before classification. Outputs do not assess safety, severity, progression, remaining life, or production readiness.
 
 ## Install and run
 
@@ -16,63 +16,54 @@ uv pip install -r requirements-app.txt
 uv run streamlit run app/app.py --server.address 127.0.0.1
 ```
 
-The exact frozen Phase 6 checkpoint and metadata are tracked at `experiments/results/phase6_mobilenet_v3_small_v1/final/seed_17/` so a clean deployment clone is self-contained. The app needs no runtime network access. Streamlit telemetry is disabled in `.streamlit/config.toml`; Community Cloud preparation is documented in `docs/deployment.md`.
+The local app and Streamlit deployment specifications pin Ultralytics `8.3.150`, PyTorch `2.13.0+cpu`, and torchvision `0.28.0+cpu` on supported non-macOS deployments. Both required checkpoints are tracked, so inference requires no runtime model download. Streamlit telemetry is disabled.
 
-## Navigation and workflows
+## Analysis modes
 
-The sidebar exposes six sections: Home, Analyze Image, Compare Regions, Research Results, Detection Readiness, and About and Limitations.
+Analyze Image has four modes:
 
-Analyze Image has three active modes:
+1. **Prepared crop** applies the existing RGB/bilinear 224×224 preparation and frozen six-category classifier.
+2. **Manual single region** maps one user rectangle to original-image coordinates and applies the frozen contextual-crop policy.
+3. **Manual multi-region** preserves stable IDs, overlaps, replace, remove, clear, and new-image actions.
+4. **Experimental automatic region proposals** lazily loads and caches the exact frozen one-class detector, generates numbered boxes, and displays each detector confidence separately.
 
-1. **Prepared crop** applies EXIF orientation, RGB conversion, Pillow bilinear resize to 224×224, frozen ImageNet normalization, and frozen classifier inference.
-2. **Manual single region** maps one display rectangle back to original-image, zero-based half-open coordinates and reuses the exact Phase 3 contextual crop policy.
-3. **Manual multi-region** saves and independently classifies any number of user rectangles, including overlaps. Stable IDs (`R1`, `R2`, …) support replace, remove, clear-regions, and new-image actions.
+The automatic mode has no threshold, NMS, checkpoint, device, or model controls. A user must select proposals and confirm that the boxes were reviewed. Only accepted boxes enter the same frozen contextual-crop pipeline used by manual regions and then the unchanged six-category MobileNet classifier. Detector confidence remains separate from classifier category scores in the interface, JSON, and CSV.
 
-The Phase 3 manual policy uses a square side of `ceil(1.5 × max(box width, box height))`, a 64-pixel minimum where source dimensions permit, boundary shifting without padding, then RGB/bilinear resize to 224×224. Regression tests confirm pixel identity with canonical Phase 3 crops.
+If no proposal crosses the frozen operating threshold, the interface displays exactly:
 
-## Session comparison and exports
+> No region proposal exceeded the frozen threshold.
 
-Classification records exist only in the active Streamlit session. Compare Regions shows thumbnails, predicted category, all six scores, source and crop coordinates, preprocessing/inference timing, and Grad-CAM status. Optional Grad-CAM uses the unchanged Phase 9A primitive and remains an activation visualization—not detector evidence or a causal explanation.
+It also states that this does not establish a healthy or defect-free blade and links the user back to the manual-region workflows.
 
-The app generates three downloads in memory:
+## Detector identity and execution contract
 
-- JSON with application/checkpoint/preprocessing identity, UTC timestamps, source dimensions and hashes, coordinates, logits, all six scores, and limitations;
-- CSV with one row per saved region and all six scores;
-- PNG with only the user-drawn manual boxes and stable region IDs over the selected source image.
+- Model: YOLO11n, frozen detector seed 17, selected epoch 83.
+- Checkpoint: `experiments/results/phase11b_yolo11n_v1/final/seed_17/epoch82.pt`.
+- Size: 16,085,716 bytes.
+- SHA-256: `793547a5ec31954d8e909b2f5c63f378374134353a8d1e0cefdd452a5365eefa`.
+- Runtime: Ultralytics `8.3.150`, CPU only.
+- Inference: image size 640, confidence threshold `0.39`, NMS IoU `0.7`, class-agnostic NMS, maximum 300 detections, with saving, plots, and verbose output disabled.
+- One model only; no ensemble, download fallback, training path, tracker, or filesystem prediction output.
 
-No upload, session record, visualization, or export is written to the server filesystem.
+The checkpoint has one internal class. Its internal display metadata is validated but never shown in the UI. Application presentation maps class ID 0 only to **defect region proposal**; this presentation mapping does not alter coordinates, scores, thresholding, NMS, or execution.
 
-## Frozen research dashboards
+## Frozen classifier and crop identity
 
-Research Results reads and verifies canonical Phase 10 CSV tables for clean method comparison, data efficiency, robustness retention, and error/human-review summaries. It does not recompute metrics. The required Phase 10 scientific-output fingerprint is `6064922c936a05c33c38068ba86fa68c6b9b7f931d28df4e37a5e880edd5dbf0`.
+The existing MobileNetV3-Small seed-17 checkpoint SHA-256 remains `9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5`, with state fingerprint `3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757`. The contextual crop remains the frozen 1.5× square, 64-pixel minimum, boundary-shift-without-padding policy followed by RGB/bilinear resize to 224×224. Manual-mode regression tests preserve pixel parity and behavior.
 
-Detection Readiness reads the frozen Phase 11A manifest, audit summary, feasibility decisions, compute gate, and reproducibility record. It reports 720 curated full images, 1,065 boxes, zero healthy/background images, the `unsupported` application-integration decision, and the CPU/CUDA block. The Phase 11A scientific-output fingerprint is `3f46cbdc6c7a2e3cf6093ff177dd1948d113fa4c36fa9eb907d7c8621e800461`.
+## Session, exports, privacy, and limitations
 
-`windblade_demo.detection_status` defines a future-facing box/result interface, but `load_detector()` and `detect()` explicitly raise `DetectorUnavailableError`. It does not import a detector runtime, download weights, use annotations as predictions, or fabricate boxes.
+Uploads, crops, records, proposal results, visualizations, and exports remain in process memory for the active session. JSON and CSV contain optional proposal ID and detector-confidence fields separate from classifier logits and scores. Annotated PNG export draws only saved user-selected or user-accepted regions. No upload or prediction is persisted to the server.
 
-## Frozen classifier identity
-
-- Model: MobileNetV3-Small, Phase 6 full-data seed 17 (the predeclared canonical seed).
-- Checkpoint file SHA-256: `9c7a5f18e7d05a320e1296c73bbeb9366636e0e55dc7c6ff2bab6d8808a0e5a5`.
-- State fingerprint: `3c17629d1b1748e2f3d9046cb9a3d88c6369786acc1381f105974396c0f46757`.
-- Processed dataset fingerprint: `4bd754a1015be2ec99c88a57a23586e286b03cc178ee148b298850e5ca848991`.
-- Class order: `craze`, `corrosion`, `surface_injure`, `thunderstrike`, `crack`, `hide_craze`.
-- Runtime: CPU evaluation mode; `torch.inference_mode()` for normal inference.
-
-All six softmax outputs are labeled as model scores, not calibrated confidence estimates. The app verifies the checkpoint file, metadata, dataset identity, architecture, seed, class order, and decoded state before use. It never trains, tunes, calibrates, ensembles, selects, or rewrites a model.
-
-## Input safety and privacy
-
-PNG/JPG/JPEG uploads are limited to 15 MB, 50 megapixels, and 20,000 pixels on either dimension. EXIF orientation is applied; grayscale and alpha inputs are converted to RGB. Empty, corrupt, mislabeled, oversized, invalid-coordinate, and zero-area inputs are rejected. There is no arbitrary path input, analytics, API key, external service, upload persistence, or global cache of user images.
+Research Results and Detection Readiness remain read-only views of frozen records. The detector integration does not change scientific results and provides no evidence about arbitrary operational imagery, healthy-blade false-positive behavior, hidden damage, structural integrity, safety, severity, progression, remaining life, or production readiness.
 
 ## Validation
 
 ```powershell
-uv run pytest tests/test_app_inputs.py tests/test_app_crops.py tests/test_app_inference.py tests/test_app_v2.py tests/test_app_smoke.py
-uv run python scripts/validate_app.py --output app/validation/validation.json
-uv run python scripts/run_detection.py --validate-only
+uv run pytest tests/test_app_inputs.py tests/test_app_crops.py tests/test_app_inference.py tests/test_app_v2.py tests/test_app_smoke.py tests/test_phase12b_integration.py
+uv run python scripts/validate_phase12.py
+uv run python scripts/validate_phase12b.py
+uv run python scripts/validate_deployment.py
 ```
 
-The machine-readable application record verifies all three workflows, stable region IDs, session operations, JSON/CSV/PNG exports, Phase 3 pixel parity, checkpoint identity, reference inference, Grad-CAM invariance, Phase 10 source hashes, Phase 11A readiness identity, privacy controls, and scientific invariance. The focused Application v2 suite passes 37 tests; the complete repository suite passes 266 tests with 11 unchanged scikit-learn future warnings. Every read-only Phase 2–11A/app/review validator passes. Live loopback health returned HTTP 200 with body `ok`, then the server was stopped.
-
-No screenshot or uploaded user image is tracked. No detector dependency, detector checkpoint, threshold, NMS setting, prediction, metric, or external deployment exists.
+The prior apparatus remains verifiable as historical evidence. The implementation layer separately validates the tracked checkpoint, code, frozen controls, dependencies, provenance, and upstream hashes. One deterministic in-memory synthetic CPU smoke was performed with the committed checkpoint; no project image, prediction coordinates, or timing were retained. External deployment remains a separate user-controlled action and has not occurred.

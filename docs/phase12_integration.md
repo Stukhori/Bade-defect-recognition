@@ -1,12 +1,12 @@
-# Phase 12A detector-to-application integration apparatus
+# Phase 12 detector-to-application integration record
 
 ## Status and boundary
 
-Phase 12A is an **apparatus and runtime-compatibility gate only**. The gate
-passed, but the detector has not been copied into the repository or integrated
-into Application v2. No deployment occurred. The frozen apparatus is
+Phase 12A is preserved as the historical **apparatus and runtime-compatibility gate**. At that gate the detector had not been copied or integrated. The frozen apparatus remains
 `configs/application_phase12.yaml`, and the identity-only probe record is
 `provenance/phase12_runtime_compatibility.json`.
+
+Phase 12B subsequently copied the exact authorized checkpoint byte-for-byte and implemented Application v3 as an experimental, human-reviewed region-proposal feature. Its separate configuration is `configs/application_phase12b.yaml`, its implementation record is `provenance/phase12b_implementation.json`, and its validator is `scripts/validate_phase12b.py`. Phase 12A evidence was not rewritten. External deployment has not occurred.
 
 The planned feature name is **Experimental automatic region proposals**. It
 must not be described as reliable automatic inspection. Proposed boxes must
@@ -19,7 +19,7 @@ The single-model candidate is the frozen YOLO11n seed-17 checkpoint selected at
 epoch 83:
 
 - original Drive path: `runs/seed_17/weights/epoch82.pt`
-- proposed future tracked path:
+- repository path authorized and later used by Phase 12B:
   `experiments/results/phase11b_yolo11n_v1/final/seed_17/epoch82.pt`
 - size: 16,085,716 bytes
 - SHA-256:
@@ -80,12 +80,9 @@ Frozen inference controls are:
 No ensembling, checkpoint switching, threshold control, or user-adjustable NMS
 is permitted.
 
-## Proposed application flow
+## Implemented Application v3 flow
 
-A future, separately authorized implementation may pass reviewable detector
-boxes into the existing frozen contextual-crop preparation and then the frozen
-six-class MobileNet classifier. Detector confidence and classifier category
-scores must remain separate.
+Application v3 draws numbered detector boxes and lists detector confidence separately. It requires the user to select proposals and confirm review before any proposed box is classified. Accepted boxes pass through the existing frozen contextual-crop preparation and then the frozen six-class MobileNet classifier. The three earlier prepared/manual workflows remain available. Detector confidence and classifier category scores remain separate in the UI and exports.
 
 If no proposal crosses the frozen threshold, the exact message is:
 
@@ -93,14 +90,13 @@ If no proposal crosses the frozen threshold, the exact message is:
 
 This outcome must never be interpreted as evidence of a healthy blade.
 
-## Limitations and next gate
+## Limitations and deployment boundary
 
 The training and evaluation data contain no healthy/background-only images,
 so healthy-blade false-positive behavior is unknown. The system does not
 assess safety, severity, progression, or remaining life and is not established
 as production-ready.
 
-Phase 12A does not authorize checkpoint copying, dependency changes in the
-application, detector invocation from the UI, application implementation, or
-external deployment. Those actions require a separate validated integration
-step.
+Phase 12B authorizes only the local implementation and validation recorded here. It does not establish false-positive behavior on healthy blades, external-domain performance, production readiness, or safety fitness. External deployment remains a separate user-controlled action and was not performed.
+
+The implementation uses Ultralytics `8.3.150`, PyTorch `2.13.0+cpu`, and torchvision `0.28.0+cpu`. It verifies the checkpoint task, exact one-class metadata, seed, image-size metadata, byte size, and SHA-256 before prediction. The runtime is CPU-only, lazily cached, and configured without downloads, telemetry, external trackers, filesystem prediction output, ensembling, or user-adjustable detector controls. One deterministic synthetic in-memory smoke test used no project image and retained no coordinates or timings.

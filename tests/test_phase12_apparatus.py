@@ -116,12 +116,12 @@ def test_compatibility_record_contains_identity_and_pass_state_only() -> None:
     assert "latency" not in serialized
 
 
-def test_checkpoint_is_not_copied_or_tracked() -> None:
+def test_checkpoint_was_not_present_in_historical_phase12a_baseline() -> None:
     candidate = apparatus()["deployment_candidate"]
-    assert not (ROOT / candidate["proposed_repository_path"]).exists()
     record = json.loads((ROOT / "provenance/phase12_runtime_compatibility.json").read_text(encoding="utf-8"))
     assert record["checkpoint_copied_to_repository"] is False
     assert record["checkpoint_modified"] is False
+    assert validate(ROOT)["phase"] == "12A"
 
 
 def test_application_v2_git_objects_are_frozen() -> None:
@@ -133,13 +133,17 @@ def test_application_v2_git_objects_are_frozen() -> None:
     }
 
 
-def test_phase10_guard_allows_only_declared_phase12a_apparatus(tmp_path: Path) -> None:
+def test_phase10_guard_allows_only_declared_phase12_apparatus(tmp_path: Path) -> None:
     allowed = (
         "configs/application_phase12.yaml",
         "docs/phase12_integration.md",
         "provenance/phase12_runtime_compatibility.json",
         "scripts/validate_phase12.py",
         "tests/test_phase12_apparatus.py",
+        "configs/application_phase12b.yaml",
+        "provenance/phase12b_implementation.json",
+        "scripts/validate_phase12b.py",
+        "tests/test_phase12b_integration.py",
     )
     for relative in allowed:
         path = tmp_path / relative

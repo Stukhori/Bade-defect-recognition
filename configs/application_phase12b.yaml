@@ -1,0 +1,79 @@
+schema_version: "1.0"
+apparatus:
+  name: phase12b_detector_application_integration
+  status: implemented_and_locally_validated
+  application_version: 3.0.0
+  external_deployment: false
+
+historical_phase12a:
+  configuration_path: configs/application_phase12.yaml
+  configuration_sha256: 8f084ceecfa911c6fe333d20c2d55a8cd8b738f0ae0dd2d5f00e5dd26f89dde1
+  compatibility_path: provenance/phase12_runtime_compatibility.json
+
+checkpoint:
+  path: experiments/results/phase11b_yolo11n_v1/final/seed_17/epoch82.pt
+  bytes: 16085716
+  sha256: 793547a5ec31954d8e909b2f5c63f378374134353a8d1e0cefdd452a5365eefa
+  seed: 17
+  selected_epoch: 83
+  task: detect
+  checkpoint_internal_classes:
+    0: item
+  application_semantic_classes:
+    0: defect_region_proposal
+  mapping_scope: presentation_only
+
+runtime:
+  python: "3.11"
+  device: cpu
+  package: ultralytics
+  package_version: 8.3.150
+  torch: 2.13.0+cpu
+  torchvision: 0.28.0+cpu
+  lazy_cached_load: true
+  external_downloads: false
+  telemetry: false
+  filesystem_prediction_outputs: false
+
+inference:
+  image_size: 640
+  confidence_threshold: 0.39
+  nms_iou: 0.7
+  class_agnostic_nms: true
+  maximum_detections: 300
+  device: cpu
+  save: false
+  plots: false
+  verbose: false
+  ensemble: false
+  user_adjustable_controls: false
+
+application:
+  feature_name: Experimental automatic region proposals
+  presentation_label: defect region proposal
+  zero_proposal_message: No region proposal exceeded the frozen threshold.
+  human_review_required_before_classification: true
+  proposal_crop_pipeline: frozen_contextual_crop_then_frozen_six_class_mobilenet
+  detector_classifier_scores_separate: true
+  retain_modes: [prepared_crop, manual_single_region, manual_multi_region]
+  never_claim_healthy_or_defect_free: true
+  limitations: [experimental_research_feature, no_healthy_or_background_only_images, human_review_required, no_safety_severity_progression_remaining_life_or_production_readiness_assessment]
+
+frozen_inputs:
+  phase11b_configuration:
+    path: configs/detection_phase11b.yaml
+    sha256: fc0ab33a25bafb5b92da88f67343bca9bbcecb6c715d867b06f4ac74f90cff1b
+  phase11b_selection_receipt:
+    path: provenance/phase11b_selection_receipt.json
+    sha256: 6c236e9d7220b443f17a628a3d8f621afc56be3777949eeca47f462879e46509
+  phase11b_final_metrics:
+    path: provenance/phase11b_final_test_metrics.json
+    sha256: e6bac76aa5a2e3d68ed7b93f5be180228addba1f1f90ddafab398d198496bcbb
+
+implementation:
+  runtime: src/windblade_demo/detector.py
+  application: app/app.py
+  session: src/windblade_demo/session.py
+  exports: src/windblade_demo/exports.py
+  validator: scripts/validate_phase12b.py
+  provenance: provenance/phase12b_implementation.json

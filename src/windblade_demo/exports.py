@@ -1,4 +1,4 @@
-"""In-memory Application v2 export builders."""
+"""In-memory Application v3 export builders."""
 
 from __future__ import annotations
 
@@ -18,8 +18,9 @@ from windblade_demo.visualization import annotate_regions
 
 
 LIMITATION_NOTICE = (
-    "This export contains regions supplied by the user; model scores are not "
-    "calibrated confidence estimates and do not assess structural integrity or operational safety."
+    "This export contains regions supplied by the user or explicitly reviewed detector-proposed regions; "
+    "detector confidence and classifier scores are distinct, classifier scores are not "
+    "calibrated confidence estimates, and outputs do not assess structural integrity or operational safety."
 )
 
 
@@ -47,6 +48,7 @@ def csv_export(records: Iterable[RegionRecord]) -> bytes:
         "checkpoint_state_fingerprint", "preprocessing_contract",
         "region_id", "created_utc", "mode", "source_name", "source_sha256",
         "source_width", "source_height", "selected_box", "contextual_box",
+        "detector_proposal_id", "detector_confidence",
         "predicted_label", *[f"score_{label}" for label in CLASS_LABELS],
         "preprocessing_seconds", "inference_seconds", "gradcam_status",
     ]
@@ -69,6 +71,8 @@ def csv_export(records: Iterable[RegionRecord]) -> bytes:
             "source_height": record.source_height,
             "selected_box": record.selected_box,
             "contextual_box": record.contextual_box,
+            "detector_proposal_id": record.detector_proposal_id,
+            "detector_confidence": record.detector_confidence,
             "predicted_label": record.predicted_label,
             "preprocessing_seconds": record.preprocessing_seconds,
             "inference_seconds": record.inference_seconds,

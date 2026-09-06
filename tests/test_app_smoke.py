@@ -22,7 +22,10 @@ def button(app, label):
 def open_analysis(app):
     next(item for item in app.radio if item.label == "Navigation").set_value("Analyze Image").run(timeout=30)
     mode = next(item for item in app.radio if item.label == "Analysis mode")
-    assert mode.options == ["Prepared crop", "Manual single region", "Manual multi-region"]
+    assert mode.options == [
+        "Prepared crop", "Manual single region", "Manual multi-region",
+        "Experimental automatic region proposals",
+    ]
     return app
 
 

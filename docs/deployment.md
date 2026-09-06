@@ -1,26 +1,26 @@
 # Streamlit Community Cloud deployment
 
-The application is prepared for deployment from a clean GitHub clone. Its exact 6.2 MB verified checkpoint and metadata are versioned as the inference assets required by the app; their validated hashes are unchanged.
+Application v3 is prepared for deployment from a clean GitHub clone but has not been externally deployed.
 
 ## Deployment coordinates
 
 - Repository: `Stukhori/Bade-defect-recognition`
 - Branch: `main`
-- Entrypoint: `app/app.py`
+- Main file path: `app/app.py`
 - Python: `3.11`
 - Dependency declaration: `app/requirements.txt`
 - Streamlit configuration: `.streamlit/config.toml`
 - Secrets: none
 
-The app-local requirements file is intentional. Streamlit Community Cloud searches the entrypoint directory before the repository root, so it uses `app/requirements.txt` instead of the research environment's root `uv.lock`. The deployment file pins the validated application environment and selects CPU-only PyTorch wheels on Linux.
+The entrypoint-local dependency file pins Streamlit `1.62.0`, streamlit-cropper `0.3.1`, Ultralytics `8.3.150`, PyTorch `2.13.0+cpu`, torchvision `0.28.0+cpu`, and the remaining validated application packages. The exact frozen crop-classifier checkpoint and detector proposal checkpoint are tracked. No runtime model download is required.
 
 ## Deploy
 
 1. Sign in at [share.streamlit.io](https://share.streamlit.io/) with a GitHub account that can access the repository.
-2. Select **Create app** and choose the existing app/repository option.
-3. Enter the repository, branch, and entrypoint shown above.
-4. Open **Advanced settings** and select Python 3.11. No secrets are required.
-5. Deploy. Streamlit runs from the repository root and reads the root `.streamlit/config.toml`.
+2. Select **Create app** and choose the existing repository option.
+3. Use branch `main` and enter `app/app.py` as the main file path.
+4. In **Advanced settings**, select Python 3.11. No secrets are required.
+5. Deploy. Streamlit runs from the repository root and reads `.streamlit/config.toml`.
 
 ## Validate locally
 
@@ -29,8 +29,10 @@ uv run python scripts/validate_deployment.py
 uv run streamlit run app/app.py --server.address 127.0.0.1
 ```
 
-The deployment validator checks that all required files are tracked, verifies the checkpoint file SHA-256 and decoded state identity, loads it in CPU evaluation mode, and confirms the pinned dependency/configuration contract.
+The validator requires both checkpoints and all deployment inputs to be tracked, verifies their exact byte identities, loads the frozen classifier on CPU, and checks the pinned dependency and Streamlit configuration contract.
 
 ## Scope
 
-The deployed interface analyzes prepared crops and rectangles selected by the user. Uploads, crops, session history, visualizations, and exports remain in process memory. The app uses no external API and performs no runtime artifact download. Deployment does not alter the underlying research results.
+The experimental detector runs on CPU with fixed image size 640, threshold `0.39`, NMS IoU `0.7`, class-agnostic NMS, and maximum 300 detections. Users cannot change detector controls and must review proposals before classification. Prepared-crop and manual-region workflows remain available.
+
+Uploads, proposals, crops, session history, visualizations, and exports remain in process memory. The app disables telemetry and external trackers, performs no external API call or runtime artifact download, and writes no prediction output. Deployment would not alter scientific results, but deployment itself remains unperformed.

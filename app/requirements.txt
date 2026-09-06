@@ -6,6 +6,7 @@
 
 streamlit==1.62.0
 streamlit-cropper==0.3.1
+ultralytics==8.3.150
 numpy==2.4.6
 Pillow==12.3.0
 matplotlib==3.11.1

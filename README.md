@@ -5,7 +5,7 @@
 > derived assets retain the attribution documented in
 > [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–10 are complete, validated, and frozen; the core classification research remains unchanged. Optional Phase 11A completed a separate full-image annotation/feasibility audit, and the Phase 11B detector study is complete, validated, and frozen. Application v2 remains unchanged; automatic localization remains unavailable pending a separately authorized Phase 12 integration decision. Phase 12 has not started. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
+This repository supports the experimental study **Robust Wind Turbine Blade Defect Recognition Under Limited Data and Image Degradation**. Phases 0–10 are complete, validated, and frozen; the core classification research remains unchanged. Optional Phase 11A completed a separate full-image annotation/feasibility audit, and the Phase 11B detector study is complete, validated, and frozen. Application v3 now integrates the exact frozen detector as an experimental, human-reviewed region-proposal aid. It is locally validated and has not been externally deployed. The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md).
 
 ## Reference environment and installation
 
@@ -19,14 +19,14 @@ Runtime dependencies include PyYAML, NumPy, Pillow, matplotlib, scikit-image, sc
 
 ## Run the separate local demonstration
 
-The repository also contains a non-scientific Streamlit demonstration of the frozen Phase 6 MobileNetV3-Small full-data seed-17 classifier. Install its separately pinned UI dependencies and launch it locally:
+The repository also contains a non-scientific Streamlit application using the frozen Phase 6 MobileNetV3-Small classifier and the frozen Phase 11B proposal detector. Install its separately pinned CPU dependencies and launch it locally:
 
 ```bash
 uv pip install -r requirements-app.txt
 uv run streamlit run app/app.py
 ```
 
-Application v2 supports prepared-crop classification, manual single- and multi-region analysis, session comparison, in-memory JSON/CSV/annotated-image exports, frozen Phase 10 research summaries, and frozen Phase 11A readiness reporting. It does not automatically detect defects or assess blade safety. The exact frozen inference checkpoint is included for clean-clone startup; no training, tuning, calibration, or test-set evaluation occurs. See [`docs/app.md`](docs/app.md) for the exact model identity, crop parity, scope, limitations, and validation record.
+Application v3 preserves prepared-crop and manual single/multi-region analysis and adds **Experimental automatic region proposals**. Proposals are numbered, detector confidence is shown separately, and a user must review and select boxes before the frozen six-category crop classifier runs. The dataset contains no healthy/background-only images, so this does not establish a healthy blade or assess safety, severity, progression, remaining life, or production readiness. Both exact checkpoints are included for clean-clone startup; no training, tuning, calibration, or test-set evaluation occurs. See [`docs/app.md`](docs/app.md) for the exact identities, controls, scope, and validation record.
 
 For Streamlit Community Cloud, deploy branch `main` with entrypoint `app/app.py` and select Python 3.11. The app-local dependency manifest and exact frozen inference checkpoint are tracked, and no secrets are required. See [`docs/deployment.md`](docs/deployment.md) for the deployment checklist and validator.
 
@@ -173,8 +173,8 @@ uv run python scripts/run_detection.py --config configs/detection.yaml --apparat
 uv run python scripts/run_detection.py --config configs/detection.yaml --validate-only
 ```
 
-The Phase 11B detector study completed its three frozen YOLO11n runs, validation-only checkpoint and threshold selection, and firewalled held-out evaluation. Its final metrics are committed and no further tuning is permitted. See [`docs/phase11b_detector_training.md`](docs/phase11b_detector_training.md) for the final scientific record and [`docs/phase11b_colab.md`](docs/phase11b_colab.md) for the execution apparatus. The Phase 11A dataset/protocol, compute gate, QC packet, and limitations remain frozen in [`docs/phase11_detection.md`](docs/phase11_detection.md). Application v2 retains the user-supplied-region boundary; see [`docs/app.md`](docs/app.md).
+The Phase 11B detector study completed its three frozen YOLO11n runs, validation-only checkpoint and threshold selection, and firewalled held-out evaluation. Its final metrics are committed and no further tuning is permitted. See [`docs/phase11b_detector_training.md`](docs/phase11b_detector_training.md) for the final scientific record and [`docs/phase11b_colab.md`](docs/phase11b_colab.md) for the execution apparatus. The Phase 11A dataset/protocol, compute gate, QC packet, and limitations remain frozen in [`docs/phase11_detection.md`](docs/phase11_detection.md). Application v3 uses one validation-selected frozen checkpoint only as an experimental proposal aid; see [`docs/app.md`](docs/app.md) and [`docs/phase12_integration.md`](docs/phase12_integration.md).
 
 ## Phase boundaries
 
-Phases 0–10 remain complete, validated, and frozen. Optional Phase 11A is complete and frozen, and Phase 11B is complete, validated, and frozen with no post-test tuning permitted. Application v2 is unchanged and does not automatically localize defects; any integration decision requires a separately authorized and validated Phase 12. Phase 12 has not started.
+Phases 0–10 remain complete, validated, and frozen. Optional Phase 11A is complete and frozen, and Phase 11B is complete, validated, and frozen with no post-test tuning permitted. Phase 12A historical apparatus evidence remains unchanged. Phase 12B implements and locally validates Application v3 with fixed CPU proposal controls and mandatory human review. No scientific result changed and no external deployment occurred.

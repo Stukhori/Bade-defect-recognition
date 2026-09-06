@@ -35,7 +35,7 @@ EXPECTED_ARCHITECTURE = "torchvision_mobilenet_v3_small"
 EXPECTED_SEED = 17
 MODEL_INPUT_SIZE = (224, 224)
 
-APPLICATION_VERSION = "2.0.0"
+APPLICATION_VERSION = "3.0.0"
 PREPROCESSING_CONTRACT = (
     "RGB conversion; prepared regions use bilinear resize to 224x224; manual regions "
     "reuse the locked 1.5x contextual square, 64-pixel minimum side, boundary "

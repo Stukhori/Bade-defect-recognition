@@ -296,21 +296,25 @@ def collect_upstream_inventory(root: Path) -> dict[str, Any]:
 def _assert_no_optional_phase_paths(root: Path) -> None:
     # Phase 11 is an authorized, scientifically separate downstream experiment
     # once the Phase 10 freeze exists. Historical Phase 10 validation therefore
-    # permits only the explicitly authorized Phase 12A apparatus while rejecting
+    # permits only the explicitly authorized Phase 12 apparatus while rejecting
     # every other Phase 12 path. This does not alter any Phase 10 artifact.
     forbidden_tokens = ("phase12", "phase_12")
-    authorized_phase12a_apparatus = {
+    authorized_phase12_apparatus = {
         "configs/application_phase12.yaml",
         "docs/phase12_integration.md",
         "provenance/phase12_runtime_compatibility.json",
         "scripts/validate_phase12.py",
         "tests/test_phase12_apparatus.py",
+        "configs/application_phase12b.yaml",
+        "provenance/phase12b_implementation.json",
+        "scripts/validate_phase12b.py",
+        "tests/test_phase12b_integration.py",
     }
     offending = [
         path.relative_to(root).as_posix()
         for path in root.rglob("*")
         if any(token in path.relative_to(root).as_posix().lower() for token in forbidden_tokens)
-        and path.relative_to(root).as_posix() not in authorized_phase12a_apparatus
+        and path.relative_to(root).as_posix() not in authorized_phase12_apparatus
         and ".git" not in path.parts and ".venv" not in path.parts and ".uv-cache" not in path.parts
         and "__pycache__" not in path.parts
         and not any(part.startswith(".") for part in path.relative_to(root).parts)

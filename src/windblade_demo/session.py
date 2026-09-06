@@ -1,4 +1,4 @@
-"""In-memory analysis-session records for Application v2."""
+"""In-memory analysis-session records for Application v3."""
 
 from __future__ import annotations
 
@@ -45,6 +45,8 @@ class RegionRecord:
     thumbnail: Image.Image
     gradcam_status: str = "not_generated"
     gradcam_overlay: Image.Image | None = None
+    detector_proposal_id: str | None = None
+    detector_confidence: float | None = None
 
     def metadata(self) -> dict[str, Any]:
         return {
@@ -67,6 +69,8 @@ class RegionRecord:
             "preprocessing_seconds": self.preprocessing_seconds,
             "inference_seconds": self.inference_seconds,
             "gradcam_status": self.gradcam_status,
+            "detector_proposal_id": self.detector_proposal_id,
+            "detector_confidence": self.detector_confidence,
             "checkpoint_file_sha256": CHECKPOINT_FILE_SHA256,
             "checkpoint_state_fingerprint": CHECKPOINT_STATE_FINGERPRINT,
             "preprocessing_contract": PREPROCESSING_CONTRACT,
@@ -99,6 +103,8 @@ def make_region_record(
     contextual_box: tuple[int, int, int, int] | None = None,
     region_id: str | None = None,
     created_utc: str | None = None,
+    detector_proposal_id: str | None = None,
+    detector_confidence: float | None = None,
 ) -> RegionRecord:
     """Build a record without mutating the caller's session collection."""
 
@@ -126,6 +132,8 @@ def make_region_record(
         inference_seconds=float(result.inference_seconds),
         model_input=model_input.copy(),
         thumbnail=thumbnail,
+        detector_proposal_id=detector_proposal_id,
+        detector_confidence=detector_confidence,
     )
 
 

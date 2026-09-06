@@ -15,12 +15,16 @@ from windblade_demo.constants import (
     CHECKPOINT_STATE_FINGERPRINT,
 )
 from windblade_demo.inference import load_frozen_model
+from windblade_demo.detector import (
+    DETECTOR_CHECKPOINT, DETECTOR_CHECKPOINT_BYTES, DETECTOR_CHECKPOINT_SHA256,
+)
 
 
 EXPECTED_REQUIREMENTS = {
     "-e .",
     "streamlit==1.62.0",
     "streamlit-cropper==0.3.1",
+    "ultralytics==8.3.150",
     'torch==2.13.0+cpu; sys_platform != "darwin"',
     'torchvision==0.28.0+cpu; sys_platform != "darwin"',
 }
@@ -51,7 +55,8 @@ def validate(root: Path, *, require_tracked: bool = True) -> dict:
     config = root / ".streamlit/config.toml"
     checkpoint = root / CHECKPOINT_RELATIVE_PATH
     metadata = checkpoint.with_suffix(".json")
-    for path in (entrypoint, requirements, config, checkpoint, metadata):
+    detector_checkpoint = root / DETECTOR_CHECKPOINT
+    for path in (entrypoint, requirements, config, checkpoint, metadata, detector_checkpoint):
         if not path.is_file():
             raise RuntimeError(f"Required deployment file is missing: {path.relative_to(root)}")
 
@@ -71,10 +76,14 @@ def validate(root: Path, *, require_tracked: bool = True) -> dict:
     metadata_record = json.loads(metadata.read_text(encoding="utf-8"))
     if metadata_record.get("checkpoint_fingerprint") != CHECKPOINT_STATE_FINGERPRINT:
         raise RuntimeError("Deployment checkpoint metadata does not match the frozen contract.")
+    if detector_checkpoint.stat().st_size != DETECTOR_CHECKPOINT_BYTES:
+        raise RuntimeError("Deployment detector checkpoint size does not match the frozen contract.")
+    if sha256(detector_checkpoint) != DETECTOR_CHECKPOINT_SHA256:
+        raise RuntimeError("Deployment detector checkpoint SHA-256 does not match the frozen contract.")
 
     tracked_files = {
         path.relative_to(root).as_posix(): tracked(root, path)
-        for path in (entrypoint, requirements, config, checkpoint, metadata)
+        for path in (entrypoint, requirements, config, checkpoint, metadata, detector_checkpoint)
     }
     if require_tracked and not all(tracked_files.values()):
         raise RuntimeError(f"Deployment files are not all tracked: {tracked_files}")
@@ -99,10 +108,19 @@ def validate(root: Path, *, require_tracked: bool = True) -> dict:
             "loaded_on_cpu": next(loaded.model.parameters()).device.type == "cpu",
             "evaluation_mode": not loaded.model.training,
         },
+        "proposal_detector_checkpoint": {
+            "path": DETECTOR_CHECKPOINT.as_posix(),
+            "bytes": detector_checkpoint.stat().st_size,
+            "file_sha256": sha256(detector_checkpoint),
+            "device": "cpu",
+            "package": "ultralytics==8.3.150",
+        },
         "tracked_files": tracked_files,
         "external_downloads_at_runtime": 0,
         "secrets_required": False,
-        "automatic_localization_available": False,
+        "automatic_region_proposals_available": True,
+        "automatic_region_proposals_experimental": True,
+        "external_deployment_performed": False,
     }
 
 
