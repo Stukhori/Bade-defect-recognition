@@ -1,0 +1,18 @@
+{
+  "attempt_number": 1,
+  "configuration_sha256": "fc0ab33a25bafb5b92da88f67343bca9bbcecb6c715d867b06f4ac74f90cff1b",
+  "exception_message": "/content/windblade_phase11b_data_test/dataset/test.yaml\n'train:' key missing.\n'train' and 'val' are required in all data YAMLs.",
+  "exception_type": "SyntaxError",
+  "execution_commit": "2b1a82f0f73ef86c8b6cd911d41f5eacd48cc8bf",
+  "failure_stage": "ultralytics_dataset_yaml_validation",
+  "final_metrics_written": false,
+  "predictions_generated": false,
+  "schema_version": "1.0",
+  "selection_changed": false,
+  "selection_receipt_sha256": "6c236e9d7220b443f17a628a3d8f621afc56be3777949eeca47f462879e46509",
+  "status": "FAILED_BEFORE_INFERENCE",
+  "test_box_count": 162,
+  "test_image_count": 109,
+  "test_materialization_fingerprint": "be80ee8907fdcd491be1cc6727b810da1a2a4cdd8e3fff0c35b60ac276bc2135",
+  "tuning_performed": false
+}

@@ -96,6 +96,39 @@ def _patch_execution_checks(monkeypatch, context: dict) -> None:
     )
 
 
+def _write_evaluation_materialization(root: Path, scope: str) -> dict:
+    specifications = {
+        "trainval": (["train", "validation"], 611, 903),
+        "test": (["test"], 109, 162),
+    }
+    splits, image_count, box_count = specifications[scope]
+    artifacts = []
+    for split in splits:
+        image = root / "dataset" / "images" / split / f"{split}.jpg"
+        label = root / "dataset" / "labels" / split / f"{split}.txt"
+        image.parent.mkdir(parents=True, exist_ok=True)
+        label.parent.mkdir(parents=True, exist_ok=True)
+        image.write_bytes(f"{split}-image".encode())
+        label.write_text("0 0.5 0.5 1 1\n", encoding="utf-8")
+        artifacts.extend([
+            {"path": image.relative_to(root).as_posix(), "sha256": phase11b.sha256_file(image)},
+            {"path": label.relative_to(root).as_posix(), "sha256": phase11b.sha256_file(label)},
+        ])
+    manifest = {
+        "scope": scope, "included_splits": splits,
+        "image_count": image_count, "box_count": box_count,
+        "artifact_fingerprint": phase11b.canonical_hash(sorted(artifacts, key=lambda item: item["path"])),
+        "artifacts": sorted(artifacts, key=lambda item: item["path"]),
+    }
+    phase11b.atomic_json(root / "materialization.json", manifest)
+    if scope == "test":
+        (root / "dataset/test.yaml").write_text(
+            yaml.safe_dump({"path": str(root / "dataset"), "names": {0: "defect"}, "test": "images/test"}),
+            encoding="utf-8",
+        )
+    return manifest
+
+
 def test_frozen_fingerprints_counts_and_run_matrix(apparatus) -> None:
     result = phase11b.validate_frozen_inputs(apparatus, ROOT)
     assert result["status"] == "PASS"
@@ -568,6 +601,201 @@ def test_weight_record_hash_is_enforced(tmp_path: Path, apparatus) -> None:
     weight.write_bytes(b"tampered")
     with pytest.raises(phase11b.Phase11BError, match="do not match"):
         phase11b.validate_weight_record(apparatus, weight, record_path)
+
+
+def test_final_test_compatibility_yaml_uses_distinct_absolute_split_paths(tmp_path: Path) -> None:
+    data_root = (tmp_path / "trainval").resolve()
+    test_root = (tmp_path / "sealed-test").resolve()
+    _write_evaluation_materialization(data_root, "trainval")
+    _write_evaluation_materialization(test_root, "test")
+    original_test_yaml = (test_root / "dataset/test.yaml").read_bytes()
+    output = (tmp_path / "runtime/ultralytics-test.yaml").resolve()
+
+    value = phase11b.create_final_test_compatibility_yaml(data_root, test_root, output)
+
+    assert value == yaml.safe_load(output.read_text(encoding="utf-8"))
+    assert value["names"] == {0: "defect"}
+    assert Path(value["train"]) == (data_root / "dataset/images/train").resolve()
+    assert Path(value["val"]) == (data_root / "dataset/images/validation").resolve()
+    assert Path(value["test"]) == (test_root / "dataset/images/test").resolve()
+    assert len({value["train"], value["val"], value["test"]}) == 3
+    assert Path(value["test"]) not in {Path(value["train"]), Path(value["val"])}
+    assert (test_root / "dataset/test.yaml").read_bytes() == original_test_yaml
+
+
+@pytest.mark.parametrize("failure", ["wrong_scope", "missing_directory", "changed_artifact"])
+def test_final_test_compatibility_yaml_rejects_bad_materialization(
+    tmp_path: Path, failure: str,
+) -> None:
+    data_root = (tmp_path / "trainval").resolve()
+    test_root = (tmp_path / "sealed-test").resolve()
+    _write_evaluation_materialization(data_root, "trainval")
+    _write_evaluation_materialization(test_root, "test")
+    if failure == "wrong_scope":
+        manifest = json.loads((test_root / "materialization.json").read_text(encoding="utf-8"))
+        manifest["scope"] = "trainval"
+        phase11b.atomic_json(test_root / "materialization.json", manifest)
+    elif failure == "missing_directory":
+        (data_root / "dataset/images/validation/validation.jpg").unlink()
+        (data_root / "dataset/images/validation").rmdir()
+    else:
+        (test_root / "dataset/images/test/test.jpg").write_bytes(b"changed")
+    with pytest.raises(phase11b.Phase11BError):
+        phase11b.create_final_test_compatibility_yaml(
+            data_root, test_root, (tmp_path / "runtime/compat.yaml").resolve(),
+        )
+
+
+def test_final_test_uses_compatibility_yaml_and_frozen_test_controls(
+    tmp_path: Path, apparatus, monkeypatch,
+) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    config_path = repo / "configs/detection_phase11b.yaml"
+    config_path.parent.mkdir()
+    config_path.write_text("fixture: true\n", encoding="utf-8")
+    data_root = (tmp_path / "trainval").resolve()
+    _write_evaluation_materialization(data_root, "trainval")
+    test_root = data_root.with_name(data_root.name + "_test")
+    drive_root = (tmp_path / "drive").resolve()
+    layout = phase11b.DriveLayout.from_root(drive_root)
+    receipt = json.loads((ROOT / "provenance/phase11b_selection_receipt.json").read_text(encoding="utf-8"))
+    receipt_path = repo / apparatus["firewall"]["committed_selection_receipt"]
+    receipt_path.parent.mkdir()
+    receipt_path.write_bytes((ROOT / "provenance/phase11b_selection_receipt.json").read_bytes())
+    calls = []
+
+    def fake_materialize(config, repository, archive, destination, *, scope):
+        assert destination == test_root
+        assert scope == "test"
+        return _write_evaluation_materialization(destination, "test")
+
+    class FakeYOLO:
+        def __init__(self, checkpoint: str):
+            self.checkpoint = checkpoint
+
+        def val(self, **arguments):
+            calls.append(arguments)
+            return types.SimpleNamespace(box=types.SimpleNamespace(map=0.4, map50=0.5, mp=0.6, mr=0.7))
+
+    fake_ultralytics = types.ModuleType("ultralytics")
+    fake_ultralytics.YOLO = FakeYOLO
+    monkeypatch.setitem(sys.modules, "ultralytics", fake_ultralytics)
+    monkeypatch.setattr(phase11b, "validate_receipt_firewall", lambda *args: receipt)
+    monkeypatch.setattr(phase11b, "materialize_dataset", fake_materialize)
+    monkeypatch.setattr(phase11b, "_ultralytics_settings_off", lambda: None)
+    prediction_calls = []
+
+    def fake_predict(config, repository, root, checkpoint, split, confidence):
+        prediction_calls.append((root, split, confidence))
+        return {"image": [[1, 1, 10, 10]]}, {"image": [{"box": [1, 1, 10, 10], "score": 0.9}]}
+
+    monkeypatch.setattr(phase11b, "_predict_split", fake_predict)
+    monkeypatch.setattr(phase11b, "train_seed", lambda *args: pytest.fail("training must not be invoked"))
+    monkeypatch.setattr(
+        phase11b, "select_validation_configuration", lambda *args: pytest.fail("selection must not be invoked"),
+    )
+    monkeypatch.setattr(
+        phase11b, "generate_training_bundle", lambda *args: pytest.fail("bundle generation must not be invoked"),
+    )
+
+    result = phase11b.run_final_test(
+        apparatus, config_path, repo, tmp_path / "unused.zip", data_root, drive_root,
+    )
+
+    compatibility = test_root.parent / "phase11b_ultralytics_test_compatibility.yaml"
+    compatibility_value = yaml.safe_load(compatibility.read_text(encoding="utf-8"))
+    assert len(calls) == 3
+    for call in calls:
+        assert call == {
+            "data": str(compatibility), "split": "test", "imgsz": apparatus["training"]["image_size"],
+            "batch": apparatus["training"]["batch_size"], "conf": apparatus["nms"]["confidence_floor"],
+            "iou": apparatus["nms"]["iou_threshold"], "max_det": apparatus["nms"]["maximum_detections"],
+            "agnostic_nms": apparatus["nms"]["class_agnostic"], "device": 0,
+            "workers": apparatus["training"]["workers"], "plots": False, "save_json": False, "verbose": False,
+        }
+    assert compatibility_value["test"] != compatibility_value["train"]
+    assert compatibility_value["test"] != compatibility_value["val"]
+    assert prediction_calls == [(test_root, "test", 0.39)] * 3
+    assert result["no_post_test_tuning"] is True
+
+
+def test_final_test_output_cannot_be_overwritten(tmp_path: Path, apparatus, monkeypatch) -> None:
+    drive_root = (tmp_path / "drive").resolve()
+    output = phase11b.DriveLayout.from_root(drive_root).selection / "final_test_metrics.json"
+    output.parent.mkdir(parents=True)
+    output.write_text("existing\n", encoding="utf-8")
+    monkeypatch.setattr(phase11b, "validate_receipt_firewall", lambda *args: {"checkpoints": []})
+    monkeypatch.setattr(
+        phase11b, "materialize_dataset", lambda *args, **kwargs: pytest.fail("materialization must not run"),
+    )
+    with pytest.raises(phase11b.Phase11BError, match="already exists"):
+        phase11b.run_final_test(
+            apparatus, tmp_path / "config.yaml", tmp_path, tmp_path / "archive.zip",
+            (tmp_path / "trainval").resolve(), drive_root,
+        )
+    assert output.read_text(encoding="utf-8") == "existing\n"
+
+
+def test_existing_test_materialization_requires_committed_failure_record(
+    tmp_path: Path, apparatus, monkeypatch,
+) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    subprocess.run(["git", "init"], cwd=repo, check=True, capture_output=True)
+    data_root = (tmp_path / "trainval").resolve()
+    test_root = data_root.with_name(data_root.name + "_test")
+    _write_evaluation_materialization(test_root, "test")
+    monkeypatch.setattr(phase11b, "validate_receipt_firewall", lambda *args: {"checkpoints": []})
+    monkeypatch.setattr(
+        phase11b, "materialize_dataset", lambda *args, **kwargs: pytest.fail("unrecorded attempt must fail first"),
+    )
+    with pytest.raises(phase11b.Phase11BError):
+        phase11b.run_final_test(
+            apparatus, repo / "config.yaml", repo, tmp_path / "archive.zip",
+            data_root, (tmp_path / "drive").resolve(),
+        )
+
+
+def test_failed_attempt_provenance_matches_observed_pre_inference_failure() -> None:
+    record = json.loads((ROOT / phase11b.FINAL_TEST_ATTEMPT_1_RECORD).read_text(encoding="utf-8"))
+    assert record == {
+        "schema_version": "1.0", "status": "FAILED_BEFORE_INFERENCE", "attempt_number": 1,
+        "execution_commit": "2b1a82f0f73ef86c8b6cd911d41f5eacd48cc8bf",
+        "selection_receipt_sha256": "6c236e9d7220b443f17a628a3d8f621afc56be3777949eeca47f462879e46509",
+        "configuration_sha256": "fc0ab33a25bafb5b92da88f67343bca9bbcecb6c715d867b06f4ac74f90cff1b",
+        "test_materialization_fingerprint": "be80ee8907fdcd491be1cc6727b810da1a2a4cdd8e3fff0c35b60ac276bc2135",
+        "test_image_count": 109, "test_box_count": 162,
+        "failure_stage": "ultralytics_dataset_yaml_validation", "exception_type": "SyntaxError",
+        "exception_message": phase11b.FINAL_TEST_ATTEMPT_1_ERROR,
+        "final_metrics_written": False, "predictions_generated": False,
+        "selection_changed": False, "tuning_performed": False,
+    }
+
+
+def test_mismatched_committed_failure_provenance_fails_closed(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    (repo / "configs").mkdir(parents=True)
+    (repo / "provenance").mkdir()
+    config_path = repo / "configs/detection_phase11b.yaml"
+    receipt_path = repo / "provenance/phase11b_selection_receipt.json"
+    record_path = repo / phase11b.FINAL_TEST_ATTEMPT_1_RECORD
+    config_path.write_bytes((ROOT / "configs/detection_phase11b.yaml").read_bytes())
+    receipt_path.write_bytes((ROOT / "provenance/phase11b_selection_receipt.json").read_bytes())
+    record = json.loads((ROOT / phase11b.FINAL_TEST_ATTEMPT_1_RECORD).read_text(encoding="utf-8"))
+    record["test_box_count"] = 161
+    phase11b.atomic_json(record_path, record)
+    subprocess.run(["git", "init"], cwd=repo, check=True, capture_output=True)
+    subprocess.run(["git", "config", "user.email", "test@example.invalid"], cwd=repo, check=True)
+    subprocess.run(["git", "config", "user.name", "Test"], cwd=repo, check=True)
+    subprocess.run(["git", "add", "."], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-m", "fixture"], cwd=repo, check=True, capture_output=True)
+
+    with pytest.raises(phase11b.Phase11BError, match="does not match"):
+        phase11b.validate_failed_final_test_attempt(
+            repo, config_path, receipt_path,
+            {"artifact_fingerprint": record["test_materialization_fingerprint"]},
+        )
 
 
 def test_test_firewall_rejects_uncommitted_receipt(tmp_path: Path, apparatus) -> None:

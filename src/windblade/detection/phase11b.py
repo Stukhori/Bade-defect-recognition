@@ -55,6 +55,12 @@ EXPECTED_COUNTS = {
 }
 CLASS_ORDER = ["craze", "corrosion", "surface_injure", "thunderstrike", "crack", "hide_craze"]
 SEEDS = (17, 29, 43)
+FINAL_TEST_ATTEMPT_1_RECORD = "provenance/phase11b_final_test_attempt_1.json"
+FINAL_TEST_ATTEMPT_1_ERROR = (
+    "/content/windblade_phase11b_data_test/dataset/test.yaml\n"
+    "'train:' key missing.\n"
+    "'train' and 'val' are required in all data YAMLs."
+)
 
 
 def _json_bytes(value: Any) -> bytes:
@@ -1080,6 +1086,119 @@ def generate_training_bundle(
     return result
 
 
+def _validate_materialization_for_evaluation(
+    root: Path, *, scope: str, splits: list[str], image_count: int, box_count: int,
+) -> dict[str, Any]:
+    manifest = _read_mapping(root / "materialization.json", f"{scope} materialization")
+    if (
+        manifest.get("scope") != scope
+        or manifest.get("included_splits") != splits
+        or manifest.get("image_count") != image_count
+        or manifest.get("box_count") != box_count
+    ):
+        raise Phase11BError(f"{scope} materialization identity mismatch")
+    artifacts = manifest.get("artifacts")
+    if not isinstance(artifacts, list) or not artifacts:
+        raise Phase11BError(f"{scope} materialization lacks artifact identities")
+    normalized = []
+    for item in artifacts:
+        if not isinstance(item, dict) or set(item) != {"path", "sha256"}:
+            raise Phase11BError(f"{scope} materialization artifact identity is malformed")
+        relative = PurePosixPath(str(item["path"]))
+        if relative.is_absolute() or ".." in relative.parts:
+            raise Phase11BError(f"{scope} materialization contains an unsafe path")
+        artifact = root.joinpath(*relative.parts)
+        if not artifact.is_file() or sha256_file(artifact) != item["sha256"]:
+            raise Phase11BError(f"{scope} materialization artifact mismatch: {item['path']}")
+        normalized.append({"path": item["path"], "sha256": item["sha256"]})
+    if manifest.get("artifact_fingerprint") != canonical_hash(sorted(normalized, key=lambda item: item["path"])):
+        raise Phase11BError(f"{scope} materialization fingerprint mismatch")
+    return manifest
+
+
+def validate_failed_final_test_attempt(
+    repo: Path, config_path: Path, receipt_path: Path, test_materialization: Mapping[str, Any],
+) -> dict[str, Any]:
+    record_path = repo / FINAL_TEST_ATTEMPT_1_RECORD
+    _git(repo, "ls-files", "--error-unmatch", FINAL_TEST_ATTEMPT_1_RECORD)
+    if _git(repo, "diff", "--name-only", "HEAD", "--", FINAL_TEST_ATTEMPT_1_RECORD):
+        raise Phase11BError("final-test attempt record must be committed and clean")
+    committed = _git(repo, "show", f"HEAD:{FINAL_TEST_ATTEMPT_1_RECORD}") + "\n"
+    if not record_path.is_file() or committed.encode("utf-8") != record_path.read_bytes():
+        raise Phase11BError("final-test attempt record differs from committed bytes")
+    record = _read_mapping(record_path, "final-test attempt record")
+    expected = {
+        "schema_version": "1.0",
+        "status": "FAILED_BEFORE_INFERENCE",
+        "attempt_number": 1,
+        "execution_commit": "2b1a82f0f73ef86c8b6cd911d41f5eacd48cc8bf",
+        "selection_receipt_sha256": sha256_file(receipt_path),
+        "configuration_sha256": sha256_file(config_path),
+        "test_materialization_fingerprint": test_materialization.get("artifact_fingerprint"),
+        "test_image_count": 109,
+        "test_box_count": 162,
+        "failure_stage": "ultralytics_dataset_yaml_validation",
+        "exception_type": "SyntaxError",
+        "exception_message": FINAL_TEST_ATTEMPT_1_ERROR,
+        "final_metrics_written": False,
+        "predictions_generated": False,
+        "selection_changed": False,
+        "tuning_performed": False,
+    }
+    if record != expected:
+        raise Phase11BError("final-test attempt record does not match the existing failed attempt")
+    return record
+
+
+def create_final_test_compatibility_yaml(data_root: Path, test_root: Path, output: Path) -> dict[str, Any]:
+    if not data_root.is_absolute() or not test_root.is_absolute() or not output.is_absolute():
+        raise Phase11BError("final-test compatibility paths must be absolute")
+    _validate_materialization_for_evaluation(
+        data_root, scope="trainval", splits=["train", "validation"], image_count=611, box_count=903,
+    )
+    _validate_materialization_for_evaluation(
+        test_root, scope="test", splits=["test"], image_count=109, box_count=162,
+    )
+    dataset_roots = {
+        "train": (data_root / "dataset/images/train").resolve(),
+        "val": (data_root / "dataset/images/validation").resolve(),
+        "test": (test_root / "dataset/images/test").resolve(),
+    }
+    label_roots = {
+        "train": (data_root / "dataset/labels/train").resolve(),
+        "val": (data_root / "dataset/labels/validation").resolve(),
+        "test": (test_root / "dataset/labels/test").resolve(),
+    }
+    if not all(path.is_dir() for path in (*dataset_roots.values(), *label_roots.values())):
+        raise Phase11BError("final-test compatibility image/label directories are missing")
+    if len(set(dataset_roots.values())) != 3 or dataset_roots["test"] in {
+        dataset_roots["train"], dataset_roots["val"],
+    }:
+        raise Phase11BError("held-out test images must be distinct from train and validation images")
+    if output.resolve().is_relative_to(data_root.resolve()) or output.resolve().is_relative_to(test_root.resolve()):
+        raise Phase11BError("compatibility YAML must remain outside immutable materializations")
+    value = {
+        "train": str(dataset_roots["train"]),
+        "val": str(dataset_roots["val"]),
+        "test": str(dataset_roots["test"]),
+        "names": {0: "defect"},
+    }
+    content = yaml.safe_dump(value, sort_keys=False, allow_unicode=True)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    if output.exists():
+        if output.read_text(encoding="utf-8") != content:
+            raise Phase11BError("existing final-test compatibility YAML is inconsistent")
+    else:
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8", newline="\n", dir=output.parent, delete=False) as handle:
+            handle.write(content)
+            temporary = Path(handle.name)
+        temporary.replace(output)
+    observed = _read_mapping(output, "final-test compatibility YAML", yaml_format=True)
+    if observed != value:
+        raise Phase11BError("final-test compatibility YAML changed after writing")
+    return value
+
+
 def run_final_test(
     config: Mapping[str, Any], config_path: Path, repo: Path, archive: Path,
     data_root: Path, drive_root: Path,
@@ -1092,7 +1211,17 @@ def run_final_test(
     if output.exists():
         raise Phase11BError("final test output already exists; reruns and post-test tuning are prohibited")
     test_root = data_root.with_name(data_root.name + "_test")
+    test_preexisting = test_root.exists()
+    if test_preexisting:
+        existing_test = _validate_materialization_for_evaluation(
+            test_root, scope="test", splits=["test"], image_count=109, box_count=162,
+        )
+        validate_failed_final_test_attempt(
+            repo, config_path, repo / config["firewall"]["committed_selection_receipt"], existing_test,
+        )
     materialize_dataset(config, repo, archive, test_root, scope="test")
+    compatibility_yaml = test_root.parent / "phase11b_ultralytics_test_compatibility.yaml"
+    create_final_test_compatibility_yaml(data_root, test_root, compatibility_yaml)
     _ultralytics_settings_off()
     from ultralytics import YOLO
     rows = []
@@ -1100,7 +1229,7 @@ def run_final_test(
         checkpoint = layout.root / item["drive_relative_path"]
         model = YOLO(str(checkpoint))
         metrics = model.val(
-            data=str(test_root / "dataset" / "test.yaml"), split="test", imgsz=config["training"]["image_size"],
+            data=str(compatibility_yaml), split="test", imgsz=config["training"]["image_size"],
             batch=config["training"]["batch_size"], conf=config["nms"]["confidence_floor"],
             iou=config["nms"]["iou_threshold"], max_det=config["nms"]["maximum_detections"],
             agnostic_nms=config["nms"]["class_agnostic"], device=0, workers=config["training"]["workers"],
