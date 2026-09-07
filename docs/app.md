@@ -1,8 +1,8 @@
-# Application v3 — reviewed experimental proposals and frozen classification
+# BladeScope Application v3 — automatic proposals and frozen classification
 
 ## Status and boundary
 
-Application v3 is implemented and locally validated, but it has not been externally deployed. It adds an experimental automatic region-proposal option around frozen scientific assets without changing the detector model, checkpoint, operating threshold, NMS, metrics, or the frozen MobileNet crop classifier.
+BladeScope Application v3 is implemented and locally validated, but it has not been externally deployed. The interface presents **Auto detection** as its primary workflow while the scientific record correctly retains its status as an experimental, human-reviewed region-proposal aid. Integration does not change the detector model, checkpoint, operating threshold, NMS, metrics, or the frozen MobileNet crop classifier.
 
 This is a research feature, not automatic inspection. The detector dataset contains no healthy/background-only images, so a proposal result cannot establish that a blade is healthy or defect-free. Every proposal must be reviewed and explicitly selected by a user before classification. Outputs do not assess safety, severity, progression, remaining life, or production readiness.
 
@@ -20,12 +20,12 @@ The local app and Streamlit deployment specifications pin Ultralytics `8.3.150`,
 
 ## Analysis modes
 
-Analyze Image has four modes:
+Analyze Image has four modes, with automatic detection presented first:
 
-1. **Prepared crop** applies the existing RGB/bilinear 224×224 preparation and frozen six-category classifier.
-2. **Manual single region** maps one user rectangle to original-image coordinates and applies the frozen contextual-crop policy.
-3. **Manual multi-region** preserves stable IDs, overlaps, replace, remove, clear, and new-image actions.
-4. **Experimental automatic region proposals** lazily loads and caches the exact frozen one-class detector, generates numbered boxes, and displays each detector confidence separately.
+1. **Auto detection** lazily loads and caches the exact frozen one-class detector, generates numbered boxes, and displays each detector confidence separately.
+2. **Prepared crop** applies the existing RGB/bilinear 224×224 preparation and frozen six-category classifier.
+3. **Manual single region** maps one user rectangle to original-image coordinates and applies the frozen contextual-crop policy.
+4. **Manual multi-region** preserves stable IDs, overlaps, replace, remove, clear, and new-image actions.
 
 The automatic mode has no threshold, NMS, checkpoint, device, or model controls. A user must select proposals and confirm that the boxes were reviewed. Only accepted boxes enter the same frozen contextual-crop pipeline used by manual regions and then the unchanged six-category MobileNet classifier. Detector confidence remains separate from classifier category scores in the interface, JSON, and CSV.
 
@@ -33,7 +33,7 @@ If no proposal crosses the frozen operating threshold, the interface displays ex
 
 > No region proposal exceeded the frozen threshold.
 
-It also states that this does not establish a healthy or defect-free blade and links the user back to the manual-region workflows.
+The interface links the user back to the manual-region workflows. The scientific limitation remains documented here: this outcome does not establish a healthy or defect-free blade.
 
 ## Detector identity and execution contract
 

@@ -1,4 +1,4 @@
-# Streamlit Community Cloud deployment
+# BladeScope Streamlit Community Cloud deployment
 
 Application v3 is prepared for deployment from a clean GitHub clone but has not been externally deployed.
 
