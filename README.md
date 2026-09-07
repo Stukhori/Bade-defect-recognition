@@ -4,11 +4,6 @@
 
 BladeScope is a reproducible computer-vision research project studying six-category wind-turbine blade defect recognition under limited training data and controlled image degradation. It combines classical and convolutional classification baselines with data-efficiency and robustness experiments, Grad-CAM and blinded human review, statistical synthesis, experimental defect localization, and a Streamlit demonstration application.
 
-> **License:** This entire repository is licensed under the GNU Affero General
-> Public License v3.0 only (`AGPL-3.0-only`). See [LICENSE](LICENSE). Dataset-
-> derived assets retain the attribution documented in
-> [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-
 **[Live Demo](https://bladescope.streamlit.app/) · [Application](#run-the-bladescope-application) · [Portfolio summary](docs/portfolio_summary.md) · [Final report](docs/phase10_final_synthesis.md) · [Results](#key-results) · [Reproducibility](#reproducibility-and-project-record) · [Limitations](#limitations)**
 
 ![Frozen clean-test macro-F1 comparison with bootstrap intervals](figures/phase10/clean_macro_f1_bootstrap_ci.png)
