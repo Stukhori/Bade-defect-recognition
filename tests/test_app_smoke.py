@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 APP_PATH = ROOT / "app/app.py"
 NAVIGATION = [
     "Home", "Analyze Image", "Compare Regions", "Research Results",
-    "Detection Readiness", "About and Limitations",
+    "Detection Readiness", "About",
 ]
 
 
@@ -23,9 +23,9 @@ def open_analysis(app):
     next(item for item in app.radio if item.label == "Navigation").set_value("Analyze Image").run(timeout=30)
     mode = next(item for item in app.radio if item.label == "Analysis mode")
     assert mode.options == [
-        "Prepared crop", "Manual single region", "Manual multi-region",
-        "Experimental automatic region proposals",
+        "Auto detection", "Prepared crop", "Manual single region", "Manual multi-region",
     ]
+    mode.set_value("Prepared crop").run(timeout=30)
     return app
 
 
@@ -43,14 +43,19 @@ def test_application_v2_starts_on_home_without_an_upload():
     assert len(app.file_uploader) == 0
 
 
-def test_application_v2_describes_region_workflow_and_safety_scope():
+def test_application_v3_leads_with_auto_detection():
     testing = pytest.importorskip("streamlit.testing.v1")
     app = testing.AppTest.from_file(str(APP_PATH)).run(timeout=30)
     rendered = "\n".join(element.value for element in app.markdown)
     source = APP_PATH.read_text(encoding="utf-8")
     assert "Region-based analysis" in rendered
+    assert "BladeScope" in rendered
+    assert "Detect and classify blade defects" in rendered
+    assert "Auto detection" in rendered
+    assert 'class="turbine-scene"' in source
+    assert 'class="brand-lockup"' in source
     assert "unavailable" not in rendered.lower()
-    assert "operational safety" in source
+    assert "experimental" not in source.lower()
     assert "CUDA" not in rendered
     assert "ultralytics" not in source.lower()
 
@@ -121,7 +126,7 @@ def test_manual_multi_region_adds_stable_session_record():
     assert saved[0].mode == "manual_multi_region"
 
 
-@pytest.mark.parametrize("page", ["Research Results", "Detection Readiness", "About and Limitations"])
+@pytest.mark.parametrize("page", ["Research Results", "Detection Readiness", "About"])
 def test_read_only_pages_render_without_errors(page):
     testing = pytest.importorskip("streamlit.testing.v1")
     app = testing.AppTest.from_file(str(APP_PATH)).run(timeout=30)

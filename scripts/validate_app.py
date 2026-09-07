@@ -60,18 +60,22 @@ def validate(root: Path) -> dict[str, Any]:
     app_source = (root / "app/app.py").read_text(encoding="utf-8")
     streamlit_config = (root / ".streamlit/config.toml").read_text(encoding="utf-8")
     required_ui_copy = (
+        "BladeScope",
+        "Detect and classify blade defects",
+        "Auto detection",
+        "Additional analysis features",
         "Prepared crop classification",
         "Manual single-region classification",
         "Manual multi-region analysis",
-        "Experimental automatic region proposals",
         "Compare regions",
         "Research results",
-        "Detection readiness",
+        "Auto-detection workflow",
         "Region-based analysis",
-        "operational safety",
     )
     if not all(text in app_source for text in required_ui_copy):
-        raise RuntimeError("The Application v3 workflow or limitation copy is incomplete.")
+        raise RuntimeError("The Application v3 workflow copy is incomplete.")
+    if 'class="turbine-scene"' not in app_source or 'class="brand-lockup"' not in app_source:
+        raise RuntimeError("The BladeScope wind-turbine design treatment is incomplete.")
     if "gatherUsageStats = false" not in streamlit_config:
         raise RuntimeError("Streamlit telemetry is not disabled.")
     manifest = read_rows(root / "data/processed/wtbd_crops_v1/manifest.csv")
@@ -258,10 +262,10 @@ def validate(root: Path) -> dict[str, Any]:
             "automatic_integration_gate": readiness.get("application_integration", {}).get("decision"),
             "navigation_sections": [
                 "Home", "Analyze Image", "Compare Regions", "Research Results",
-                "Detection Readiness", "About and Limitations",
+                "Detection Readiness", "About",
             ],
             "mode_count": 4,
-            "modes": ["prepared_crop", "manual_single_region", "manual_multi_region", "experimental_automatic_region_proposal"],
+            "modes": ["auto_detection", "prepared_crop", "manual_single_region", "manual_multi_region"],
             "detector_checkpoint": "experiments/results/phase11b_yolo11n_v1/final/seed_17/epoch82.pt",
             "detector_threshold": 0.39,
             "nms_configuration": {"iou": 0.7, "agnostic": True, "maximum_detections": 300},
@@ -289,7 +293,7 @@ def validate(root: Path) -> dict[str, Any]:
             "phase11a": detection_status.phase11a_status,
             "phase11b": "complete, validated, and frozen",
             "historical_phase11a_integration_decision": detection_status.integration_decision,
-            "experimental_proposal_detector_available": True,
+            "auto_detection_available": True,
             "scientific_output_fingerprint": detection_status.scientific_output_fingerprint,
         },
         "scientific_invariance": {

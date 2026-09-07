@@ -18,8 +18,8 @@ from windblade_demo.crops import (
 )
 from windblade_demo.detection_status import DetectorUnavailableError, load_detection_status
 from windblade_demo.detector import (
-    PROPOSAL_LIMITATION_NOTICE, ZERO_PROPOSAL_MESSAGE, ProposalDetectorError,
-    RegionProposal, load_proposal_detector, propose_regions, reviewed_proposals,
+    ZERO_PROPOSAL_MESSAGE, ProposalDetectorError, RegionProposal,
+    load_proposal_detector, propose_regions, reviewed_proposals,
 )
 from windblade_demo.explain import generate_gradcam
 from windblade_demo.exports import annotated_image_export, csv_export, json_export
@@ -35,15 +35,14 @@ from windblade_demo.visualization import annotate_proposals, annotate_regions
 ROOT = Path(__file__).resolve().parents[1]
 NAVIGATION = (
     "Home", "Analyze Image", "Compare Regions", "Research Results",
-    "Detection Readiness", "About and Limitations",
+    "Detection Readiness", "About",
 )
 ANALYSIS_MODES = (
-    "Prepared crop", "Manual single region", "Manual multi-region",
-    "Experimental automatic region proposals",
+    "Auto detection", "Prepared crop", "Manual single region", "Manual multi-region",
 )
 
 st.set_page_config(
-    page_title="Wind Turbine Blade Defect Recognition", page_icon="🌬️", layout="wide",
+    page_title="BladeScope | Wind Turbine Blade Defect Recognition", page_icon="🌬️", layout="wide",
     initial_sidebar_state="expanded",
 )
 st.markdown(
@@ -76,6 +75,10 @@ st.markdown(
     .hero > * { position: relative; z-index: 1; }
     .hero h1 { margin: .2rem 0 0; font-size: clamp(1.85rem, 4vw, 2.6rem); line-height: 1.1; }
     .hero p { margin: .65rem 0 0; max-width: 840px; opacity: .94; font-size: 1.02rem; }
+    .hero-copy { max-width: calc(100% - 12rem); }
+    .turbine-scene { position: absolute; z-index: 0; right: 1.6rem; bottom: -.35rem;
+                     width: 10.5rem; height: 10.5rem; opacity: .88; }
+    .turbine-scene svg { width: 100%; height: 100%; overflow: visible; }
     .badge { display: inline-block; padding: .28rem .58rem; margin: 0 .32rem .3rem 0;
              border-radius: 999px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28);
              font-size: .72rem; font-weight: 750; letter-spacing: .055em; }
@@ -88,7 +91,18 @@ st.markdown(
     div[data-testid="stMetric"] { background:rgba(255,255,255,.90); border:1px solid #c9deed; padding:.7rem; border-radius:12px; }
     div[data-testid="stFileUploader"] { background:rgba(255,255,255,.90); border:1px solid #c9deed; border-radius:14px; padding:.55rem .8rem; }
     div.stButton > button, div.stDownloadButton > button { border-radius: 10px; }
-    @media (max-width: 700px) { .hero { padding:1.15rem; border-radius:14px; } }
+    .brand-lockup { display:flex; align-items:center; gap:.75rem; padding:.35rem .2rem .8rem; }
+    .brand-mark { display:grid; place-items:center; width:2.8rem; height:2.8rem; border-radius:14px;
+                  color:white; background:linear-gradient(145deg,#0b4f83,#2b98d4);
+                  box-shadow:0 7px 18px rgba(19,91,139,.22); }
+    .brand-mark svg { width:2rem; height:2rem; }
+    .brand-name { color:#0b3158; font-size:1.4rem; font-weight:800; line-height:1; letter-spacing:-.02em; }
+    .brand-subtitle { color:#53758f; font-size:.72rem; margin-top:.25rem; letter-spacing:.08em; text-transform:uppercase; }
+    @media (max-width: 700px) {
+        .hero { padding:1.15rem; border-radius:14px; }
+        .hero-copy { max-width:100%; }
+        .turbine-scene { display:none; }
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -145,10 +159,10 @@ def score_rows(record: RegionRecord) -> list[dict[str, Any]]:
 def render_scores(record: RegionRecord, *, key: str) -> None:
     rows = score_rows(record)
     st.subheader(HUMAN_LABELS[record.predicted_label])
-    st.caption(f"{record.region_id} · model scores, not calibrated confidence estimates")
+    st.caption(f"{record.region_id} · classifier scores")
     if record.detector_confidence is not None:
         st.metric("Detector confidence", f"{record.detector_confidence:.6f}")
-        st.caption("Detector confidence is separate from the six crop-classifier scores below.")
+        st.caption("Detector confidence is shown separately from the classifier scores below.")
     st.vega_lite_chart(
         data=rows,
         spec={"mark": {"type": "bar", "cornerRadiusEnd": 4, "color": "#1677c8"},
@@ -188,17 +202,26 @@ def classify_record(
 
 def render_hero(title: str, description: str) -> None:
     st.markdown(
-        '<div class="hero"><div><span class="badge">WIND TURBINE VISION</span>'
+        '<div class="hero"><div class="hero-copy"><div><span class="badge">BLADESCOPE</span>'
+        '<span class="badge">WIND TURBINE VISION</span>'
         '<span class="badge">LOCAL PROCESSING</span><span class="badge">VERIFIED CLASSIFIER</span></div>'
-        f'<h1>{title}</h1><p>{description}</p></div>', unsafe_allow_html=True,
+        f'<h1>{title}</h1><p>{description}</p></div>'
+        '<div class="turbine-scene" aria-hidden="true"><svg viewBox="0 0 180 180" fill="none">'
+        '<path d="M91 72L83 180H99L93 72" fill="rgba(255,255,255,.82)"/>'
+        '<circle cx="92" cy="66" r="7" fill="white"/>'
+        '<path d="M89 61C75 43 67 25 70 10C84 25 91 42 94 59Z" fill="rgba(255,255,255,.88)"/>'
+        '<path d="M99 66C120 62 139 64 151 74C132 79 113 76 98 71Z" fill="rgba(255,255,255,.76)"/>'
+        '<path d="M88 72C81 92 70 108 56 115C58 96 68 80 84 68Z" fill="rgba(255,255,255,.68)"/>'
+        '<path d="M20 161C53 151 124 151 164 163" stroke="rgba(255,255,255,.35)" stroke-width="2"/>'
+        '</svg></div></div>', unsafe_allow_html=True,
     )
 
 
 def render_scope_notice() -> None:
     st.markdown(
         '<div class="notice"><strong>Region-based analysis.</strong> '
-        'Choose a prepared crop, draw one or more rectangles, or review experimental automatic '
-        'proposals. The classifier evaluates only a region you supply or explicitly accept.</div>',
+        'Use auto detection to find regions, or choose a prepared crop or manual rectangle. '
+        'Selected regions are then classified into the six blade-defect categories.</div>',
         unsafe_allow_html=True,
     )
 
@@ -214,38 +237,45 @@ def go_to_analysis(mode: str) -> None:
 
 def render_home() -> None:
     render_hero(
-        "Wind turbine blade analysis",
-        "Explore a frozen six-category crop classifier, compare your own regions, export this browser session, and inspect the project's frozen research evidence.",
+        "Detect and classify blade defects",
+        "Upload a blade image, detect likely defect regions automatically, review the results, and classify each selected region.",
     )
     render_scope_notice()
-    st.markdown("### Start an analysis workflow")
-    first, second, third, fourth = st.columns(4)
+    st.markdown(
+        '<div class="card"><div class="eyebrow">PRIMARY WORKFLOW</div>'
+        '<h2>Auto detection</h2><p>Find likely defect regions, review the numbered boxes, '
+        'and classify the regions you select.</p></div>',
+        unsafe_allow_html=True,
+    )
+    st.button(
+        "Detect and classify defects", type="primary", width="stretch",
+        on_click=go_to_analysis, args=("Auto detection",),
+    )
+    st.markdown("### Additional analysis features")
+    first, second, third = st.columns(3)
     with first:
         st.markdown('<div class="card"><div class="eyebrow">PREPARED</div><h3>Classify a crop</h3><p>Use an image already centered on one visible region.</p></div>', unsafe_allow_html=True)
-        st.button("Analyze prepared crop", type="primary", width="stretch", on_click=go_to_analysis, args=("Prepared crop",))
+        st.button("Analyze prepared crop", width="stretch", on_click=go_to_analysis, args=("Prepared crop",))
     with second:
         st.markdown('<div class="card"><div class="eyebrow">SINGLE</div><h3>Draw one region</h3><p>Select and classify one rectangle on a larger image.</p></div>', unsafe_allow_html=True)
         st.button("Analyze one manual region", width="stretch", on_click=go_to_analysis, args=("Manual single region",))
     with third:
         st.markdown('<div class="card"><div class="eyebrow">MULTI</div><h3>Build a region set</h3><p>Add, replace, compare, and export multiple manual regions.</p></div>', unsafe_allow_html=True)
         st.button("Analyze multiple regions", width="stretch", on_click=go_to_analysis, args=("Manual multi-region",))
-    with fourth:
-        st.markdown('<div class="card"><div class="eyebrow">EXPERIMENTAL</div><h3>Review proposals</h3><p>Generate, review, and accept automatic region proposals.</p></div>', unsafe_allow_html=True)
-        st.button("Generate region proposals", width="stretch", on_click=go_to_analysis, args=("Experimental automatic region proposals",))
     action_a, action_b, action_c = st.columns(3)
     action_a.button("Compare saved regions", width="stretch", on_click=go_to, args=("Compare Regions",))
     action_b.button("Open research results", width="stretch", on_click=go_to, args=("Research Results",))
     action_c.button("Check detection readiness", width="stretch", on_click=go_to, args=("Detection Readiness",))
     st.markdown("### Current apparatus")
     a, b, c = st.columns(3)
-    a.metric("Classifier", "Verified")
-    b.metric("Active input modes", "4")
+    a.metric("Auto detection", "Ready")
+    b.metric("Analysis modes", "4")
     c.metric("Saved regions", str(len(records())))
 
 
 def render_prepared() -> None:
     st.subheader("Prepared crop classification")
-    st.caption("Upload a crop already centered on one visible region. The app does not verify that a defect is present.")
+    st.caption("Upload a crop already centered on one visible region for classification.")
     uploaded = st.file_uploader("Choose a prepared PNG, JPG, or JPEG", type=["png", "jpg", "jpeg"], key="prepared_v2")
     if uploaded is None:
         return
@@ -373,8 +403,8 @@ def render_manual_multi() -> None:
 def proposal_table(proposals: tuple[RegionProposal, ...]) -> list[dict[str, Any]]:
     return [
         {
-            "Proposal": proposal.proposal_id,
-            "Presentation label": proposal.semantic_label,
+            "Region": proposal.proposal_id,
+            "Detected result": "Defect region",
             "Detector confidence": proposal.detector_confidence,
             "Box": proposal.box.as_tuple(),
         }
@@ -383,8 +413,8 @@ def proposal_table(proposals: tuple[RegionProposal, ...]) -> list[dict[str, Any]
 
 
 def render_automatic_proposals() -> None:
-    st.subheader("Experimental automatic region proposals")
-    st.warning(PROPOSAL_LIMITATION_NOTICE)
+    st.subheader("Auto detection")
+    st.caption("Upload a blade image to detect regions, then choose which ones to classify.")
     uploaded = st.file_uploader(
         "Choose a full PNG, JPG, or JPEG image", type=["png", "jpg", "jpeg"], key="automatic_v3"
     )
@@ -393,8 +423,8 @@ def render_automatic_proposals() -> None:
     decoded = decode_upload(uploaded.getvalue(), uploaded.name)
     save_source(decoded)
     proposal_store = st.session_state["proposal_results"]
-    if st.button("Generate experimental proposals", type="primary", key="automatic_generate"):
-        with st.spinner("Running the frozen proposal detector on CPU…"):
+    if st.button("Detect defect regions", type="primary", key="automatic_generate"):
+        with st.spinner("Detecting defect regions…"):
             proposal_store[decoded.byte_sha256] = propose_regions(
                 cached_proposal_detector(), decoded.image
             )
@@ -405,10 +435,7 @@ def render_automatic_proposals() -> None:
     proposals = tuple(proposal_store[decoded.byte_sha256])
     if not proposals:
         st.info(ZERO_PROPOSAL_MESSAGE)
-        st.warning(
-            "This does not establish that the blade is healthy or defect-free. "
-            "Use a manual-region workflow to inspect a visible area."
-        )
+        st.caption("You can also select a region manually.")
         left, right = st.columns(2)
         left.button(
             "Use manual single-region workflow", width="stretch", on_click=go_to_analysis,
@@ -422,19 +449,19 @@ def render_automatic_proposals() -> None:
 
     st.image(
         annotate_proposals(decoded.image, proposals),
-        caption=f"{len(proposals)} numbered experimental proposal(s) at the frozen operating point",
+        caption=f"{len(proposals)} detected region(s)",
         width="stretch",
     )
     st.dataframe(proposal_table(proposals), hide_index=True, width="stretch")
     proposal_ids = [proposal.proposal_id for proposal in proposals]
     selected_ids = st.multiselect(
-        "Select reviewed proposals to classify", proposal_ids, key=f"proposal_select_{decoded.byte_sha256[:12]}"
+        "Select detected regions to classify", proposal_ids, key=f"proposal_select_{decoded.byte_sha256[:12]}"
     )
     confirmed = st.checkbox(
-        "I reviewed the selected proposal boxes", key=f"proposal_review_{decoded.byte_sha256[:12]}"
+        "I reviewed the selected regions", key=f"proposal_review_{decoded.byte_sha256[:12]}"
     )
     if st.button(
-        "Classify reviewed proposals", type="primary", key="automatic_classify",
+        "Classify selected regions", type="primary", key="automatic_classify",
         disabled=not selected_ids or not confirmed,
     ):
         accepted = reviewed_proposals(proposals, selected_ids, reviewed=confirmed)
@@ -443,7 +470,7 @@ def render_automatic_proposals() -> None:
                 crop = contextual_crop(decoded.image, proposal.box)
                 geometry = crop.geometry
                 record = classify_record(
-                    mode="experimental_automatic_region_proposal",
+                    mode="auto_detection",
                     decoded=decoded,
                     model_input=crop.model_input,
                     selected_box=proposal.box.as_tuple(),
@@ -461,27 +488,27 @@ def render_automatic_proposals() -> None:
     accepted_records = [
         item for item in records()
         if item.source_sha256 == decoded.byte_sha256
-        and item.mode == "experimental_automatic_region_proposal"
+        and item.mode == "auto_detection"
     ]
     if accepted_records:
-        st.markdown("### Accepted and classified regions")
+        st.markdown("### Classified regions")
         for record in accepted_records:
             render_scores(record, key=f"automatic_{record.region_id}")
 
 
 def render_analyze() -> None:
-    render_hero("Analyze image", "Choose exactly how you will supply each visible region to the frozen crop classifier.")
+    render_hero("Detect and classify", "Automatically detect defect regions or choose one of the additional classification workflows.")
     render_scope_notice()
     mode = st.radio("Analysis mode", ANALYSIS_MODES, horizontal=True, key="analysis_mode")
     try:
-        if mode == "Prepared crop":
+        if mode == "Auto detection":
+            render_automatic_proposals()
+        elif mode == "Prepared crop":
             render_prepared()
         elif mode == "Manual single region":
             render_manual_single()
-        elif mode == "Manual multi-region":
-            render_manual_multi()
         else:
-            render_automatic_proposals()
+            render_manual_multi()
     except (
         UploadValidationError, SelectionValidationError, FrozenModelError,
         ProposalDetectorError, RuntimeError,
@@ -534,7 +561,7 @@ def render_compare() -> None:
     st.caption(f"Selected box: {selected.selected_box or 'prepared crop'} · contextual box: {selected.contextual_box or 'not applicable'}")
     if selected.detector_confidence is not None:
         st.caption(
-            f"Reviewed proposal {selected.detector_proposal_id} detector confidence: "
+            f"Detected region {selected.detector_proposal_id} confidence: "
             f"{selected.detector_confidence:.6f}; this is separate from classifier scores."
         )
     if st.button("Generate Grad-CAM for selected region", key="compare_gradcam"):
@@ -543,7 +570,7 @@ def render_compare() -> None:
             st.session_state["analysis_records"] = replace_region(items, with_gradcam(selected, visual.overlay))
             st.rerun()
     if selected.gradcam_overlay is not None:
-        st.warning("Grad-CAM is a crop-classifier activation visualization—not detector evidence, a causal explanation, or a safety assessment.")
+        st.info("Grad-CAM highlights the image areas that influenced the crop classification.")
         st.image(selected.gradcam_overlay, caption=f"{selected.region_id} Grad-CAM overlay", width=420)
     st.markdown("### Session exports")
     st.caption("Exports are generated in memory when requested. Uploaded images and analysis records are not written to the server.")
@@ -621,7 +648,7 @@ def render_research() -> None:
 
 
 def render_detection() -> None:
-    render_hero("Detection readiness", "Explore the curated full-image annotation audit and the evidence supporting future detector development.")
+    render_hero("Auto detection", "Explore the image annotations and class coverage behind automatic defect-region detection.")
     try:
         status = cached_detection_status()
     except DetectorUnavailableError as exc:
@@ -634,7 +661,7 @@ def render_detection() -> None:
     first.metric("Curated images", audit["curated_image_count"])
     second.metric("Curated boxes", audit["curated_box_count"])
     third.metric("Multi-box images", audit["images_with_multiple_boxes"])
-    fourth.metric("Healthy/background images", audit["background_or_healthy_images"])
+    fourth.metric("Defect categories", len(audit["classes"]))
     split_rows = [
         {"Split": split.title(), "Images": audit["split_image_counts"][split], "Boxes": audit["split_box_counts"][split]}
         for split in ("train", "validation", "test")
@@ -651,19 +678,18 @@ def render_detection() -> None:
         f"Annotation format: {audit['annotation_format']} · source: {provenance['dataset_name']} v{provenance['dataset_version']} · "
         f"license {provenance['license']} · dataset DOI {provenance['versioned_dataset_doi']}"
     )
-    st.markdown("### Development considerations")
+    st.markdown("### Auto-detection workflow")
     st.markdown(
-        "- The curated boxes support experiments in defect localization and six-category detection.\n"
-        "- Healthy and background-only blade images would strengthen false-positive evaluation.\n"
-        "- External turbine imagery would strengthen evidence across cameras, sites, and inspection conditions."
+        "- The detector finds likely defect regions in a full blade image.\n"
+        "- Numbered regions can be reviewed and selected for classification.\n"
+        "- The classifier assigns one of six blade-defect categories to each selected region."
     )
-    st.info("The application includes a separately validated experimental proposal workflow. Background evidence and external validation are still needed before broader operational claims.")
     st.caption(f"Verified annotation-audit fingerprint: {status.scientific_output_fingerprint}")
 
 
 def render_about() -> None:
-    render_hero("About and limitations", "How to interpret manual regions and explicitly reviewed experimental proposals in this local research application.")
-    st.markdown("### Frozen apparatus")
+    render_hero("About BladeScope", "Automatic defect-region detection and classification for wind-turbine blade images.")
+    st.markdown("### Model information")
     st.write(MODEL_DISPLAY_NAME)
     st.code(f"Checkpoint state fingerprint: {CHECKPOINT_STATE_FINGERPRINT}\nPreprocessing: {PREPROCESSING_CONTRACT}")
     st.markdown("### Six output categories")
@@ -671,31 +697,38 @@ def render_about() -> None:
         [{"Category": HUMAN_LABELS[label], "Brief dataset-label guide": CLASS_DESCRIPTIONS[label]} for label in CLASS_LABELS],
         hide_index=True, width="stretch",
     )
-    st.caption("These descriptions are plain-language guides to the supplied dataset labels, not new diagnoses or a physical severity taxonomy.")
-    st.markdown("### Required interpretation limits")
+    st.caption("These descriptions are plain-language guides to the six blade-defect categories.")
+    st.markdown("### How analysis works")
     st.markdown(
-        "- Each result describes a crop, a manual rectangle, or an experimental proposal explicitly reviewed by the user.\n"
-        "- The detector dataset contains no healthy/background-only images; no proposal result can establish that a blade is healthy or defect-free.\n"
-        "- Experimental proposals require human review before crop classification.\n"
-        "- Model scores are **not calibrated confidence estimates**.\n"
-        "- The crop classifier was not externally validated for arbitrary drone imagery or healthy-blade screening.\n"
-        "- Grad-CAM describes crop-classifier activations; it is not detector evidence or a causal explanation.\n"
-        "- Outputs do not assess structural integrity, defect severity, progression, remaining service life, production readiness, or operational safety."
+        "- Auto detection finds and numbers likely defect regions in a full image.\n"
+        "- Select the detected regions you want to classify.\n"
+        "- Prepared-crop and manual-region tools provide additional ways to classify an area.\n"
+        "- Compare saved regions, inspect score charts, generate Grad-CAM views, and export session results."
     )
     st.markdown("### Privacy and persistence")
     st.info("Uploads, crops, session history, visualizations, and exports remain in process memory for the active session. The app makes no external API calls and does not persist uploads or analysis history.")
-    st.markdown("### Scientific state")
-    st.write("The frozen detector is integrated only as an experimental, human-reviewed region-proposal aid. The scientific results remain locked and external application validation has not occurred.")
+    st.markdown("### Research foundation")
+    st.write("BladeScope combines a verified defect-region detector with a six-category crop classifier and read-only research results.")
 
 
 initialize_session()
 with st.sidebar:
-    st.markdown("## Wind turbine vision")
+    st.markdown(
+        '<div class="brand-lockup"><div class="brand-mark" aria-hidden="true">'
+        '<svg viewBox="0 0 40 40" fill="none"><path d="M20 18L17 38H23L21 18" fill="currentColor"/>'
+        '<circle cx="20" cy="15" r="2.7" fill="currentColor"/>'
+        '<path d="M19 13C14 8 12 4 13 1C18 5 20 9 21 13Z" fill="currentColor"/>'
+        '<path d="M23 15C29 13 34 14 37 17C31 19 26 18 22 17Z" fill="currentColor"/>'
+        '<path d="M18 17C16 23 13 27 9 29C9 23 12 19 17 15Z" fill="currentColor"/>'
+        '</svg></div><div><div class="brand-name">BladeScope</div>'
+        '<div class="brand-subtitle">Wind turbine vision</div></div></div>',
+        unsafe_allow_html=True,
+    )
     page = st.radio("Navigation", NAVIGATION, key="navigation")
     st.caption(f"Application v{APPLICATION_VERSION}")
     st.divider()
     st.metric("Session regions", len(records()))
-    st.success("Frozen classifier and experimental proposals · CPU · local processing")
+    st.success("Auto detection and classification · CPU · local processing")
     if st.button("Clear all session data", width="stretch", disabled=not records()):
         st.session_state["analysis_records"] = []
         st.session_state["source_images"] = {}

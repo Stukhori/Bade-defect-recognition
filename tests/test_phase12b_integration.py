@@ -189,7 +189,8 @@ def test_zero_wording_and_ui_never_expose_internal_label() -> None:
     source = (ROOT / "app/app.py").read_text(encoding="utf-8")
     assert "st.info(ZERO_PROPOSAL_MESSAGE)" in source
     assert '"item"' not in source and "'item'" not in source
-    assert "healthy or defect-free" in source
+    assert "Auto detection" in source
+    assert "experimental" not in source.lower()
 
 
 def test_review_is_required_before_classification() -> None:
@@ -209,7 +210,7 @@ def test_detector_confidence_is_distinct_from_classifier_scores_and_exports() ->
     scores = (0.1, 0.2, 0.3, 0.1, 0.2, 0.1)
     result = InferenceResult(2, CLASS_LABELS[2], scores, scores, 0.0, 0.0)
     record = make_region_record(
-        records=(), mode="experimental_automatic_region_proposal", source_name="synthetic.png",
+        records=(), mode="auto_detection", source_name="synthetic.png",
         source_sha256="a" * 64, source_size=(30, 20), selected_box=(1, 2, 10, 12),
         contextual_box=(0, 0, 20, 20), model_input=Image.new("RGB", (224, 224)),
         result=result, detector_proposal_id="P1", detector_confidence=0.87,
