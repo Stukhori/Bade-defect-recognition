@@ -6,7 +6,7 @@ Phase 12A is preserved as the historical **apparatus and runtime-compatibility g
 `configs/application_phase12.yaml`, and the identity-only probe record is
 `provenance/phase12_runtime_compatibility.json`.
 
-Phase 12B subsequently copied the exact authorized checkpoint byte-for-byte and implemented Application v3 as an experimental, human-reviewed region-proposal feature. Its separate configuration is `configs/application_phase12b.yaml`, its implementation record is `provenance/phase12b_implementation.json`, and its validator is `scripts/validate_phase12b.py`. Phase 12A evidence was not rewritten. External deployment has not occurred.
+Phase 12B subsequently copied the exact authorized checkpoint byte-for-byte and implemented Application v3 as an experimental, human-reviewed region-proposal feature. Its separate configuration is `configs/application_phase12b.yaml`, its implementation record is `provenance/phase12b_implementation.json`, and its validator is `scripts/validate_phase12b.py`. Phase 12A evidence was not rewritten. A public Streamlit demonstration was deployed later at [https://bladescope.streamlit.app/](https://bladescope.streamlit.app/); deployment did not alter this frozen integration record or its scientific boundaries.
 
 The planned feature name is **Experimental automatic region proposals**. It
 must not be described as reliable automatic inspection. Proposed boxes must
@@ -97,6 +97,6 @@ so healthy-blade false-positive behavior is unknown. The system does not
 assess safety, severity, progression, or remaining life and is not established
 as production-ready.
 
-Phase 12B authorizes only the local implementation and validation recorded here. It does not establish false-positive behavior on healthy blades, external-domain performance, production readiness, or safety fitness. External deployment remains a separate user-controlled action and was not performed.
+Phase 12B authorized only the local implementation and validation recorded here. It does not establish false-positive behavior on healthy blades, external-domain performance, production readiness, or safety fitness. The later public Streamlit demonstration does not expand that evidence or validation scope.
 
 The implementation uses Ultralytics `8.3.150`, PyTorch `2.13.0+cpu`, and torchvision `0.28.0+cpu`. It verifies the checkpoint task, exact one-class metadata, seed, image-size metadata, byte size, and SHA-256 before prediction. The runtime is CPU-only, lazily cached, and configured without downloads, telemetry, external trackers, filesystem prediction output, ensembling, or user-adjustable detector controls. One deterministic synthetic in-memory smoke test used no project image and retained no coordinates or timings.

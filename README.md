@@ -9,7 +9,7 @@ BladeScope is a reproducible computer-vision research project studying six-categ
 > derived assets retain the attribution documented in
 > [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-**[Application](#run-the-bladescope-application) · [Portfolio summary](docs/portfolio_summary.md) · [Final report](docs/phase10_final_synthesis.md) · [Results](#key-results) · [Reproducibility](#reproducibility-and-project-record) · [Limitations](#limitations)**
+**[Live Demo](https://bladescope.streamlit.app/) · [Application](#run-the-bladescope-application) · [Portfolio summary](docs/portfolio_summary.md) · [Final report](docs/phase10_final_synthesis.md) · [Results](#key-results) · [Reproducibility](#reproducibility-and-project-record) · [Limitations](#limitations)**
 
 ![Frozen clean-test macro-F1 comparison with bootstrap intervals](figures/phase10/clean_macro_f1_bootstrap_ci.png)
 
@@ -71,7 +71,7 @@ Python 3.11 · PyTorch and torchvision · scikit-learn · NumPy · scikit-image 
 
 ## Reproducibility and Project Record
 
-The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md). The sections below preserve the detailed installation, acquisition, execution, validation, result-path, and phase-boundary record. Phases 0–10 are complete, validated, and frozen; the Phase 11A audit and Phase 11B detector study are also complete and frozen. Application v3 integrates one exact frozen detector checkpoint as an experimental, human-reviewed region-proposal aid. It is locally validated; no external deployment URL is asserted here.
+The scientific contract is frozen in [`docs/phase0_research_contract.md`](docs/phase0_research_contract.md). The sections below preserve the detailed installation, acquisition, execution, validation, result-path, and phase-boundary record. Phases 0–10 are complete, validated, and frozen; the Phase 11A audit and Phase 11B detector study are also complete and frozen. Application v3 integrates one exact frozen detector checkpoint as an experimental, human-reviewed region-proposal aid. It is locally validated, and a public Streamlit demonstration is available at [https://bladescope.streamlit.app/](https://bladescope.streamlit.app/). Public availability does not establish production, safety, or external-domain readiness.
 
 ## Reference environment and installation
 
@@ -94,7 +94,7 @@ uv run streamlit run app/app.py
 
 Application v3 presents **Auto detection** as its primary workflow while retaining its scientific status as an experimental, human-reviewed proposal aid. Proposals are numbered, detector confidence is shown separately, and a user must review and select boxes before the frozen six-category crop classifier runs. The dataset contains no healthy/background-only images, so this does not establish a healthy blade or assess safety, severity, progression, remaining life, or production readiness. Both exact checkpoints are included for clean-clone startup; no training, tuning, calibration, or test-set evaluation occurs. See [`docs/app.md`](docs/app.md) for the exact identities, controls, scope, and validation record.
 
-For Streamlit Community Cloud, deploy branch `main` with entrypoint `app/app.py` and select Python 3.11. The app-local dependency manifest and exact frozen inference checkpoint are tracked, and no secrets are required. See [`docs/deployment.md`](docs/deployment.md) for the deployment checklist and validator.
+The public Streamlit Community Cloud demonstration is available at [https://bladescope.streamlit.app/](https://bladescope.streamlit.app/). It deploys branch `main` with entrypoint `app/app.py` on Python 3.11. The app-local dependency manifest and exact frozen inference checkpoint are tracked, and no secrets are required. See [`docs/deployment.md`](docs/deployment.md) for the deployment details and validator. This public research demonstration is not a production or safety-ready inspection system.
 
 ## Run the local human-review interface
 
@@ -243,4 +243,4 @@ The Phase 11B detector study completed its three frozen YOLO11n runs, validation
 
 ## Phase boundaries
 
-Phases 0–10 remain complete, validated, and frozen. Optional Phase 11A is complete and frozen, and Phase 11B is complete, validated, and frozen with no post-test tuning permitted. Phase 12A historical apparatus evidence remains unchanged. Phase 12B implements and locally validates Application v3 with fixed CPU proposal controls and mandatory human review. No scientific result changed and no external deployment occurred.
+Phases 0–10 remain complete, validated, and frozen. Optional Phase 11A is complete and frozen, and Phase 11B is complete, validated, and frozen with no post-test tuning permitted. Phase 12A historical apparatus evidence remains unchanged. Phase 12B implements and locally validates Application v3 with fixed CPU proposal controls and mandatory human review. A public Streamlit demonstration is now available; this does not change any scientific result or establish external-domain, production, or safety readiness.

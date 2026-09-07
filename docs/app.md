@@ -2,7 +2,7 @@
 
 ## Status and boundary
 
-BladeScope Application v3 is implemented and locally validated, but it has not been externally deployed. The interface presents **Auto detection** as its primary workflow while the scientific record correctly retains its status as an experimental, human-reviewed region-proposal aid. Integration does not change the detector model, checkpoint, operating threshold, NMS, metrics, or the frozen MobileNet crop classifier.
+BladeScope Application v3 is implemented, locally validated, and publicly available as a Streamlit demonstration at [https://bladescope.streamlit.app/](https://bladescope.streamlit.app/). The interface presents **Auto detection** as its primary workflow while the scientific record correctly retains its status as an experimental, human-reviewed region-proposal aid. Public availability does not establish production, safety, or external-domain readiness. Integration does not change the detector model, checkpoint, operating threshold, NMS, metrics, or the frozen MobileNet crop classifier.
 
 This is a research feature, not automatic inspection. The detector dataset contains no healthy/background-only images, so a proposal result cannot establish that a blade is healthy or defect-free. Every proposal must be reviewed and explicitly selected by a user before classification. Outputs do not assess safety, severity, progression, remaining life, or production readiness.
 
@@ -66,4 +66,4 @@ uv run python scripts/validate_phase12b.py
 uv run python scripts/validate_deployment.py
 ```
 
-The prior apparatus remains verifiable as historical evidence. The implementation layer separately validates the tracked checkpoint, code, frozen controls, dependencies, provenance, and upstream hashes. One deterministic in-memory synthetic CPU smoke was performed with the committed checkpoint; no project image, prediction coordinates, or timing were retained. External deployment remains a separate user-controlled action and has not occurred.
+The prior apparatus remains verifiable as historical evidence. The implementation layer separately validates the tracked checkpoint, code, frozen controls, dependencies, provenance, and upstream hashes. One deterministic in-memory synthetic CPU smoke was performed with the committed checkpoint; no project image, prediction coordinates, or timing were retained. The later public Streamlit demonstration is available at [https://bladescope.streamlit.app/](https://bladescope.streamlit.app/) and does not broaden the scientific claims or validation scope.

@@ -3,21 +3,23 @@
 ## Current phase
 
 - **Phase:** Phase 12B detector-to-application integration
-- **Status:** APPLICATION V3 IMPLEMENTED AND LOCALLY VALIDATED; NOT EXTERNALLY DEPLOYED
+- **Status:** APPLICATION V3 IMPLEMENTED, LOCALLY VALIDATED, AND AVAILABLE AS A PUBLIC STREAMLIT DEMONSTRATION
 - **Previous phases:** Phases 0–11B — complete, validated, and frozen
-- **Next phase:** Separately authorized external deployment or external-domain validation
+- **Next phase:** Separately authorized external-domain validation
 
 Phases 0–10 and Phase 11A remain complete and frozen. Phase 11B is complete,
 validated, and frozen with status
 `FINAL_TEST_COMPLETE_NO_FURTHER_TUNING`. Phase 12A remains frozen historical
 apparatus evidence. Phase 12B copied the exact validation-selected checkpoint
 byte-for-byte and implemented Application v3 as an experimental, human-reviewed
-region-proposal feature. Local validation is complete; external deployment and
-external-domain validation have not occurred.
+region-proposal feature. Local validation is complete, and a public Streamlit
+demonstration is available at `https://bladescope.streamlit.app/`. External-domain
+validation has not occurred, and public availability does not establish production
+or safety readiness.
 
 ## Phase 12B — Application v3 detector proposal integration
 
-**IMPLEMENTED AND LOCALLY VALIDATED; NOT EXTERNALLY DEPLOYED.** The tracked
+**IMPLEMENTED, LOCALLY VALIDATED, AND PUBLICLY DEMONSTRATED.** The tracked
 detector checkpoint is `experiments/results/phase11b_yolo11n_v1/final/seed_17/epoch82.pt`,
 16,085,716 bytes with SHA-256
 `793547a5ec31954d8e909b2f5c63f378374134353a8d1e0cefdd452a5365eefa`.
@@ -73,7 +75,8 @@ inference. No project image or dataset was used.
   record: `provenance/phase12_runtime_compatibility.json`; design record:
   `docs/phase12_integration.md`; validator: `scripts/validate_phase12.py`.
 - Checkpoint addition and application implementation were later separately
-  authorized and validated by Phase 12B; external deployment remains unperformed.
+  authorized and validated by Phase 12B; a public Streamlit demonstration is now
+  available without changing the frozen scientific scope.
 
 ## Phase 11B — detector training and held-out-test freeze
 
@@ -108,7 +111,7 @@ machine-readable result is `provenance/phase11b_final_test_metrics.json`.
 
 ## Application v3 — experimental reviewed proposals and frozen classification
 
-**IMPLEMENTED AND LOCALLY VALIDATED; NOT EXTERNALLY DEPLOYED.** Application v3 preserves all Application v2 manual behavior and adds the separately gated experimental proposal path.
+**IMPLEMENTED, LOCALLY VALIDATED, AND PUBLICLY DEMONSTRATED.** Application v3 preserves all Application v2 manual behavior and adds the separately gated experimental proposal path. Public URL: `https://bladescope.streamlit.app/`.
 
 - Gate: proposals are experimental, require explicit human review, and cannot establish healthy-blade status or operational fitness.
 - Navigation: Home, Analyze Image, Compare Regions, Research Results, Detection Readiness, and About and Limitations.
@@ -121,8 +124,8 @@ machine-readable result is `provenance/phase11b_final_test_metrics.json`.
 - Privacy: local in-memory uploads, telemetry disabled, no persistent upload writes, no external service/API, no tracked upload, and no global caching of user images.
 - Application dependencies add exactly Ultralytics `8.3.150` while preserving the exact CPU PyTorch `2.13.0+cpu` and torchvision `0.28.0+cpu` pins.
 - Validation includes preserved Application v2 manual-workflow regressions, focused integration tests, both Phase 12 validators, upstream guards, deployment validation, a complete repository suite, and local loopback health.
-- Local loopback health: HTTP 200 / `ok`, then the server was stopped. No external deployment occurred.
-- Streamlit deployment preparation: app-local pinned requirements, root Streamlit configuration, both exact tracked checkpoints, deployment validator, and Community Cloud instructions. Deployment itself remains a user-controlled external action.
+- Local loopback health: HTTP 200 / `ok`, then the local server was stopped. This check preceded the public deployment.
+- Streamlit deployment: app-local pinned requirements, root Streamlit configuration, both exact tracked checkpoints, deployment validator, and Community Cloud instructions support the public demonstration at `https://bladescope.streamlit.app/`.
 - Full record: `docs/app.md`; machine validation: `app/validation/validation.json`.
 
 ## Phase 11A — full-image detection feasibility and annotation audit
@@ -805,4 +808,4 @@ These were recorded at the end of Phase 0. Phase 1 infrastructure questions are 
 
 ## Phase boundary
 
-Completed Phases 0–10 remain frozen unless the user explicitly requests a documented new version. Phase 11A is complete and frozen, and Phase 11B is complete, validated, and frozen with no further tuning permitted. Phase 12A historical apparatus evidence remains frozen. Phase 12B implements and locally validates Application v3 with the exact detector checkpoint, fixed CPU controls, and mandatory review. No external deployment or external-domain validation has occurred. Documentation-only corrections may not change frozen numbers, statistical definitions, outputs, or conclusions.
+Completed Phases 0–10 remain frozen unless the user explicitly requests a documented new version. Phase 11A is complete and frozen, and Phase 11B is complete, validated, and frozen with no further tuning permitted. Phase 12A historical apparatus evidence remains frozen. Phase 12B implements and locally validates Application v3 with the exact detector checkpoint, fixed CPU controls, and mandatory review. A public Streamlit demonstration is available, but no external-domain validation has occurred. Documentation-only corrections may not change frozen numbers, statistical definitions, outputs, or conclusions.

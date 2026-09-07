@@ -1,12 +1,13 @@
 # BladeScope Streamlit Community Cloud deployment
 
-Application v3 is prepared for deployment from a clean GitHub clone but has not been externally deployed.
+Application v3 is publicly deployed as a Streamlit research demonstration at [https://bladescope.streamlit.app/](https://bladescope.streamlit.app/). This public demo is not evidence of production, safety, or external-domain readiness.
 
 ## Deployment coordinates
 
 - Repository: `Stukhori/Bade-defect-recognition`
 - Branch: `main`
 - Main file path: `app/app.py`
+- Public URL: [https://bladescope.streamlit.app/](https://bladescope.streamlit.app/)
 - Python: `3.11`
 - Dependency declaration: `app/requirements.txt`
 - Debian system-package declaration: `packages.txt`
@@ -38,4 +39,4 @@ The validator requires both checkpoints and all deployment inputs, including `pa
 
 The experimental detector runs on CPU with fixed image size 640, threshold `0.39`, NMS IoU `0.7`, class-agnostic NMS, and maximum 300 detections. Users cannot change detector controls and must review proposals before classification. Prepared-crop and manual-region workflows remain available.
 
-Uploads, proposals, crops, session history, visualizations, and exports remain in process memory. The app disables telemetry and external trackers, performs no external API call or runtime artifact download, and writes no prediction output. Deployment would not alter scientific results, but deployment itself remains unperformed.
+Uploads, proposals, crops, session history, visualizations, and exports remain in process memory. The app disables telemetry and external trackers, performs no external API call or runtime artifact download, and writes no prediction output. The public deployment does not alter scientific results and does not establish production readiness, safety fitness, or performance on external operational imagery.
