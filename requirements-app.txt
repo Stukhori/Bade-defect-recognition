@@ -1,8 +1,16 @@
-# App-only dependencies. Install after the frozen scientific environment.
+# Complete pinned application environment for local or clean deployment checks.
 --extra-index-url https://download.pytorch.org/whl/cpu
 streamlit==1.62.0
 streamlit-cropper==0.3.1
-ultralytics==8.3.150
+opencv-python-headless==4.11.0.86
+./app/vendor/ultralytics-8.3.150-py3-none-any.whl
+numpy==2.4.6
+Pillow==12.3.0
+matplotlib==3.11.1
+PyYAML==6.0.3
+joblib==1.5.3
+scikit-image==0.26.0
+scikit-learn==1.9.0
 torch==2.13.0+cpu; sys_platform != "darwin"
 torch==2.13.0; sys_platform == "darwin"
 torchvision==0.28.0+cpu; sys_platform != "darwin"

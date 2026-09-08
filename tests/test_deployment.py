@@ -2,58 +2,43 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from scripts.validate_deployment import (
-    EXPECTED_SYSTEM_PACKAGES,
-    normalized_system_packages,
+    EXPECTED_OPENCV_REQUIREMENT,
+    VENDORED_ULTRALYTICS,
+    VENDORED_ULTRALYTICS_SHA256,
+    sha256,
     validate,
-    validate_system_packages,
+    validate_headless_wheel,
 )
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_root_packages_file_is_exact_tracked_and_deployable() -> None:
-    path = ROOT / "packages.txt"
-    assert path.read_bytes() == b"libgl1\nlibglib2.0-0t64\n"
-    assert normalized_system_packages(path) == ["libgl1", "libglib2.0-0t64"]
+def test_apt_stage_is_absent_and_headless_contract_is_deployable() -> None:
+    assert not (ROOT / "packages.txt").exists()
     result = validate(ROOT)
     assert result["status"] == "PASS"
-    assert result["system_package_file"] == "packages.txt"
-    assert result["system_packages"] == ["libgl1", "libglib2.0-0t64"]
-    assert result["tracked_files"]["packages.txt"] is True
+    assert result["system_package_file"] is None
+    assert result["system_packages"] == []
+    assert result["opencv_distribution"] == "opencv-python-headless==4.11.0.86"
+    assert result["tracked_files"][VENDORED_ULTRALYTICS.as_posix()] is True
 
 
-def test_comments_and_whitespace_do_not_change_normalized_contents(tmp_path: Path) -> None:
-    path = tmp_path / "packages.txt"
-    path.write_text(
-        "# Streamlit system dependencies\n  libgl1  \n  libglib2.0-0t64  \n\n",
-        encoding="utf-8",
-    )
-    assert validate_system_packages(path) == EXPECTED_SYSTEM_PACKAGES
+def test_vendored_ultralytics_requires_only_pinned_headless_opencv() -> None:
+    wheel = ROOT / VENDORED_ULTRALYTICS
+    assert sha256(wheel) == VENDORED_ULTRALYTICS_SHA256
+    validate_headless_wheel(wheel)
+    assert EXPECTED_OPENCV_REQUIREMENT == "Requires-Dist: opencv-python-headless==4.11.0.86"
 
 
-@pytest.mark.parametrize(
-    "contents",
-    [
-        "",
-        "# libgl1\n",
-        "libgl1\n",
-        "libglib2.0-0t64\n",
-        "libgl1\nlibgl1\n",
-        "libgl1\nlibglib2.0-0t64\nlibglib2.0-0t64\n",
-        "libgl1\nlibglib2.0-0\n",
-        "libgl1-mesa-glx\n",
-        "libglib2.0-0t64\nlibgl1\n",
-        "libgl1\nlibglib2.0-0t64\nlibx11-6\n",
-    ],
-)
-def test_missing_duplicate_or_additional_system_packages_fail_closed(
-    tmp_path: Path, contents: str
-) -> None:
-    path = tmp_path / "packages.txt"
-    path.write_text(contents, encoding="utf-8")
-    with pytest.raises(RuntimeError, match="exactly"):
-        validate_system_packages(path)
+def test_requirements_exclude_gui_opencv_distribution() -> None:
+    for relative in ("requirements-app.txt", "app/requirements.txt"):
+        lines = {
+            line.strip() for line in (ROOT / relative).read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        }
+        assert "opencv-python-headless==4.11.0.86" in lines
+        assert "./app/vendor/ultralytics-8.3.150-py3-none-any.whl" in lines
+        assert not any(line.startswith("opencv-python==") for line in lines)
+        assert "ultralytics==8.3.150" not in lines

@@ -4,19 +4,21 @@ Application v3 is publicly deployed as a Streamlit research demonstration at [ht
 
 ## Deployment coordinates
 
-- Repository: `Stukhori/Bade-defect-recognition`
+- Repository: `Stukhori/BadeScope`
 - Branch: `main`
 - Main file path: `app/app.py`
 - Public URL: [https://bladescope.streamlit.app/](https://bladescope.streamlit.app/)
 - Python: `3.11`
 - Dependency declaration: `app/requirements.txt`
-- Debian system-package declaration: `packages.txt`
+- System-package declaration: none
 - Streamlit configuration: `.streamlit/config.toml`
 - Secrets: none
 
-The entrypoint-local dependency file pins Streamlit `1.62.0`, streamlit-cropper `0.3.1`, Ultralytics `8.3.150`, PyTorch `2.13.0+cpu`, torchvision `0.28.0+cpu`, and the remaining validated application packages. The exact frozen crop-classifier checkpoint and detector proposal checkpoint are tracked. No runtime model download is required.
+The entrypoint-local dependency file pins Streamlit `1.62.0`, streamlit-cropper `0.3.1`, OpenCV Headless `4.11.0.86`, Ultralytics `8.3.150`, PyTorch `2.13.0+cpu`, torchvision `0.28.0+cpu`, and the remaining validated application packages. The exact frozen crop-classifier checkpoint and detector proposal checkpoint are tracked. No runtime model download is required.
 
-The root `packages.txt` declares only `libgl1` and `libglib2.0-0t64`. Streamlit Community Cloud installs `libgl1` so the pinned `opencv-python` runtime can resolve `libGL.so.1`; on its Debian Trixie environment, `libglib2.0-0t64` provides the required `libgthread-2.0.so.0`. These system libraries do not change Python packages or application inference behavior.
+The application does not call OpenCV GUI, Qt/GTK window, or OpenGL display functions. It therefore uses only `opencv-python-headless==4.11.0.86`. The repository deliberately has no root `packages.txt`, so Streamlit Community Cloud skips apt processing and the application does not depend on `libGL.so.1` or `libgthread-2.0.so.0`.
+
+Ultralytics 8.3.150 normally declares `opencv-python>=4.6.0`; pip does not treat the headless distribution as satisfying that differently named requirement and would install both distributions. The tracked deployment wheel is built reproducibly from the official Ultralytics 8.3.150 source, retains an identical Python payload, and changes only that dependency metadata to the exact headless pin. Its provenance and hashes are recorded in `app/vendor/README.md`.
 
 ## Deploy
 
@@ -33,7 +35,7 @@ uv run python scripts/validate_deployment.py
 uv run streamlit run app/app.py --server.address 127.0.0.1
 ```
 
-The validator requires both checkpoints and all deployment inputs, including `packages.txt`, to be tracked. It permits exactly the normalized apt declarations `libgl1` and `libglib2.0-0t64` in that order, verifies checkpoint byte identities, loads the frozen classifier on CPU, and checks the pinned dependency and Streamlit configuration contract.
+The validator requires both checkpoints, the vendored Ultralytics wheel, and all deployment inputs to be tracked. It requires `packages.txt` to be absent, verifies the wheel identity and headless-only OpenCV metadata, verifies checkpoint byte identities, loads the frozen classifier on CPU, and checks the pinned dependency and Streamlit configuration contract.
 
 ## Scope
 

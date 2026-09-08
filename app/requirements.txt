@@ -6,7 +6,8 @@
 
 streamlit==1.62.0
 streamlit-cropper==0.3.1
-ultralytics==8.3.150
+opencv-python-headless==4.11.0.86
+./app/vendor/ultralytics-8.3.150-py3-none-any.whl
 numpy==2.4.6
 Pillow==12.3.0
 matplotlib==3.11.1

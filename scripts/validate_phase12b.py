@@ -37,7 +37,8 @@ FROZEN_HASHES = {
     "provenance/phase11b_final_test_metrics.json": "e6bac76aa5a2e3d68ed7b93f5be180228addba1f1f90ddafab398d198496bcbb",
 }
 EXPECTED_REQUIREMENTS = {
-    "ultralytics==8.3.150",
+    "opencv-python-headless==4.11.0.86",
+    "./app/vendor/ultralytics-8.3.150-py3-none-any.whl",
     'torch==2.13.0+cpu; sys_platform != "darwin"',
     'torchvision==0.28.0+cpu; sys_platform != "darwin"',
 }
