@@ -19,6 +19,18 @@ BladeScope is a reproducible computer-vision research project studying six-categ
 - A three-seed YOLO11n class-agnostic localization study and a human-reviewed automatic-region proposal workflow in the Streamlit app.
 - The highest observed clean CNN means were approximately `0.895` macro-F1. Their difference was negligible, but the paired interval does **not** justify a claim of superiority or equivalence.
 
+## Demo Screenshots
+
+The public [BladeScope demo](https://bladescope.streamlit.app/) can propose defect regions, let the user review them, and classify the selected crops into the six studied categories.
+
+| Automatic region proposal | Reviewed classification and model scores |
+|---|---|
+| ![BladeScope outlining one proposed defect region on a wind-turbine blade](docs/assets/demo/automatic-region-proposal.png) | ![BladeScope classifying a reviewed region as corrosion and displaying category scores](docs/assets/demo/classified-region-scores.png) |
+
+![BladeScope showing multiple proposed regions on a wind-turbine blade](docs/assets/demo/multiple-region-proposals.png)
+
+*Examples from the deployed Streamlit interface. Detector confidence and classifier scores are presented separately.*
+
 ## Research Question
 
 How reliably can classical and convolutional models recognize six wind-turbine blade defect categories when labeled data are limited? The project also asks how performance changes under controlled image degradation, and how errors, model activations, and localization behavior can be examined without extending the evidence to operational safety or deployment claims.
@@ -41,8 +53,6 @@ On the frozen clean test set, both CNN means were substantially higher than the 
 | ![Frozen data-efficiency learning curves](figures/phase10/data_efficiency_learning_curves.png) | ![Frozen robustness curves](figures/phase10/robustness_curves.png) |
 
 The left figure compares four predeclared training-data budgets. The right figure shows the four fixed degradation families at clean, mild, moderate, and severe settings. Both are descriptive summaries of the frozen experiment grid, not claims about arbitrary field conditions.
-
-<!-- Portfolio TODO: add a real Streamlit application screenshot here after one is captured from the deployed or locally validated app; do not use a mock-up. -->
 
 ## What I Built
 
